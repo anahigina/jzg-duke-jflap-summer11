@@ -25,8 +25,17 @@ import gui.environment.Universe;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Set;
+
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
+import JFLAPnew.formaldef.symbols.variable.Variable;
 
 /**
  * A Production object is a simple abstract class that represents a production
@@ -44,9 +53,7 @@ public class Production implements Serializable {
 	 * @param rhs
 	 *            the right hand side of the production rule.
 	 */
-	public Production(String lhs, String rhs) {
-        if(lhs == null) lhs = "";
-        if(rhs == null) rhs = "";
+	public Production(SymbolString lhs, SymbolString rhs) {
 		myLHS = lhs;
 		myRHS = rhs;
 	}
@@ -57,7 +64,7 @@ public class Production implements Serializable {
 	 * @param rhs
 	 *            the right hand side
 	 */
-	public void setRHS(String rhs) {
+	public void setRHS(SymbolString rhs) {
 		myRHS = rhs;
 	}
 
@@ -67,7 +74,7 @@ public class Production implements Serializable {
 	 * @param lhs
 	 *            the left hand side
 	 */
-	public void setLHS(String lhs) {
+	public void setLHS(SymbolString lhs) {
 		myLHS = lhs;
 	}
 
@@ -77,7 +84,7 @@ public class Production implements Serializable {
 	 * 
 	 * @return a string representation of the lhs.
 	 */
-	public String getLHS() {
+	public SymbolString getLHS() {
 		return myLHS;
 	}
 
@@ -87,7 +94,7 @@ public class Production implements Serializable {
 	 * 
 	 * @return a string representation of the rhs.
 	 */
-	public String getRHS() {
+	public SymbolString getRHS() {
 		return myRHS;
 	}
 
@@ -108,24 +115,10 @@ public class Production implements Serializable {
 	 * 
 	 * @return all variables in the production.
 	 */
-	public String[] getVariables() {
-
-		ArrayList list = new ArrayList();
-		String[] rhsVariables = getVariablesOnRHS();
-		for (int k = 0; k < rhsVariables.length; k++) {
-			if (!list.contains(rhsVariables[k])) {
-				list.add(rhsVariables[k]);
-			}
-		}
-
-		String[] lhsVariables = getVariablesOnLHS();
-		for (int i = 0; i < lhsVariables.length; i++) {
-			if (!list.contains(lhsVariables[i])) {
-				list.add(lhsVariables[i]);
-			}
-		}
-
-		return (String[]) list.toArray(new String[0]);
+	public Set<Variable> getVariables() {
+		TreeSet<Variable> results = new TreeSet<Variable>(this.getVariablesOnLHS());
+		results.addAll(this.getVariablesOnRHS());
+		return results;
 	}
 
 	/**
@@ -133,15 +126,8 @@ public class Production implements Serializable {
 	 * 
 	 * @return all variables on the left hand side of the production.
 	 */
-	public String[] getVariablesOnLHS() {
-		ArrayList list = new ArrayList();
-        if(myLHS == null) return new String[0];
-		for(int i = 0; i < myLHS.length(); i++) {
-			char c = myLHS.charAt(i);
-			if (ProductionChecker.isVariable(c))
-				list.add(myLHS.substring(i, i + 1));
-		}
-		return (String[]) list.toArray(new String[0]);
+	public Set<Variable> getVariablesOnLHS() {
+		return myLHS.getSymbolsOfClass(Variable.class);
 	}
 
 	/**
@@ -149,15 +135,8 @@ public class Production implements Serializable {
 	 * 
 	 * @return all variables on the right hand side of the production.
 	 */
-	public String[] getVariablesOnRHS() {
-		ProductionChecker pc = new ProductionChecker();
-		ArrayList list = new ArrayList();
-		for (int i = 0; i < myRHS.length(); i++) {
-			char c = myRHS.charAt(i);
-			if (ProductionChecker.isVariable(c))
-				list.add(myRHS.substring(i, i + 1));
-		}
-		return (String[]) list.toArray(new String[0]);
+	public Set<Variable> getVariablesOnRHS() {
+		return myRHS.getSymbolsOfClass(Variable.class);
 	}
 
 	/**
@@ -165,23 +144,10 @@ public class Production implements Serializable {
 	 * 
 	 * @return all terminals in the production.
 	 */
-	public String[] getTerminals() {
-		ArrayList list = new ArrayList();
-		String[] rhsTerminals = getTerminalsOnRHS();
-		for (int k = 0; k < rhsTerminals.length; k++) {
-			if (!list.contains(rhsTerminals[k])) {
-				list.add(rhsTerminals[k]);
-			}
-		}
-
-		String[] lhsTerminals = getTerminalsOnLHS();
-		for (int i = 0; i < lhsTerminals.length; i++) {
-			if (!list.contains(lhsTerminals[i])) {
-				list.add(lhsTerminals[i]);
-			}
-		}
-
-		return (String[]) list.toArray(new String[0]);
+	public Set<Terminal> getTerminals() {
+		TreeSet<Terminal> results = new TreeSet<Terminal>(this.getTerminalsOnLHS());
+		results.addAll(this.getTerminalsOnRHS());
+		return results;
 	}
 
 	/**
@@ -189,15 +155,8 @@ public class Production implements Serializable {
 	 * 
 	 * @return all terminals on the right hand side of the production.
 	 */
-	public String[] getTerminalsOnRHS() {
-		ProductionChecker pc = new ProductionChecker();
-		ArrayList list = new ArrayList();
-		for (int i = 0; i < myRHS.length(); i++) {
-			char c = myRHS.charAt(i);
-			if (ProductionChecker.isTerminal(c))
-				list.add(myRHS.substring(i, i + 1));
-		}
-		return (String[]) list.toArray(new String[0]);
+	public Set<Terminal> getTerminalsOnRHS() {
+		return myRHS.getSymbolsOfClass(Terminal.class);
 	}
 
 	/**
@@ -231,14 +190,8 @@ public class Production implements Serializable {
 	 * 
 	 * @return all terminals on the left hand side of the production.
 	 */
-	public String[] getTerminalsOnLHS() {
-		ArrayList list = new ArrayList();
-		for (int i = 0; i < myLHS.length(); i++) {
-			char c = myLHS.charAt(i);
-			if (ProductionChecker.isTerminal(c))
-				list.add(myLHS.substring(i, i + 1));
-		}
-		return (String[]) list.toArray(new String[0]);
+	public Set<Terminal> getTerminalsOnLHS() {
+		return myLHS.getSymbolsOfClass(Terminal.class);
 	}
 
 	/**
@@ -251,29 +204,26 @@ public class Production implements Serializable {
 		buffer.append(getLHS());
 		// buffer.append("->");
 		buffer.append('\u2192');
-		String rhs = getRHS();
-		buffer.append(rhs.length() == 0 ? Universe.curProfile.getEmptyString() : rhs);
+		buffer.append(getRHS().size() == 0 ? Universe.curProfile.getEmptyString() : getRHS());
 		// buffer.append('\n');
 		return buffer.toString();
 	}
 
 	/**
+	 * Deprecated - this now simply does the same thing as getRHS, returning
+	 * the symbol string corresponding to the Right hand Side of this production
 	 * Returns the sequence of symbols in either the left or right hand side.
 	 * For example, for the production <CODE>A -> BCD</CODE> this would return
 	 * the array of strings <CODE>{"B","C","D"}</CODE>.
 	 */
-	public String[] getSymbolsOnRHS() {
-		ArrayList list = new ArrayList();
-		for (int i = 0; i < myRHS.length(); i++) {
-			char c = myRHS.charAt(i);
-			list.add(myRHS.substring(i, i + 1));
-		}
-		return (String[]) list.toArray(new String[0]);
+	@Deprecated
+	public SymbolString getSymbolsOnRHS() {
+		return myRHS;
 	}
 
 	/** the left hand side of the production. */
-	protected String myLHS;
+	protected SymbolString myLHS;
 
 	/** the right hand side of the production. */
-	protected String myRHS;
+	protected SymbolString myRHS;
 }

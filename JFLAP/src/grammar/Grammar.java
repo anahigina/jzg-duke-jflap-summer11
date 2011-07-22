@@ -25,6 +25,13 @@ import gui.environment.EnvironmentFrame;
 import java.io.Serializable;
 import java.util.*;
 
+import JFLAPnew.formaldef.FormalDefinition;
+import JFLAPnew.formaldef.FormallyDefinedObject;
+import JFLAPnew.formaldef.IFormallyDefined;
+import JFLAPnew.formaldef.alphabets.IAlphabet;
+import JFLAPnew.formaldef.alphabets.specific.TerminalAlphabet;
+import JFLAPnew.formaldef.alphabets.specific.VariableAlphabet;
+
 /**
  * The grammar object is the root class for the representation of all forms of
  * grammars, including regular and context-free grammars. This object simply
@@ -34,18 +41,16 @@ import java.util.*;
  * @author Ryan Cavalcante
  */
 
-public abstract class Grammar implements Serializable, Cloneable {
+public abstract class Grammar extends FormalDefinition implements Serializable, Cloneable{
 	/**
 	 * Creates an instance of <CODE>Grammar</CODE>. The created instance has
 	 * no productions, no terminals, no variables, and specifically no start
 	 * variable.
 	 */
 	public Grammar() {
-		myVariables = new HashSet();
-		myTerminals = new HashSet();
-		myStartVariable = null;
 	}
 	
+
 	public abstract boolean isConverted();
 	
 	/**
@@ -97,7 +102,7 @@ public abstract class Grammar implements Serializable, Cloneable {
 	 *            the new start variable.
 	 */
 	public void setStartVariable(String variable) {
-		myStartVariable = variable;
+		this.getVariables().getStartVariable();
 	}
 
 	/**
@@ -294,8 +299,8 @@ public abstract class Grammar implements Serializable, Cloneable {
 	 * 
 	 * @return all variables in the grammar.
 	 */
-	public String[] getVariables() {
-		return (String[]) myVariables.toArray(new String[0]);
+	public VariableAlphabet getVariables() {
+		return this.getAlphabetByClass(VariableAlphabet.class);
 	}
 
 	/**
@@ -419,15 +424,6 @@ public abstract class Grammar implements Serializable, Cloneable {
 
 	private EnvironmentFrame myEnvFrame = null;
 	 private String fileName ="";
-
-	/** Set of Variables. */
-	protected Set myVariables;
-
-	/** Set of Terminals. */
-	protected Set myTerminals;
-
-	/** Start variable. */
-	protected String myStartVariable;
 
 	/** Set of Production rules. */
 	protected List myProductions = new ArrayList();

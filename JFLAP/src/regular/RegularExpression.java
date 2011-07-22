@@ -24,13 +24,15 @@ import java.util.*;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 
+import JFLAPnew.formaldef.FormallyDefinedObject;
+
 /**
  * This object encapsulates a regular expression.
  * 
  * @author Thomas Finley
  */
 
-public class RegularExpression implements Serializable {
+public class RegularExpression extends FormallyDefinedObject implements Serializable {
 	/**
 	 * Instantiates a blank regular expression.
 	 */
