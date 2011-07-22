@@ -24,7 +24,10 @@ import grammar.cfg.ContextFreeGrammar;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Set;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.variable.Variable;
 import automata.State;
 import automata.Transition;
 import automata.UnreachableStatesDetector;
@@ -149,15 +152,16 @@ public class UnitProductionRemover {
 	public void initializeDependencyGraph(VariableDependencyGraph graph,
 			Grammar grammar) {
 		// StatePlacer sp = new StatePlacer();
-		String[] variables = grammar.getVariables();
-		for (int k = 0; k < variables.length; k++) {
+		Set<Variable> variables = grammar.getVariables().getSymbols();
+		int k=0;
+		for (Variable v : variables) {
 			// Point point = sp.getPointForState(graph);
-			double theta = 2.0 * Math.PI * (double) k
-					/ (double) variables.length;
+			double theta = 2.0 * Math.PI * (double) k++
+					/ (double) variables.size();
 			Point point = new Point(200 + (int) (180.0 * Math.cos(theta)),
 					200 + (int) (180.0 * Math.sin(theta)));
 			State state = graph.createState(point);
-			state.setName(variables[k]);
+			state.setName(v.getString());
 		}
 	}
 
@@ -165,18 +169,18 @@ public class UnitProductionRemover {
 	 * Returns the state in <CODE>graph</CODE> that represents <CODE>variable</CODE>
 	 * (i.e. the state whose label is <CODE>variable</CODE>).
 	 * 
-	 * @param variable
+	 * @param lhs
 	 *            the variable
 	 * @param graph
 	 *            the graph
 	 * @return the state in <CODE>graph</CODE> that represents <CODE>variable</CODE>
 	 *         (i.e. the state whose label is <CODE>variable</CODE>).
 	 */
-	public State getStateForVariable(String variable,
+	public State getStateForVariable(Variable lhs,
 			VariableDependencyGraph graph) {
 		State[] states = graph.getStates();
 		for (int k = 0; k < states.length; k++) {
-			if (states[k].getName().equals(variable))
+			if (states[k].getName().equals(lhs.getString()))
 				return states[k];
 		}
 		return null;
@@ -198,8 +202,8 @@ public class UnitProductionRemover {
 		ProductionChecker pc = new ProductionChecker();
 		if (!ProductionChecker.isUnitProduction(production))
 			return null;
-		String lhs = production.getLHS();
-		String rhs = production.getRHS();
+		Variable lhs = (Variable) production.getLHS().getFirst(),
+			     rhs = (Variable) production.getRHS().getFirst();
 		State from = getStateForVariable(lhs, graph);
 		State to = getStateForVariable(rhs, graph);
 		return new VDGTransition(from, to);
@@ -236,7 +240,7 @@ public class UnitProductionRemover {
 	 *         (i.e. there is a path in <CODE>graph</CODE> from <CODE>variable1</CODE>
 	 *         to <CODE>variable2</CODE>).
 	 */
-	public boolean isDependentOn(String variable1, String variable2,
+	public boolean isDependentOn(Variable variable1, Variable variable2,
 			VariableDependencyGraph graph) {
 		State v1 = getStateForVariable(variable1, graph);
 		State v2 = getStateForVariable(variable2, graph);
@@ -266,14 +270,14 @@ public class UnitProductionRemover {
 	 *         all variables whose states can be reached from the state that
 	 *         represents <CODE>variable</CODE> in <CODE>graph</CODE>.
 	 */
-	public String[] getDependencies(String variable, Grammar grammar,
+	public String[] getDependencies(Variable variable, Grammar grammar,
 			VariableDependencyGraph graph) {
 		ArrayList list = new ArrayList();
-		String[] variables = grammar.getVariables();
-		for (int k = 0; k < variables.length; k++) {
-			if (!variable.equals(variables[k])) {
-				if (isDependentOn(variable, variables[k], graph)) {
-					list.add(variables[k]);
+		Set<Variable> variables = grammar.getVariables().getSymbols();
+		for (Variable v: variables) {
+			if (!variable.equals(v)) {
+				if (isDependentOn(variable, v, graph)) {
+					list.add(v);
 				}
 			}
 		}
@@ -294,11 +298,11 @@ public class UnitProductionRemover {
 	 *         as their left hand side, and the right hand side of a production
 	 *         in <CODE>oldProductions</CODE> as their right hand sides.
 	 */
-	public Production[] getNewProductions(String variable,
+	public Production[] getNewProductions(Variable variable,
 			Production[] oldProductions) {
 		ArrayList list = new ArrayList();
 		for (int k = 0; k < oldProductions.length; k++) {
-			list.add(new Production(variable, oldProductions[k].getRHS()));
+			list.add(new Production(new SymbolString(variable), oldProductions[k].getRHS()));
 		}
 		return (Production[]) list.toArray(new Production[0]);
 	}
@@ -316,10 +320,9 @@ public class UnitProductionRemover {
 	 */
 	public void addAllNewProductionsToGrammar(Grammar oldGrammar,
 			Grammar newGrammar, VariableDependencyGraph graph) {
-		GrammarChecker gc = new GrammarChecker();
-		String[] variables = oldGrammar.getVariables();
-		for (int k = 0; k < variables.length; k++) {
-			String v1 = variables[k];
+		Set<Variable> variables = oldGrammar.getVariables().getSymbols();
+		for (Variable v : variables) {
+			Variable v1 = v;
 			String[] dep = getDependencies(v1, oldGrammar, graph);
 			for (int i = 0; i < dep.length; i++) {
 				Production[] prods = GrammarChecker

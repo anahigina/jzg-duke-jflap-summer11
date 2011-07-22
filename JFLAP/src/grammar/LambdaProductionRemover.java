@@ -25,7 +25,12 @@ import grammar.cfg.ContextFreeGrammar;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.variable.Variable;
 
 /**
  * The lambda production remover object can be used to convert a grammar to an
@@ -86,7 +91,7 @@ public class LambdaProductionRemover {
 	 * @param lambdaSet
 	 *            the set to add to
 	 */
-	public void addVariableToLambdaSet(String variable, Set lambdaSet) {
+	public void addVariableToLambdaSet(Variable variable, Set lambdaSet) {
 		if (!lambdaSet.contains(variable))
 			lambdaSet.add(variable);
 	}
@@ -96,7 +101,7 @@ public class LambdaProductionRemover {
 	 * <CODE>variable</CODE> on the left hand side and lambda on the right
 	 * hand side.
 	 * 
-	 * @param variable
+	 * @param v
 	 *            the variable
 	 * @param grammar
 	 *            the grammar.
@@ -104,12 +109,12 @@ public class LambdaProductionRemover {
 	 *         <CODE>variable</CODE> on the left hand side and lambda on the
 	 *         right hand side.
 	 */
-	public boolean isVariableWithLambdaProduction(String variable,
+	public boolean isVariableWithLambdaProduction(Variable v,
 			Grammar grammar) {
 		ProductionChecker pc = new ProductionChecker();
 		GrammarChecker gc = new GrammarChecker();
 		Production[] productions = GrammarChecker.getProductionsOnVariable(
-				variable, grammar);
+				v, grammar);
 		for (int k = 0; k < productions.length; k++) {
 			if (ProductionChecker.isLambdaProduction(productions[k]))
 				return true;
@@ -154,13 +159,12 @@ public class LambdaProductionRemover {
 	 *         production with the variable on the left hand side and lambda on
 	 *         the right hand side.)
 	 */
-	public String getNewVariableWithLambdaProduction(Grammar grammar,
+	public Variable getNewVariableWithLambdaProduction(Grammar grammar,
 			Set lambdaSet) {
-		String[] variables = grammar.getVariables();
-		for (int k = 0; k < variables.length; k++) {
-			if (!lambdaSet.contains(variables[k])
-					&& isVariableWithLambdaProduction(variables[k], grammar)) {
-				return variables[k];
+		for (Variable v: grammar.getVariables().getSymbols()) {
+			if (!lambdaSet.contains(v)
+					&& isVariableWithLambdaProduction(v, grammar)) {
+				return v;
 			}
 		}
 		return null;
@@ -179,7 +183,7 @@ public class LambdaProductionRemover {
 	 */
 	public void addVariablesWithLambdaProductions(Grammar grammar, Set lambdaSet) {
 		while (areMoreVariablesWithLambdaProductions(grammar, lambdaSet)) {
-			String variable = getNewVariableWithLambdaProduction(grammar,
+			Variable variable = getNewVariableWithLambdaProduction(grammar,
 					lambdaSet);
 			addVariableToLambdaSet(variable, lambdaSet);
 		}
@@ -188,14 +192,14 @@ public class LambdaProductionRemover {
 	/**
 	 * Returns true if <CODE>variable</CODE> is in <CODE>lambdaSet</CODE>.
 	 * 
-	 * @param variable
+	 * @param v
 	 *            the variable
 	 * @param lambdaSet
 	 *            the set
 	 * @return true if <CODE>variable</CODE> is in <CODE>lambdaSet</CODE>.
 	 */
-	public boolean isInLambdaSet(String variable, Set lambdaSet) {
-		return lambdaSet.contains(variable);
+	public boolean isInLambdaSet(Variable v, Set<Variable> lambdaSet) {
+		return lambdaSet.contains(v);
 	}
 
 	/**
@@ -218,12 +222,11 @@ public class LambdaProductionRemover {
 	 */
 	public boolean isReducableToLambdaProduction(Production production,
 			Set lambdaSet) {
-		ProductionChecker pc = new ProductionChecker();
 		if (ProductionChecker.areTerminalsOnRHS(production))
 			return false;
-		String[] variables = production.getVariablesOnRHS();
-		for (int j = 0; j < variables.length; j++) {
-			if (!isInLambdaSet(variables[j], lambdaSet))
+		Set<Variable> variables = production.getVariablesOnRHS();
+		for (Variable v: variables) {
+			if (!isInLambdaSet(v, lambdaSet))
 				return false;
 		}
 		return true;
@@ -244,8 +247,8 @@ public class LambdaProductionRemover {
 	 *         has a lambda production or a production that is reducable to
 	 *         lambda.
 	 */
-	public boolean belongsInLambdaSet(String variable, Grammar grammar,
-			Set lambdaSet) {
+	public boolean belongsInLambdaSet(Variable variable, Grammar grammar,
+			Set<Variable> lambdaSet) {
 		if (isVariableWithLambdaProduction(variable, grammar))
 			return true;
 		GrammarChecker gc = new GrammarChecker();
@@ -296,13 +299,13 @@ public class LambdaProductionRemover {
 	 *         belongs there (i.e. a variable that has either a lambda
 	 *         production or a production that is reducable to lambda).
 	 */
-	public String getNewVariableThatBelongsInLambdaSet(Grammar grammar,
+	public Variable getNewVariableThatBelongsInLambdaSet(Grammar grammar,
 			Set lambdaSet) {
-		String[] variables = grammar.getVariables();
-		for (int k = 0; k < variables.length; k++) {
-			if (!isInLambdaSet(variables[k], lambdaSet)
-					&& belongsInLambdaSet(variables[k], grammar, lambdaSet))
-				return variables[k];
+		Set<Variable> variables = grammar.getVariables().getSymbols();
+		for (Variable v: variables) {
+			if (!isInLambdaSet(v, lambdaSet)
+					&& belongsInLambdaSet(v, grammar, lambdaSet))
+				return v;
 		}
 		return null;
 	}
@@ -317,10 +320,10 @@ public class LambdaProductionRemover {
 	 *         have lambda productions or productions that are reducable to
 	 *         lambda.
 	 */
-	public HashSet getCompleteLambdaSet(Grammar grammar) {
-		HashSet lambdaSet = getNewLambdaSet();
+	public HashSet<Variable> getCompleteLambdaSet(Grammar grammar) {
+		HashSet<Variable> lambdaSet = getNewLambdaSet();
 		while (areMoreVariablesToAddToLambdaSet(grammar, lambdaSet)) {
-			String variable = getNewVariableThatBelongsInLambdaSet(grammar,
+			Variable variable = getNewVariableThatBelongsInLambdaSet(grammar,
 					lambdaSet);
 			addVariableToLambdaSet(variable, lambdaSet);
 		}
@@ -334,8 +337,8 @@ public class LambdaProductionRemover {
 	 * in <CODE>lambdaSet</CODE> can be replaced by lambda. So, in order to
 	 * remove the lambda productions, we need to account for all permutations of
 	 * production where different variables go to lambda. (e.g. if the
-	 * production is S->AB and both A and B are in lambdaSet, then this would
-	 * return S->AB, S->A, and S->B).
+	 * production is S->AxB and both A and B are in lambdaSet, then this would
+	 * return S->AxB, S->Ax, S->xB, and S->x).
 	 * 
 	 * @param production
 	 *            the production to replace
@@ -346,43 +349,19 @@ public class LambdaProductionRemover {
 	 *         The returned list of productions are all permutations of <CODE>production</CODE>.
 	 */
 	public Production[] getProductionsToAddForProduction(Production production,
-			Set lambdaSet) {
-		// Stupid...
-		/*
-		 * ProductionChecker pc = new ProductionChecker(); String[] variables =
-		 * production.getVariablesOnRHS(); ArrayList list = new ArrayList();
-		 * for(int k = 0; k < variables.length; k++) {
-		 * if(isInLambdaSet(variables[k],lambdaSet)) list.add(variables[k]); }
-		 * String[] lambdaVar = (String[]) list.toArray(new String[0]); String[]
-		 * combs = getCombinations(lambdaVar); ArrayList productions = new
-		 * ArrayList(); for(int k = 0; k < combs.length; k++) { Production p =
-		 * getProductionForCombination(production,combs[k]);
-		 * if(!pc.isLambdaProduction(p)) productions.add(p); } return
-		 * (Production[]) productions.toArray(new Production[0]);
-		 */
-
-		String[] start = new String[] { "" };
-		String rhs = production.getRHS();
-		for (int i = 0; i < rhs.length(); i++) {
-			String v = rhs.substring(i, i + 1);
-			if (lambdaSet.contains(v)) {
-				String s[] = new String[start.length * 2];
-				for (int j = 0; j < start.length; j++) {
-					s[j] = start[j] + v;
-					s[j + start.length] = start[j];
-				}
-				start = s;
-			} else {
-				for (int j = 0; j < start.length; j++)
-					start[j] += v;
-			}
+			Set<Variable> lambdaSet) {
+		
+		Set<Variable> temp = production.getRHS().getSymbolsOfClass(Variable.class);
+		temp.retainAll(lambdaSet);//the set of all lambda-deriving variables on RHS
+		
+		Set<Production> results = new HashSet<Production>();
+		for(Set<Variable> set: CombinationGenerator.generateAllCombinations(temp)){
+			SymbolString rhs = production.getRHS().clone();
+			rhs.removeAll(set);
+			results.add(new Production(production.getLHS(), rhs)); //should lhs be cloned here?
 		}
-		Arrays.sort(start);
-		ArrayList list = new ArrayList();
-		String lhs = production.getLHS();
-		for (int i = (start[0].length() == 0) ? 1 : 0; i < start.length; i++)
-			list.add(new Production(lhs, start[i]));
-		return (Production[]) list.toArray(new Production[0]);
+		
+		return results.toArray(new Production[0]);
 	}
 
 	/**
@@ -445,118 +424,8 @@ public class LambdaProductionRemover {
 		return g;
 	}
 
-	/**
-	 * Returns true if <CODE>ch</CODE> is a character in <CODE>comb</CODE>.
-	 * 
-	 * @param ch
-	 *            the character
-	 * @param comb
-	 *            the string
-	 * @return true if <CODE>ch</CODE> is a character in <CODE>comb</CODE>.
-	 */
-	private boolean isNotReplacedByLambda(char ch, String comb) {
-		for (int k = 0; k < comb.length(); k++) {
-			if (ch == comb.charAt(k))
-				return true;
-		}
-		return false;
-	}
 
-	/**
-	 * Returns the production that represents the combination <CODE>comb</CODE>.
-	 * (e.g. if comb is the string "AB", that means that the variables "A" and
-	 * "B" in <CODE>production</CODE> should not be replaced by lambda, but
-	 * that all other variables on the right hand side of <CODE>production</CODE>
-	 * should be. therefore, if production was S->aABC, this function would
-	 * return S->aAB).
-	 * 
-	 * @param production
-	 *            the production
-	 * @param comb
-	 *            the set of variables that should not be replaced by lambda.
-	 * @return the production that represents the combination <CODE>comb</CODE>.
-	 *         (e.g. if comb is the string "AB", that means that the variables
-	 *         "A" and "B" in <CODE>production</CODE> should not be replaced
-	 *         by lambda, but that all other variables on the right hand side of
-	 *         <CODE>production</CODE> should be. therefore, if production was
-	 *         S->aABC, this function would return S->aAB).
-	 */
-	private Production getProductionForCombination(Production production,
-			String comb) {
-		ProductionChecker pc = new ProductionChecker();
-		String rhs = production.getRHS();
-		StringBuffer buffer = new StringBuffer();
-		for (int k = 0; k < rhs.length(); k++) {
-			char ch = rhs.charAt(k);
-			if (ProductionChecker.isTerminal(ch)
-					|| isNotReplacedByLambda(ch, comb))
-				buffer.append(ch);
-		}
-		Production p = new Production(production.getLHS(), buffer.toString());
-		return p;
-	}
 
-	/**
-	 * Returns a string that represents the set of variables from <CODE>variables</CODE>
-	 * indicated by <CODE>binary</CODE>. (e.g. if variables was the set
-	 * "A,B,C", in that order, and binary was 011, this function would return
-	 * "BC" since there is a one at index 1 and 2).
-	 * 
-	 * @param binary
-	 *            a binary number whose length is the same as the length of
-	 *            <CODE>variables</CODE>
-	 * @param variables
-	 *            the set of variables that <CODE>binary</CODE> refers to.
-	 * @return a string that represents the set of variables from <CODE>variables</CODE>
-	 *         indicated by <CODE>binary</CODE>.
-	 */
-	private String getRepresentation(String binary, String[] variables) {
-		StringBuffer buffer = new StringBuffer();
-		for (int k = 0; k < binary.length(); k++) {
-			char ch = binary.charAt(k);
-			if (ch == ONE_CHAR) {
-				buffer.append(variables[k]);
-			}
-		}
-		return buffer.toString();
-	}
-
-	/**
-	 * Returns a binary number equivalent to <CODE>binaryNum</CODE> padded
-	 * with enough zeros to make it a string of length <CODE>length</CODE>.
-	 * 
-	 * @param binaryNum
-	 *            the number to pad with zeros
-	 * @param length
-	 *            the length to make <CODE>binaryNum</CODE>
-	 * @return a binary number equivalent to <CODE>binaryNum</CODE> padded
-	 *         with enough zeros to make it a string of length <CODE>length</CODE>.
-	 */
-	private String pad(String binaryNum, int length) {
-		int numZeros = length - binaryNum.length();
-		for (int k = 0; k < numZeros; k++) {
-			binaryNum = ZERO.concat(binaryNum);
-		}
-		return binaryNum;
-	}
-
-	/**
-	 * Returns a list of binary numbers (as strings) that encode all possible
-	 * permutations of <CODE>variables</CODE>
-	 * 
-	 * @param variables
-	 *            the set of variables
-	 * @return a list of binary numbers (as strings) that encode all possible
-	 *         permutations of <CODE>variables</CODE>
-	 */
-	private String[] getCombinations(String[] variables) {
-		ArrayList list = new ArrayList();
-		for (int k = 0; k < ((int) Math.pow(2, variables.length)); k++) {
-			String comb = pad(Integer.toBinaryString(k), variables.length);
-			list.add(getRepresentation(comb, variables));
-		}
-		return (String[]) list.toArray(new String[0]);
-	}
 
 	/** the string for zero. */
 	protected String ZERO = "0";

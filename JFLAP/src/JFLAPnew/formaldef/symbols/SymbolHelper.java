@@ -3,6 +3,9 @@ package JFLAPnew.formaldef.symbols;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import JFLAPnew.formaldef.AlphabetException;
 import JFLAPnew.formaldef.symbols.variable.Variable;
@@ -72,6 +75,20 @@ public class SymbolHelper {
 				e.printStackTrace();
 				throw new AlphabetException("Error trimming the symbol " + s1);
 			} 
+		}
+
+		public static <T extends Symbol> Set<T> getAllSymbolSetOfClass(
+				Class<T> clazz, List<SymbolString> strings) {
+			
+			Set<T> symbols = new HashSet<T>();
+			for (SymbolString s: strings){
+				for (Symbol sym: s){
+					if (sym.getClass().isAssignableFrom(clazz))
+						symbols.add((T) sym);
+				}
+			}
+			
+			return symbols;
 		}
 	
 }

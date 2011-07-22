@@ -32,6 +32,8 @@ import JFLAPnew.formaldef.IFormallyDefined;
 import JFLAPnew.formaldef.alphabets.IAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.TerminalAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.VariableAlphabet;
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;
 import JFLAPnew.formaldef.symbols.variable.Variable;
 
@@ -61,7 +63,7 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	 * 
 	 * @return a copy of the Grammar object.
 	 */
-	public Object clone() {
+	public Grammar clone() {
 		Grammar g = (Grammar) super.clone();
 
 
@@ -295,12 +297,66 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
         return fileName.substring(0, last+1);
     }
 
+    /**
+	 * Returns all productions in <CODE>grammar</CODE> that have <CODE>variable</CODE>
+	 * in them, either on the rhs or lhs.
+	 * 
+	 * @param symbol
+	 *            the symbol to seek
+	 * @return all productions in <CODE>grammar</CODE> that have <CODE>variable</CODE>
+	 *         in them, either on the rhs or lhs.
+	 */
+    public List<Production> getProductionsUsingSymbol(Symbol symbol) {
+    	List<Production> productions = new ArrayList<Production>();
+    	for (Production p: myProductions){
+    		if (p.containsSymbol(symbol))
+    			productions.add(p);
+		}
+    			
+		return productions;
+	}
+    
+    /**
+     * Removes all of these productions from the grammar
+     * @param productions
+     */
+    public void removeProductions(List<Production> productions) {
+		myProductions.removeAll(productions);
+	}
+    
+    
+    /**
+     * Retrieves the list of LHS from every component in this grammar
+     * @return
+     */
+	public List<SymbolString> getLHSes() {
+		List<SymbolString> LHSes = new ArrayList<SymbolString>();
+		for (Production p: myProductions)
+			LHSes.add(p.getLHS());
+		return LHSes;
+	}
+	
+	  /**
+     * Retrieves the list of RHS from every component in this grammar
+     * @return
+     */
+	public List<SymbolString> getRHSes() {
+		List<SymbolString> RHSes = new ArrayList<SymbolString>();
+		for (Production p: myProductions)
+			RHSes.add(p.getRHS());
+		return RHSes;
+	}
 
-	private EnvironmentFrame myEnvFrame = null;
-	 private String fileName ="";
+    
+//	private EnvironmentFrame myEnvFrame = null;
+	private String fileName ="";
 
 	/** Set of Production rules. */
-	protected List myProductions = new ArrayList();
+	protected Set<Production> myProductions = new TreeSet<Production>();
+
+	
+
+	
 
 	
 

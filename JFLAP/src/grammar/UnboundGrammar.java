@@ -20,6 +20,8 @@
 
 package grammar;
 
+import gui.errors.BooleanWrapper;
+
 /**
  * An unbound grammar has no restrictions whatsoever in the way of what
  * productions can be added to it. Since we may no longer depend on the first
@@ -43,14 +45,16 @@ public class UnboundGrammar extends Grammar {
 	 * 
 	 * @param production
 	 *            the production to check
+	 * @return 
 	 * @throws IllegalArgumentException
 	 *             if the production is lambda on the left hand side
 	 */
-	public void checkProduction(Production production) {
+	public BooleanWrapper checkProduction(Production production) {
 		/*
 		 * if (production.getLHS().length() == 0) { throw new
 		 * IllegalArgumentException ("The left hand side cannot be empty."); }
 		 */
+		return super.checkProduction(production);
 	}
 
 	@Override

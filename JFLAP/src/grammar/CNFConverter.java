@@ -27,6 +27,8 @@ import java.util.*;
 
 import javax.swing.JOptionPane;
 
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.pda.PDAToCFGConverter;
 
 /**
@@ -44,7 +46,6 @@ public class CNFConverter {
 	 */
 	public CNFConverter(Grammar grammar) throws IllegalArgumentException{
 		this.grammar = grammar;
-		productionComparator = new ProductionComparator(grammar);
 		productionDirectory = new ProductionDirectory(grammar);
 	}
 
@@ -57,21 +58,8 @@ public class CNFConverter {
 	 * @throws IllegalArgumentException
 	 *             if the string has anything that interferes with productions
 	 */
-	public static String[] separateString(String string) {
-		LinkedList list = new LinkedList();
-		for (int i = string.length() - 1; i >= 0; i--) {
-			int start = i;
-			if (string.charAt(i) != PDAToCFGConverter.RIGHT_PAREN.charAt(0)) {
-				list.addFirst(string.substring(i, i + 1));
-				continue;
-			}
-			while (i > 0 && string.charAt(i) != PDAToCFGConverter.LEFT_PAREN.charAt(0))
-				i--;
-			if (i > 0)
-				i--;
-			list.addFirst(string.substring(i, start + 1));
-		}
-		return (String[]) list.toArray(new String[0]);
+	public LinkedList<? extends Symbol> separateString(String string) {
+		return SymbolString.createFromString(string, grammar);
 	}
 
 	/**
@@ -89,7 +77,7 @@ public class CNFConverter {
 	 * @return a valid left hand side for that string
 	 */
 	private String getLeft(String right) {
-		String left = productionDirectory.getLeft(right);
+		SymbolString left = productionDirectory.getLeft(right);
 		leftAdded = false;
 		if (left != null)
 			return left;
@@ -249,9 +237,6 @@ public class CNFConverter {
 	/** The number of variable things assigned already. */
 	private int numVariables = 0;
 
-	/** The comparator for productions. */
-	private ProductionComparator productionComparator;
-
 	/** The production directory. */
 	private ProductionDirectory productionDirectory;
 
@@ -272,10 +257,12 @@ public class CNFConverter {
 			Production[] p = grammar.getProductions();
 			// Create the map of LHSes to RHSes.
 			for (int i = 0; i < p.length; i++) {
-				String lhs = p[i].getLHS(), rhs = p[i].getRHS();
-				if (rhs.indexOf(PDAToCFGConverter.LEFT_PAREN) != -1 || rhs.indexOf(PDAToCFGConverter.RIGHT_PAREN) != -1){
-					JFLAPError.PAREN_AS_TOKEN.show();
-				}
+				SymbolString lhs = p[i].getLHS(), rhs = p[i].getRHS();
+				
+//				if (rhs.indexOf(PDAToCFGConverter.LEFT_PAREN) != -1 || rhs.indexOf(PDAToCFGConverter.RIGHT_PAREN) != -1){
+//					JFLAPError.PAREN_AS_TOKEN.show();
+//				}
+				
 				// Add it to the list of productions.
 				productions.add(p[i]);
 				// Check the right hand side map.

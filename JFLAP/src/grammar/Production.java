@@ -46,7 +46,7 @@ import JFLAPnew.formaldef.symbols.variable.Variable;
  * @author Ryan Cavalcante
  */
 
-public class Production implements Serializable, Cloneable {
+public class Production implements Serializable, Cloneable, Comparable<Production> {
 	/**
 	 * Creates an instance of <CODE>Production</CODE>.
 	 * 
@@ -240,4 +240,18 @@ public class Production implements Serializable, Cloneable {
 
 	/** the right hand side of the production. */
 	protected SymbolString myRHS;
+
+	public boolean containsSymbol(Symbol symbol) {
+		return myLHS.contains(symbol) || myRHS.contains(symbol);
+	}
+
+	@Override
+	public int compareTo(Production o) {
+		
+		int i = 0;
+		if((i = this.getLHS().compareTo(o.getLHS())) == 0)
+			i = this.getRHS().compareTo(o.getRHS());
+		
+		return i;
+	}
 }

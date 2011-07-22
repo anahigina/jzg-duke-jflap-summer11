@@ -27,9 +27,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
+import JFLAPnew.formaldef.symbols.variable.Variable;
 import automata.State;
 import automata.Transition;
 import automata.UnreachableStatesDetector;
@@ -45,12 +50,6 @@ import automata.vdg.VariableDependencyGraph;
  */
 
 public class UselessProductionRemover {
-	/**
-	 * Creates instance of <CODE>UselessProductionRemover</CODE>.
-	 */
-	public UselessProductionRemover() {
-
-	}
 
 	/**
 	 * Returns set of all useful variables in <CODE>grammar</CODE>. A grammar
@@ -61,52 +60,32 @@ public class UselessProductionRemover {
 	 * @return set of all useful variables in <CODE>grammar</CODE>. A grammar
 	 *         is considered useful if it can derive a string.
 	 */
-	public static Set getCompleteUsefulVariableSet(Grammar grammar) {
-		Set set = getNewUsefulVariableSet();
+	public static Set<Variable> getCompleteUsefulVariableSet(Grammar grammar) {
+		Set<Variable> set = new HashSet<Variable>();
 		while (areMoreVariablesThatBelongInUsefulVariableSet(grammar, set)) {
-			String variable = getVariableThatBelongsInUsefulVariableSet(
+			Variable variable = getVariableThatBelongsInUsefulVariableSet(
 					grammar, set);
-			addToUsefulVariableSet(variable, set);
+			set.add(variable);
 		}
 		return set;
 	}
 
-	/**
-	 * Returns empty set.
-	 * 
-	 * @return empty set.
-	 */
-	private static Set getNewUsefulVariableSet() {
-		return new HashSet();
-	}
 
-	/**
-	 * Adds <CODE>variable</CODE> to <CODE>set</CODE>.
-	 * 
-	 * @param variable
-	 *            the variable
-	 * @param set
-	 *            the set
-	 */
-	public static void addToUsefulVariableSet(String variable, Set set) {
-		set.add(variable);
-	}
 
 	/**
 	 * Returns the set of variables that are the predicate of rules that are
 	 * only terminal strings.
 	 */
-	public static Set getTerminalProductions(Grammar grammar) {
-		Set terminalDerivers = new TreeSet();
+	public static Set<SymbolString> getTerminalProductions(Grammar grammar) {
+		Set<SymbolString> terminalDerivers = new TreeSet<SymbolString>();
 		Production[] p = grammar.getProductions();
 		for (int i = 0; i < p.length; i++) {
-			String lhs = p[i].getLHS();
+			SymbolString lhs = p[i].getLHS();
 			if (terminalDerivers.contains(lhs))
 				continue;
-			String rhs = p[i].getRHS();
-			for (int k = 0; k < rhs.length(); k++) {
-				char ch = rhs.charAt(k);
-				if (ProductionChecker.isVariable(ch)) {
+			SymbolString rhs = p[i].getRHS();
+			for (Symbol s : rhs) {
+				if (s instanceof Variable) {
 					lhs = null;
 					break;
 				}
@@ -127,10 +106,10 @@ public class UselessProductionRemover {
 	 */
 	public static Grammar getTerminalGrammar(Grammar grammar) {
 		Grammar g = new ContextFreeGrammar();
-		Set terminalVars = getCompleteUsefulVariableSet(grammar);
+		Set<Variable> terminalVars = getCompleteUsefulVariableSet(grammar);
 		Production[] prods = grammar.getProductions();
 		for (int i = 0; i < prods.length; i++) {
-			Set v = new HashSet(Arrays.asList(prods[i].getVariables()));
+			Set<Variable> v = new HashSet<Variable>(prods[i].getVariables());
 			v.removeAll(terminalVars);
 			if (v.size() > 0)
 				continue;
@@ -152,39 +131,17 @@ public class UselessProductionRemover {
 	 * @return a variable that belongs in the set of useful variables for <CODE>grammar</CODE>
 	 *         that is not already in <CODE>set</CODE>.
 	 */
-	public static String getVariableThatBelongsInUsefulVariableSet(
+	public static Variable getVariableThatBelongsInUsefulVariableSet(
 			Grammar grammar, Set set) {
-		String[] variables = grammar.getVariables();
-		for (int k = 0; k < variables.length; k++) {
-			if (belongsInUsefulVariableSet(variables[k], grammar, set)
-					&& !set.contains(variables[k]))
-				return variables[k];
+		Set<Variable> variables = grammar.getVariables().getSymbols();
+		for (Variable v: variables) {
+			if (belongsInUsefulVariableSet(v, grammar, set)
+					&& !set.contains(v))
+				return v;
 		}
 		return null;
 	}
 
-	/**
-	 * Returns true if <CODE>set</CODE> contains a variable equivalent to
-	 * <CODE>ch</CODE>.
-	 * 
-	 * @param ch
-	 *            the character
-	 * @param set
-	 *            the set of useful variables
-	 * @return true if <CODE>set</CODE> contains a variable equivalent to
-	 *         <CODE>ch</CODE>.
-	 */
-	private static boolean isInUsefulVariableSet(char ch, Set set) {
-		Iterator it = set.iterator();
-		while (it.hasNext()) {
-			String variable = (String) it.next();
-			char var = variable.charAt(0);
-			if (ch == var) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	/**
 	 * Returns true if <CODE>production</CODE> can derive a string. (i.e. if
@@ -199,13 +156,10 @@ public class UselessProductionRemover {
 	 *         all letters on the right hand side of the production are either
 	 *         terminals or useful variables (variables in <CODE>set</CODE>).
 	 */
-	private static boolean isUsefulProduction(Production production, Set set) {
-		ProductionChecker pc = new ProductionChecker();
-		String rhs = production.getRHS();
-		for (int k = 0; k < rhs.length(); k++) {
-			char ch = rhs.charAt(k);
-			if (!ProductionChecker.isTerminal(ch)
-					&& !isInUsefulVariableSet(ch, set)) {
+	private static boolean isUsefulProduction(Production production, Set<Variable> set) {
+		for (Symbol s: production.getRHS()) {
+			if (s instanceof Variable
+					&& !set.contains(s)) {
 				return false;
 			}
 		}
@@ -226,10 +180,9 @@ public class UselessProductionRemover {
 	 *         This includes both the left and right hand side of the
 	 *         production.
 	 */
-	public static boolean isValidProduction(Production production, Set set) {
-		String lhs = production.getLHS();
-		for (int k = 0; k < lhs.length(); k++) {
-			if (!isInUsefulVariableSet(lhs.charAt(k), set))
+	public static boolean isValidProduction(Production production, Set<Variable> set) {
+		for (Symbol s: production.getLHS()) {
+			if (!set.contains(s))
 				return false;
 		}
 		return isUsefulProduction(production, set);
@@ -241,7 +194,7 @@ public class UselessProductionRemover {
 	 * examines all productions in <CODE>grammar</CODE> with variable on the
 	 * left hand side, and determines if any of those productions are useful.
 	 * 
-	 * @param variable
+	 * @param v
 	 *            the variable
 	 * @param grammar
 	 *            the grammar
@@ -250,11 +203,10 @@ public class UselessProductionRemover {
 	 * @return true if <CODE>variable</CODE> belongs in the set of useful
 	 *         variables, even if it is already in <CODE>set</CODE>.
 	 */
-	public static boolean belongsInUsefulVariableSet(String variable,
-			Grammar grammar, Set set) {
-		GrammarChecker gc = new GrammarChecker();
+	public static boolean belongsInUsefulVariableSet(Variable v,
+			Grammar grammar, Set<Variable> set) {
 		Production[] productions = GrammarChecker.getProductionsOnVariable(
-				variable, grammar);
+				v, grammar);
 		for (int k = 0; k < productions.length; k++) {
 			if (isUsefulProduction(productions[k], set))
 				return true;
@@ -387,13 +339,10 @@ public class UselessProductionRemover {
 	 *         production in <CODE>grammar</CODE> that has <CODE>v1</CODE>
 	 *         on the left hand side).
 	 */
-	public static boolean isDependentOn(String v1, String v2, Grammar grammar) {
-		GrammarChecker gc = new GrammarChecker();
-		ProductionChecker pc = new ProductionChecker();
-		Production[] productions = GrammarChecker.getProductionsOnVariable(v1,
-				grammar);
-		for (int k = 0; k < productions.length; k++) {
-			if (ProductionChecker.isVariableInProduction(v2, productions[k])) {
+	public static boolean isDependentOn(Variable v1, Variable v2, Grammar grammar) {
+		for (Production p : 
+					GrammarChecker.getProductionsOnVariable(v1, grammar)) {
+			if (p.containsSymbol(v2)) {
 				return true;
 			}
 		}
@@ -413,7 +362,7 @@ public class UselessProductionRemover {
 	 * @return a transition between the states that represent <CODE>v1</CODE>
 	 *         and <CODE>v2</CODE> in <CODE>graph</CODE>.
 	 */
-	public static Transition getTransition(String v1, String v2,
+	public static Transition getTransition(Variable v1, Variable v2,
 			VariableDependencyGraph graph) {
 		State from = getStateForVariable(v1, graph);
 		State to = getStateForVariable(v2, graph);
@@ -424,19 +373,19 @@ public class UselessProductionRemover {
 	 * Returns the state in <CODE>graph</CODE> that represents <CODE>variable</CODE>
 	 * (i.e the state whose name is <CODE>variable</CODE>).
 	 * 
-	 * @param variable
+	 * @param v1
 	 *            the variable
 	 * @param graph
 	 *            the variable dependency graph.
 	 * @return the state in <CODE>graph</CODE> that represents <CODE>variable</CODE>
 	 *         (i.e the state whose name is <CODE>variable</CODE>).
 	 */
-	public static State getStateForVariable(String variable,
+	public static State getStateForVariable(Variable v1,
 			VariableDependencyGraph graph) {
 		State[] states = graph.getStates();
 		for (int k = 0; k < states.length; k++) {
 			State state = states[k];
-			if (state.getName().equals(variable))
+			if (state.getName().equals(v1.getString()))
 				return state;
 		}
 		return null;
@@ -453,12 +402,12 @@ public class UselessProductionRemover {
 			Grammar grammar) {
 		VariableDependencyGraph graph = new VariableDependencyGraph();
 		initializeVariableDependencyGraph(graph, grammar);
-		String[] variables = (String[]) getCompleteUsefulVariableSet(grammar)
-				.toArray(new String[0]);
+		Variable[] variables = getCompleteUsefulVariableSet(grammar)
+				.toArray(new Variable[0]);
 		for (int k = 0; k < variables.length; k++) {
-			String v1 = variables[k];
+			Variable v1 = variables[k];
 			for (int i = 0; i < variables.length; i++) {
-				String v2 = variables[i];
+				Variable v2 = variables[i];
 				if (i != k && isDependentOn(v1, v2, grammar)) {
 					Transition trans = getTransition(v1, v2, graph);
 					graph.addTransition(trans);
@@ -481,16 +430,13 @@ public class UselessProductionRemover {
 	 */
 	public static Transition[] getTransitionsForProduction(
 			Production production, VariableDependencyGraph graph) {
-		ArrayList list = new ArrayList();
-		String v1 = production.getLHS();
-		ProductionChecker pc = new ProductionChecker();
-		String rhs = production.getRHS();
-		for (int k = 0; k < rhs.length(); k++) {
-			char ch = rhs.charAt(k);
-			if (ProductionChecker.isVariable(ch)) {
-				StringBuffer buffer = new StringBuffer();
-				buffer.append(ch);
-				list.add(getTransition(v1, buffer.toString(), graph));
+		
+		ArrayList<Transition> list = new ArrayList<Transition>();
+		Variable v1 = (Variable) production.getLHS().getFirst();
+		
+		for (Symbol s: production.getRHS()) {
+			if (s instanceof Variable) {
+				list.add(getTransition(v1, (Variable) s, graph));
 			}
 		}
 		return (Transition[]) list.toArray(new Transition[0]);
@@ -529,14 +475,10 @@ public class UselessProductionRemover {
 	 * @param grammar
 	 *            the grammar
 	 */
-	public static void removeProductionsForVariable(String variable,
+	public static void removeProductionsForVariable(Variable variable,
 			Grammar grammar) {
-		GrammarChecker gc = new GrammarChecker();
-		Production[] productions = GrammarChecker.getProductionsWithVariable(
-				variable, grammar);
-		for (int k = 0; k < productions.length; k++) {
-			grammar.removeProduction(productions[k]);
-		}
+		List<Production> productions = grammar.getProductionsUsingSymbol(variable);
+		grammar.removeProductions(productions);
 	}
 
 	/**

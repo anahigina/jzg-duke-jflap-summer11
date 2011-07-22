@@ -57,6 +57,10 @@ public abstract class Symbol implements Comparable<Symbol>, Cloneable{
 	
 	@Override
 	public int compareTo(Symbol o) {
+		if (this.isSpecial() && !o.isSpecial())
+			return 1;
+		if (!this.isSpecial() && o.isSpecial())
+			return -1;
 		return myString.compareTo(o.getString());
 	}
 

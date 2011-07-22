@@ -20,6 +20,8 @@
 
 package grammar;
 
+import gui.errors.BooleanWrapper;
+
 /**
  * The unrestricted grammar is a grammar that can have any production added to
  * it, save for the initial production, which must be restricted since the first
@@ -37,41 +39,25 @@ public class UnrestrictedGrammar extends Grammar {
 	 * 
 	 * @param production
 	 *            the production to check
+	 * @return 
 	 * @throws IllegalArgumentException
 	 *             if the production is lambda on the left hand side
 	 */
-	public void checkProduction(Production production) {
-		if (production.getLHS().length() == 0) {
-			throw new IllegalArgumentException(
+	public BooleanWrapper checkProduction(Production production) {
+		if (production.getLHS().size() == 0) {
+			return new BooleanWrapper(false,
 					"The left hand side cannot be empty.");
 		}
-	}
-
-	/**
-	 * This adds a production to the grammar.
-	 * 
-	 * @param production
-	 *            the production to add
-	 * @throws IllegalArgumentException
-	 *             if the first production added is unrestricted on the left
-	 *             hand side
-	 */
-	public void addProduction(Production production) {
 		if (myProductions.size() == 0
 				&& !ProductionChecker.isRestrictedOnLHS(production))
-			throw new IllegalArgumentException(
+			return new BooleanWrapper(false,
 					"The first production must be restricted.");
-		try{
-			super.addProduction(production);
-		}
-		catch(IllegalArgumentException e){
-			throw e;				
-		}
+		return super.checkProduction(production);
+		
 	}
 
 	@Override
 	public boolean isConverted() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

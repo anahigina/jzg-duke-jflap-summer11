@@ -13,7 +13,7 @@ import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.IAlphabet;
 import JFLAPnew.formaldef.symbols.variable.Variable;
 
-public class SymbolString extends LinkedList<Symbol> {
+public class SymbolString extends LinkedList<Symbol> implements Comparable<SymbolString> {
 
 	public SymbolString(String in, FormalDefinition def){
 		super();
@@ -24,6 +24,12 @@ public class SymbolString extends LinkedList<Symbol> {
 		super();
 	}
 
+	public SymbolString(Symbol ... symbols) {
+		super();
+		for (Symbol s: symbols)
+			this.add(s);
+	}
+
 	public String toString(){
 		String string = "";
 		for (Symbol s: this){
@@ -32,7 +38,7 @@ public class SymbolString extends LinkedList<Symbol> {
 		return string;
 	}
 	
-	private static LinkedList<? extends Symbol> createFromString(String in,
+	public static LinkedList<? extends Symbol> createFromString(String in,
 			FormalDefinition def) {
 		
 		String temp = "";
@@ -63,21 +69,7 @@ public class SymbolString extends LinkedList<Symbol> {
 	}
 	
 	public boolean equals(SymbolString o){
-		Iterator<Symbol> me = this.iterator(),
-				 		 other = o.iterator();
-		while(me.hasNext() && other.hasNext()){
-			Symbol sMe = me.next(),
-				   sOther = other.next();
-			
-			if(!sMe.equals(sOther) || !sMe.getClass().equals(sOther.getClass()))
-					return false;
-		}
-		
-		if (me.hasNext() || other.hasNext())
-			return false;
-		
-		return true;
-		
+		return this.compareTo(o) == 0;		
 	}
 
 	@Override
@@ -87,5 +79,24 @@ public class SymbolString extends LinkedList<Symbol> {
 			string.add(s.clone());
 		return string;
 	}
-	
+
+	@Override
+	public int compareTo(SymbolString o) {
+		Iterator<Symbol> me = this.iterator(),
+		 		 other = o.iterator();
+		while(me.hasNext() && other.hasNext()){
+			Symbol sMe = me.next(),
+				   sOther = other.next();
+			
+			if(sMe.compareTo(sOther) != 0)
+					return sMe.compareTo(sOther);
+		}
+		
+		if (!me.hasNext() && other.hasNext())
+			return 1;
+		if (me.hasNext() && !other.hasNext())
+			return -1;
+		
+		return 0;
+	}
 }

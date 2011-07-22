@@ -20,6 +20,12 @@
 
 package grammar;
 
+import java.util.Set;
+
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
+import JFLAPnew.formaldef.symbols.variable.Variable;
+
 /**
  * The Production checker object can be used to check certain properties of
  * production objects.
@@ -28,12 +34,6 @@ package grammar;
  */
 
 public class ProductionChecker {
-	/**
-	 * Creates an instance of <CODE>ProductionChecker</CODE>.
-	 */
-	public ProductionChecker() {
-
-	}
 
 	/**
 	 * Returns true if <CODE>production</CODE> is linear (i.e. either right or
@@ -89,20 +89,9 @@ public class ProductionChecker {
 	 */
 	public static boolean isLeftLinearProductionWithVariable(
 			Production production) {
-		if (!isRestrictedOnLHS(production))
-			return false;
-		String rhs = production.getRHS();
-		/**
-		 * if only one variable on rhs and it is first char on rhs.
-		 */
-		String[] variables = production.getVariablesOnRHS();
-		if (variables.length == 1) {
-			char ch = rhs.charAt(0);
-			if (isVariable(ch)) {
-				return true;
-			}
-		}
-		return false;
+		return isRestrictedOnLHS(production) &&
+				production.getVariablesOnRHS().size() == 1 && 
+				production.getRHS().getFirst() instanceof Variable;
 	}
 
 	/**
@@ -116,20 +105,9 @@ public class ProductionChecker {
 	 */
 	public static boolean isRightLinearProductionWithVariable(
 			Production production) {
-		if (!isRestrictedOnLHS(production))
-			return false;
-		String rhs = production.getRHS();
-		/**
-		 * if only one variable on rhs and it is last char on rhs.
-		 */
-		String[] variables = production.getVariablesOnRHS();
-		if (variables.length == 1) {
-			char ch = rhs.charAt(rhs.length() - 1);
-			if (isVariable(ch)) {
-				return true;
-			}
-		}
-		return false;
+		return isRestrictedOnLHS(production) &&
+				production.getVariablesOnRHS().size() == 1 && 
+				production.getRHS().getLast() instanceof Variable;
 	}
 
 	/**
@@ -142,14 +120,9 @@ public class ProductionChecker {
 	 *         A->x where x is a series of 0 or more terminals.
 	 */
 	public static boolean isLinearProductionWithNoVariable(Production production) {
-		if (!isRestrictedOnLHS(production))
-			return false;
-		String rhs = production.getRHS();
-		/** if rhs is all terminals. */
-		String[] terminals = production.getTerminalsOnRHS();
-		if (rhs.length() == terminals.length)
-			return true;
-		return false;
+		
+		return isRestrictedOnLHS(production) && 
+				production.getVariablesOnRHS().isEmpty(); //no variables ~ all terminals
 	}
 
 	/**
@@ -160,14 +133,9 @@ public class ProductionChecker {
 	 * @return true if <CODE>production</CODE> is a unit production.
 	 */
 	public static boolean isUnitProduction(Production production) {
-		if (!isRestrictedOnLHS(production))
-			return false;
-		String rhs = production.getRHS();
-		String[] variablesOnRHS = production.getVariablesOnRHS();
-		if (rhs.length() == 1 && variablesOnRHS.length == 1) {
-			return true;
-		}
-		return false;
+		return isRestrictedOnLHS(production) &&
+				production.getLHS().size() == 1 &&
+				production.getVariablesOnLHS().size() == 1;
 	}
 
 	/**
@@ -178,13 +146,7 @@ public class ProductionChecker {
 	 * @return true if <CODE>production</CODE> is a lambda production.
 	 */
 	public static boolean isLambdaProduction(Production production) {
-		if (!isRestrictedOnLHS(production))
-			return false;
-		String rhs = production.getRHS();
-		if (rhs.length() == 0) {
-			return true;
-		}
-		return false;
+		return isRestrictedOnLHS(production) && production.getRHS().isEmpty();
 	}
 
 	/**
@@ -197,12 +159,8 @@ public class ProductionChecker {
 	 *         single variable.
 	 */
 	public static boolean isRestrictedOnLHS(Production production) {
-		String lhs = production.getLHS();
-		String[] variablesOnLHS = production.getVariablesOnLHS();
-		if (lhs.length() == 1 && variablesOnLHS.length == 1) {
-			return true;
-		}
-		return false;
+		return production.getLHS().size() == 1 && 
+			   production.getVariablesOnLHS().size() == 1;
 	}
 
 	/**
@@ -214,15 +172,13 @@ public class ProductionChecker {
 	 * @param production
 	 *            the production.
 	 * @return true if <CODE>variable</CODE> is in the production.
+	 * 
+	 * @deprecated Use <CODE> production.containsSymbol(variable) </CODE> instead
 	 */
-	public static boolean isVariableInProduction(String variable,
+	@Deprecated
+	public static boolean isVariableInProduction(Variable variable,
 			Production production) {
-		String[] variables = production.getVariables();
-		for (int k = 0; k < variables.length; k++) {
-			if (variables[k].equals(variable))
-				return true;
-		}
-		return false;
+		return production.containsSymbol(variable);
 	}
 
 	/**
@@ -234,15 +190,13 @@ public class ProductionChecker {
 	 * @param production
 	 *            the production.
 	 * @return true if <CODE>terminal</CODE> is in the production.
+	 * 
+	 * @deprecated Use <CODE> production.containsSymbol(variable) </CODE> instead
 	 */
-	public static boolean isTerminalInProduction(String terminal,
+	@Deprecated
+	public static boolean isTerminalInProduction(Terminal terminal,
 			Production production) {
-		String[] terminals = production.getTerminals();
-		for (int k = 0; k < terminals.length; k++) {
-			if (terminals[k].equals(terminal))
-				return true;
-		}
-		return false;
+		return production.containsSymbol(terminal);
 	}
 
 	/**
@@ -253,39 +207,10 @@ public class ProductionChecker {
 	 * @return true if there are 1 or more terminals on the rhs of <CODE>productions</CODE>.
 	 */
 	public static boolean areTerminalsOnRHS(Production production) {
-		String rhs = production.getRHS();
-		for (int k = 0; k < rhs.length(); k++) {
-			char ch = rhs.charAt(k);
-			if (isTerminal(ch))
-				return true;
-		}
-		return false;
+		return !production.getTerminalsOnRHS().isEmpty();
 	}
 
-	/**
-	 * Returns true if <CODE>ch</CODE> is a variable. A variable is determined
-	 * to be any uppercase character.
-	 * 
-	 * @param ch
-	 *            the character being checked.
-	 * @return true if <CODE>ch</CODE> is a variable.
-	 */
-	public static boolean isVariable(char ch) {
-		return Character.isUpperCase(ch);
-	}
-
-	/**
-	 * Returns true if <CODE>ch</CODE> is a terminal. A terminal is determined
-	 * to be any lowercase character.
-	 * 
-	 * @param ch
-	 *            the character being checked.
-	 * @return true if <CODE>ch</CODE> is a terminal.
-	 */
-	public static boolean isTerminal(char ch) {
-		return !isVariable(ch);
-	}
-
+	
 	/**
 	 * Returns true if <CODE>variable</CODE> is on the right hand side of
 	 * <CODE>production</CODE>.
@@ -297,12 +222,9 @@ public class ProductionChecker {
 	 * @return true if <CODE>variable</CODE> is on the right hand side of
 	 *         <CODE>production</CODE>.
 	 */
-	public static boolean isVariableOnRHS(Production production, String variable) {
-		String[] variables = production.getVariablesOnRHS();
-		for (int k = 0; k < variables.length; k++) {
-			if (variables[k].equals(variable))
-				return true;
-		}
-		return false;
+	public static boolean isVariableOnRHS(Production production, Variable variable) {
+		return production.getVariablesOnRHS().contains(variable);
 	}
+	
+	
 }

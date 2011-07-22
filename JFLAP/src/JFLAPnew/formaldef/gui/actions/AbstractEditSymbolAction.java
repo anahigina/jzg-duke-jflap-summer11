@@ -11,7 +11,6 @@ import JFLAPnew.formaldef.IFormallyDefined;
 import JFLAPnew.formaldef.alphabets.IAlphabet;
 import JFLAPnew.formaldef.gui.DefinitionPanel;
 import JFLAPnew.formaldef.gui.symbolbar.SymbolBar;
-import JFLAPnew.formaldef.gui.symbolbar.menu.SymbolMenu;
 import JFLAPnew.formaldef.symbols.ISymbol;
 import JFLAPnew.formaldef.symbols.Symbol;
 

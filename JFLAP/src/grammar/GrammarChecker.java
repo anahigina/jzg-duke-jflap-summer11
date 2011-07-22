@@ -22,6 +22,12 @@ package grammar;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
+
+import JFLAPnew.formaldef.symbols.SymbolHelper;
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
+import JFLAPnew.formaldef.symbols.variable.Variable;
 
 /**
  * The Grammar checker object can be used to check certain properties of grammar
@@ -115,14 +121,10 @@ public class GrammarChecker {
 	 * @return true if <CODE>variable</CODE> is in any production of <CODE>grammar</CODE>.
 	 */
 	public static boolean isVariableInProductions(Grammar grammar,
-			String variable) {
-		ProductionChecker pc = new ProductionChecker();
-		Production[] productions = grammar.getProductions();
-		for (int k = 0; k < productions.length; k++) {
-			if (ProductionChecker.isVariableInProduction(variable,
-					productions[k])) {
+			Variable variable) {
+		for (Production p: grammar.getProductions()) {
+			if (p.containsSymbol(variable)) 
 				return true;
-			}
 		}
 		return false;
 	}
@@ -136,14 +138,10 @@ public class GrammarChecker {
 	 * @return true if <CODE>terminal</CODE> is in any production in <CODE>grammar</CODE>.
 	 */
 	public static boolean isTerminalInProductions(Grammar grammar,
-			String terminal) {
-		ProductionChecker pc = new ProductionChecker();
-		Production[] productions = grammar.getProductions();
-		for (int k = 0; k < productions.length; k++) {
-			if (ProductionChecker.isTerminalInProduction(terminal,
-					productions[k])) {
+			Terminal terminal) {
+		for (Production p: grammar.getProductions()) {
+			if (p.containsSymbol(terminal)) 
 				return true;
-			}
 		}
 		return false;
 	}
@@ -157,15 +155,12 @@ public class GrammarChecker {
 	 *            the grammar
 	 * @return all productions in <CODE>grammar</CODE> whose lhs is <CODE>variable</CODE>.
 	 */
-	public static Production[] getProductionsOnVariable(String variable,
+	public static Production[] getProductionsOnVariable(Variable variable,
 			Grammar grammar) {
-		ArrayList list = new ArrayList();
-		ProductionChecker pc = new ProductionChecker();
-		Production[] productions = grammar.getProductions();
-		for (int k = 0; k < productions.length; k++) {
-			if (variable.equals(productions[k].getLHS())) {
-				list.add(productions[k]);
-			}
+		ArrayList<Production> list = new ArrayList<Production>();
+		for (Production p: grammar.getProductions()){
+			if(p.getLHS().size() == 1 && p.getLHS().getFirst().equals(variable))
+				list.add(p);
 		}
 		return (Production[]) list.toArray(new Production[0]);
 	}
@@ -197,74 +192,6 @@ public class GrammarChecker {
 		return (Production[]) list.toArray(new Production[0]);
 	}
 
-	/**
-	 * Returns true if <CODE>production</CODE>, or an identical production,
-	 * is already in <CODE>grammar</CODE>.
-	 * 
-	 * @param production
-	 *            the production
-	 * @param grammar
-	 *            the grammar
-	 * @return true if <CODE>production</CODE>, or an identical production,
-	 *         is already in <CODE>grammar</CODE>.
-	 */
-	public static boolean isProductionInGrammar(Production production,
-			Grammar grammar) {
-		Production[] productions = grammar.getProductions();
-		for (int k = 0; k < productions.length; k++) {
-			if (production.equals(productions[k]))
-				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Returns all productions in <CODE>grammar</CODE> that have <CODE>variable</CODE>
-	 * in them, either on the rhs or lhs.
-	 * 
-	 * @param variable
-	 *            the variable
-	 * @param grammar
-	 *            the grammar
-	 * @return all productions in <CODE>grammar</CODE> that have <CODE>variable</CODE>
-	 *         in them, either on the rhs or lhs.
-	 */
-	public static Production[] getProductionsWithVariable(String variable,
-			Grammar grammar) {
-		ArrayList list = new ArrayList();
-		ProductionChecker pc = new ProductionChecker();
-		Production[] productions = grammar.getProductions();
-		for (int k = 0; k < productions.length; k++) {
-			if (ProductionChecker.isVariableInProduction(variable,
-					productions[k])) {
-				list.add(productions[k]);
-			}
-		}
-		return (Production[]) list.toArray(new Production[0]);
-	}
-
-	/**
-	 * Returns all productions in <CODE>grammar</CODE> that have <CODE>variable</CODE>
-	 * on the right hand side.
-	 * 
-	 * @param variable
-	 *            the variable
-	 * @param grammar
-	 *            the grammar
-	 * @return all productions in <CODE>grammar</CODE> that have <CODE>variable</CODE>
-	 *         on the right hand side.
-	 */
-	public static Production[] getProductionsWithVariableOnRHS(String variable,
-			Grammar grammar) {
-		ProductionChecker pc = new ProductionChecker();
-		ArrayList list = new ArrayList();
-		Production[] productions = grammar.getProductions();
-		for (int k = 0; k < productions.length; k++) {
-			if (ProductionChecker.isVariableOnRHS(productions[k], variable))
-				list.add(productions[k]);
-		}
-		return (Production[]) list.toArray(new Production[0]);
-	}
 
 	/**
 	 * Returns a list of those variables which are unresolved, i.e., which
@@ -274,17 +201,13 @@ public class GrammarChecker {
 	 *            the grammar to check
 	 * @return an array of the unresolved variables
 	 */
-	public static String[] getUnresolvedVariables(Grammar grammar) {
-		String[] variables = grammar.getVariables();
-		HashSet variableSet = new HashSet();
-		for (int i = 0; i < variables.length; i++)
-			variableSet.add(variables[i]);
-		Production[] productions = grammar.getProductions();
-		for (int i = 0; i < productions.length; i++) {
-			String[] lhsVariables = productions[i].getVariablesOnLHS();
-			for (int j = 0; j < lhsVariables.length; j++)
-				variableSet.remove(lhsVariables[j]);
-		}
-		return (String[]) variableSet.toArray(new String[0]);
+	public static Set<Variable> getUnresolvedVariables(Grammar grammar) {
+		Set<Variable> left = SymbolHelper.getAllSymbolSetOfClass(Variable.class, 
+																		grammar.getLHSes()),
+					 right = SymbolHelper.getAllSymbolSetOfClass(Variable.class, 
+							 											grammar.getLHSes());
+		right.removeAll(left);
+		return right;
 	}
+
 }
