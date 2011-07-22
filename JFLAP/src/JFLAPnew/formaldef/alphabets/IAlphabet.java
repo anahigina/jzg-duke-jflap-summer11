@@ -58,4 +58,7 @@ public interface IAlphabet<T extends Symbol> extends Comparable<IAlphabet>,
 	public T createDesiredSymbol(String s);
 	
 	public char[] getDisallowedCharacers();
+
+	public IAlphabet<T> clone();
+	
 }

@@ -147,4 +147,9 @@ public class VariableAlphabet extends GrammarAlphabet<Variable> implements IGrou
 	}
 
 
+	public BooleanWrapper setStartVariable(String variable) {
+		return this.setSpecialSymbol(variable);
+	}
+
+
 }

@@ -1,5 +1,6 @@
 package JFLAPnew.formaldef;
 
+import grammar.Grammar;
 import gui.errors.BooleanWrapper;
 
 import java.lang.reflect.InvocationTargetException;
@@ -70,6 +71,19 @@ public class FormalDefinition extends TreeSet<IAlphabet> implements IComplete {
 		List<IAlphabet> list = Arrays.asList(this.toArray(new IAlphabet[0]));
 		Collections.sort(list);
 		return list;
+	}
+
+	@Override
+	public Object clone() {
+		try {
+			FormalDefinition fd = (FormalDefinition) getClass().newInstance();
+			for (IAlphabet alph: this)
+				fd.add(alph.clone());
+			return fd;
+		} catch (Exception e) {
+			throw new AlphabetException("Formal Definition clone failed.");
+		}
+		
 	}
 
 

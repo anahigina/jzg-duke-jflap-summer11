@@ -21,6 +21,7 @@
 package grammar;
 
 import gui.environment.EnvironmentFrame;
+import gui.errors.BooleanWrapper;
 
 import java.io.Serializable;
 import java.util.*;
@@ -31,6 +32,8 @@ import JFLAPnew.formaldef.IFormallyDefined;
 import JFLAPnew.formaldef.alphabets.IAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.TerminalAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.VariableAlphabet;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
+import JFLAPnew.formaldef.symbols.variable.Variable;
 
 /**
  * The grammar object is the root class for the representation of all forms of
@@ -59,37 +62,12 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	 * @return a copy of the Grammar object.
 	 */
 	public Object clone() {
-		Grammar g;
-		try {
-			g = (Grammar) getClass().newInstance();
-		} catch (Throwable e) {
-			System.err.println("Warning: clone of grammar failed!");
-			return null;
-		}
+		Grammar g = (Grammar) super.clone();
 
-		HashMap map = new HashMap(); // old variables to new variables
-
-		String[] variables = getVariables();
-		for (int v = 0; v < variables.length; v++) {
-			String variable = variables[v];
-			String nvariable = new String(variables[v]);
-			map.put(variable, nvariable);
-			g.addVariable(nvariable);
-		}
-
-		/** set start variable. */
-		g.setStartVariable((String) map.get(getStartVariable()));
-
-		String[] terminals = getTerminals();
-		for (int t = 0; t < terminals.length; t++) {
-			g.addTerminal(new String(terminals[t]));
-		}
 
 		Production[] productions = getProductions();
-		for (int p = 0; p < productions.length; p++) {
-			String rhs = productions[p].getRHS();
-			String lhs = productions[p].getLHS();
-			g.addProduction(new Production(rhs, lhs));
+		for (Production p: this.getProductions()) {
+			g.addProduction(p.clone());
 		}
 
 		return g;
@@ -101,8 +79,8 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	 * @param variable
 	 *            the new start variable.
 	 */
-	public void setStartVariable(String variable) {
-		this.getVariables().getStartVariable();
+	public BooleanWrapper setStartVariable(String variable) {
+		return this.getVariables().setStartVariable(variable);
 	}
 
 	/**
@@ -110,8 +88,8 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	 * 
 	 * @return the start variable.
 	 */
-	public String getStartVariable() {
-		return myStartVariable;
+	public Variable getStartVariable() {
+		return this.getVariables().getStartVariable();
 	}
 
 	/**
@@ -142,51 +120,45 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	 * 
 	 * @param production
 	 *            the production
+	 * @return 
 	 * @throws IllegalArgumentException
 	 *             if the production is in some way faulty
 	 */
-	public abstract void checkProduction(Production production);
+	public BooleanWrapper checkProduction(Production production){
+		return new BooleanWrapper(!this.containsProduction(production), 
+									"The production " + production + " is already in the Grammar");
+	}
 
 	/**
 	 * Adds <CODE>production</CODE> to the set of productions in the grammar.
 	 * 
 	 * @param production
 	 *            the production to be added.
+	 * @return 
 	 * @throws IllegalArgumentException
 	 *             if the production is unsuitable somehow
 	 */
-	public void addProduction(Production production) {
-		try{
-        	checkProduction(production);
-		}
-		catch(IllegalArgumentException e){
-			throw e;
-		}
-		/** if production already in grammar. */
-		if (GrammarChecker.isProductionInGrammar(production, this))
-			return;
+	public BooleanWrapper addProduction(Production production) {
+        	
+		BooleanWrapper isValid = checkProduction(production);
+		if (isValid.isFalse())
+			return isValid;
+		
 		myProductions.add(production);
+		return isValid;
 
-		/**
-		 * add all new variables introduced by production to set of variables.
-		 */
-		String[] variablesInProduction = production.getVariables();
-		for (int k = 0; k < variablesInProduction.length; k++) {
-			if (!myVariables.contains(variablesInProduction[k])) {
-				addVariable(variablesInProduction[k]);
-			}
-		}
-
-		/**
-		 * add all new terminals introduced by production to set of terminals.
-		 */
-		String[] terminalsInProduction = production.getTerminals();
-		for (int i = 0; i < terminalsInProduction.length; i++) {
-			if (!myTerminals.contains(terminalsInProduction[i])) {
-				addTerminal(terminalsInProduction[i]);
-			}
-		}
 	}
+
+	/**
+	 * Checks to see if this grammar contains the production
+	 * @param production
+	 * @return
+	 */
+	public boolean containsProduction(Production production) {
+		
+		return myProductions.contains(production);
+	}
+
 
 	/**
 	 * Adds <CODE>productions</CODE> to grammar by calling addProduction for
@@ -208,32 +180,8 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	 * @param production
 	 *            the production to remove.
 	 */
-	public void removeProduction(Production production) {
-		myProductions.remove(production);
-		GrammarChecker gc = new GrammarChecker();
-		/**
-		 * Remove any variables that existed only in the production being
-		 * removed.
-		 */
-		String[] variablesInProduction = production.getVariables();
-		for (int k = 0; k < variablesInProduction.length; k++) {
-			if (!GrammarChecker.isVariableInProductions(this,
-					variablesInProduction[k])) {
-				removeVariable(variablesInProduction[k]);
-			}
-		}
-
-		/**
-		 * Remove any terminals that existed only in the production being
-		 * removed.
-		 */
-		String[] terminalsInProduction = production.getTerminals();
-		for (int i = 0; i < terminalsInProduction.length; i++) {
-			if (!GrammarChecker.isTerminalInProductions(this,
-					terminalsInProduction[i])) {
-				removeTerminal(terminalsInProduction[i]);
-			}
-		}
+	public boolean removeProduction(Production production) {
+		return myProductions.remove(production);
 	}
 
 	/**
@@ -246,53 +194,14 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	}
 
 	/**
-	 * Adds <CODE>terminal</CODE> to the set of terminals in the grammar.
-	 * 
-	 * @param terminal
-	 *            the terminal to add.
-	 */
-	private void addTerminal(String terminal) {
-		myTerminals.add(terminal);
-	}
-
-	/**
-	 * Removes <CODE>terminal</CODE> from the set of terminals in the grammar.
-	 * 
-	 * @param terminal
-	 *            the terminal to remove.
-	 */
-	private void removeTerminal(String terminal) {
-		myTerminals.remove(terminal);
-	}
-
-	/**
 	 * Returns all terminals in the grammar.
 	 * 
 	 * @return all terminals in the grammar.
 	 */
-	public String[] getTerminals() {
-		return (String[]) myTerminals.toArray(new String[0]);
+	public TerminalAlphabet getTerminals() {
+		return this.getAlphabetByClass(TerminalAlphabet.class);
 	}
 
-	/**
-	 * Adds <CODE>variable</CODE> to the set of variables in the grammar.
-	 * 
-	 * @param variable
-	 *            the variable to add.
-	 */
-	private void addVariable(String variable) {
-		myVariables.add(variable);
-	}
-
-	/**
-	 * Removes <CODE>variable</CODE> from the set of variables of the grammar.
-	 * 
-	 * @param variable
-	 *            the variable to remove.
-	 */
-	private void removeVariable(String variable) {
-		myVariables.remove(variable);
-	}
 
 	/**
 	 * Returns all variables in the grammar.
@@ -317,32 +226,6 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	}
 
 	/**
-	 * Returns true if <CODE>terminal</CODE> is in the set of terminals in the
-	 * grammar.
-	 * 
-	 * @param terminal
-	 *            the terminal.
-	 * @return true if <CODE>terminal</CODE> is in the set of terminals in the
-	 *         grammar.
-	 */
-	public boolean isTerminal(String terminal) {
-		return myTerminals.contains(terminal);
-	}
-
-	/**
-	 * Returns true if <CODE>variable</CODE> is in the set of variables in the
-	 * grammar.
-	 * 
-	 * @param variable
-	 *            the variable.
-	 * @return true if <CODE>variable</CODE> is in the set of variables in the
-	 *         grammar.
-	 */
-	public boolean isVariable(String variable) {
-		return myVariables.contains(variable);
-	}
-
-	/**
 	 * Returns a string representation of the grammar object, listing the four
 	 * parts of the definition of a grammar: the set of variables, the set of
 	 * terminals, the start variable, and the set of production rules.
@@ -354,21 +237,12 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 		buffer.append(super.toString());
 		buffer.append('\n');
 		/** print variables. */
-		buffer.append("V: ");
-		String[] variables = getVariables();
-		for (int v = 0; v < variables.length; v++) {
-			buffer.append(variables[v]);
-			buffer.append(" ");
-		}
+		buffer.append(this.getVariables());
+		
 		buffer.append('\n');
 
 		/** print terminals. */
-		buffer.append("T: ");
-		String[] terminals = getTerminals();
-		for (int t = 0; t < terminals.length; t++) {
-			buffer.append(terminals[t]);
-			buffer.append(" ");
-		}
+		buffer.append(this.getTerminals());
 		buffer.append('\n');
 
 		/** print start variable. */

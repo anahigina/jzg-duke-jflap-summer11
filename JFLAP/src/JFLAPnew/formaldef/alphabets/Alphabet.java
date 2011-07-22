@@ -241,11 +241,12 @@ public abstract class Alphabet<T extends Symbol> implements IAlphabet<T> {
 	
 	
 	@Override
-	protected Alphabet<T> clone() {
+	public IAlphabet<T> clone() {
 		
 		try {
 			Alphabet<T> alph = this.getClass().newInstance();
-			alph.addAll(mySymbols.toArray((T[]) Array.newInstance(alph.getSymbolClass(), 0)));
+			for (T s: mySymbols)
+				alph.add((T) s.clone());
 			return alph;
 		} catch (Exception e) {
 			throw new AlphabetException("Error cloning the alphabet");

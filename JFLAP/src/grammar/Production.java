@@ -23,6 +23,7 @@ package grammar;
 import gui.environment.Universe;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +33,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Set;
 
+import JFLAPnew.formaldef.AlphabetException;
 import JFLAPnew.formaldef.symbols.Symbol;
 import JFLAPnew.formaldef.symbols.SymbolString;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;
@@ -44,7 +46,7 @@ import JFLAPnew.formaldef.symbols.variable.Variable;
  * @author Ryan Cavalcante
  */
 
-public class Production implements Serializable {
+public class Production implements Serializable, Cloneable {
 	/**
 	 * Creates an instance of <CODE>Production</CODE>.
 	 * 
@@ -207,6 +209,18 @@ public class Production implements Serializable {
 		buffer.append(getRHS().size() == 0 ? Universe.curProfile.getEmptyString() : getRHS());
 		// buffer.append('\n');
 		return buffer.toString();
+	}
+	
+
+	@Override
+	protected Production clone() {
+		try {
+			return this.getClass().
+							getConstructor(SymbolString.class, SymbolString.class).
+								newInstance(myLHS.clone(), myRHS.clone());
+		} catch (Exception e) {
+			throw new AlphabetException("Error cloneing Production");
+		}
 	}
 
 	/**

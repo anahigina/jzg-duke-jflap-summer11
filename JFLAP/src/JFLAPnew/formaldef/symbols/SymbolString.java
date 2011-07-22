@@ -9,14 +9,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.IAlphabet;
 import JFLAPnew.formaldef.symbols.variable.Variable;
 
 public class SymbolString extends LinkedList<Symbol> {
 
-	public SymbolString(String in, IAlphabet ... alphabets){
+	public SymbolString(String in, FormalDefinition def){
 		super();
-		this.addAll(SymbolString.createFromString(in, alphabets));
+		this.addAll(SymbolString.createFromString(in, def));
 	}
 
 	public SymbolString() {
@@ -32,14 +33,14 @@ public class SymbolString extends LinkedList<Symbol> {
 	}
 	
 	private static LinkedList<? extends Symbol> createFromString(String in,
-			IAlphabet ... alphabets) {
+			FormalDefinition def) {
 		
 		String temp = "";
 		SymbolString symbols = new SymbolString();
 		
 		for (int i = 0; i < in.length(); i++){
 			temp += in.charAt(i);
-			for (IAlphabet alph: alphabets){
+			for (IAlphabet alph: def){
 				if (alph.containsSymbolString(temp)){
 					symbols.add(alph.createDesiredSymbol(temp));
 					temp = "";
@@ -77,6 +78,14 @@ public class SymbolString extends LinkedList<Symbol> {
 		
 		return true;
 		
+	}
+
+	@Override
+	public SymbolString clone() {
+		SymbolString string = new SymbolString();
+		for (Symbol s: this)
+			string.add(s.clone());
+		return string;
 	}
 	
 }
