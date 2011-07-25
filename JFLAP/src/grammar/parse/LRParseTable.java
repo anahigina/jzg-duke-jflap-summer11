@@ -49,7 +49,7 @@ public class LRParseTable extends AbstractTableModel implements Serializable,
 	 *            the goto graph for the grammar
 	 */
 	public LRParseTable(Grammar grammar, FiniteStateAutomaton fsa) {
-		ArrayList term = new ArrayList(Arrays.asList(grammar.getTerminals()));
+		ArrayList term = new ArrayList(Arrays.asList(grammar.getTerminalAlphabet()));
 		ArrayList vars = new ArrayList(Arrays.asList(grammar.getVariables()));
 		this.grammar = grammar;
 		Collections.sort(term);

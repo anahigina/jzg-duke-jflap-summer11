@@ -46,7 +46,7 @@ public class LLParseTable extends AbstractTableModel implements Serializable,
 	public LLParseTable(Grammar grammar) {
 		variables = grammar.getVariables();
 		Arrays.sort(variables);
-		terminals = grammar.getTerminals();
+		terminals = grammar.getTerminalAlphabet();
 		Arrays.sort(terminals);
 
 		entries = new SortedSet[variables.length][terminals.length + 1];

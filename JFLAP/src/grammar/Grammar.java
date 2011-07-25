@@ -200,7 +200,7 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	 * 
 	 * @return all terminals in the grammar.
 	 */
-	public TerminalAlphabet getTerminals() {
+	public TerminalAlphabet getTerminalAlphabet() {
 		return this.getAlphabetByClass(TerminalAlphabet.class);
 	}
 
@@ -244,7 +244,7 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 		buffer.append('\n');
 
 		/** print terminals. */
-		buffer.append(this.getTerminals());
+		buffer.append(this.getTerminalAlphabet());
 		buffer.append('\n');
 
 		/** print start variable. */

@@ -20,14 +20,21 @@
 
 package grammar.cfg;
 
+import java.util.Set;
+
 import grammar.Grammar;
 import grammar.GrammarToAutomatonConverter;
 import grammar.Production;
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
+import JFLAPnew.formaldef.symbols.variable.Variable;
 import automata.Automaton;
 import automata.State;
 import automata.StatePlacer;
 import automata.Transition;
 import automata.pda.PDATransition;
+import automata.pda.PushdownAutomaton;
 
 /**
  * The CFG to PDA (LL parsing) converter can be used to convert a context free
@@ -60,10 +67,10 @@ public class CFGToPDALLConverter extends GrammarToAutomatonConverter {
 	 * @return the equivalent transition.
 	 */
 	public Transition getTransitionForProduction(Production production) {
-		String lhs = production.getLHS();
-		String rhs = production.getRHS();
+		SymbolString lhs = production.getLHS();
+		SymbolString rhs = production.getRHS();
 		Transition transition = new PDATransition(INTERMEDIATE_STATE,
-				INTERMEDIATE_STATE, "", lhs, rhs);
+				INTERMEDIATE_STATE, EMPTY, lhs, rhs);
 		return transition;
 	}
 
@@ -82,7 +89,7 @@ public class CFGToPDALLConverter extends GrammarToAutomatonConverter {
 	public void createStatesForConversion(Grammar grammar, Automaton automaton) {
 		initialize();
 		StatePlacer sp = new StatePlacer();
-
+		Symbol BOTTOM_OF_STACK = ((PushdownAutomaton)automaton).getBottomOfStackSymbol();
 		State initialState = automaton.createState(sp
 				.getPointForState(automaton));
 		automaton.setInitialState(initialState);
@@ -95,20 +102,22 @@ public class CFGToPDALLConverter extends GrammarToAutomatonConverter {
 				.createState(sp.getPointForState(automaton));
 		automaton.addFinalState(finalState);
 
-		String startVariable = grammar.getStartVariable();
-		String temp = startVariable.concat(BOTTOM_OF_STACK);
+		SymbolString temp = new SymbolString(grammar.getStartVariable());
+		temp.concat(BOTTOM_OF_STACK);
 		PDATransition trans1 = new PDATransition(initialState,
-				intermediateState, "", BOTTOM_OF_STACK, temp);
+				intermediateState, EMPTY, new SymbolString(BOTTOM_OF_STACK), temp);
 		automaton.addTransition(trans1);
 		PDATransition trans2 = new PDATransition(intermediateState, finalState,
-				"", BOTTOM_OF_STACK, "");
+				EMPTY, new SymbolString(BOTTOM_OF_STACK), EMPTY);
 		automaton.addTransition(trans2);
 
-		String[] terminals = grammar.getTerminals();
-		for (int k = 0; k < terminals.length; k++) {
-			PDATransition trans = new PDATransition(intermediateState,
-					intermediateState, terminals[k], terminals[k], "");
-			automaton.addTransition(trans);
+		Set<Terminal> terminals = grammar.getTerminalAlphabet().getSymbols();
+		for (Terminal t: terminals) {
+			automaton.addTransition(new PDATransition(intermediateState,
+														intermediateState, 
+														new SymbolString(t), 
+														new SymbolString(t), 
+														new SymbolString(t)));
 		}
 
 	}

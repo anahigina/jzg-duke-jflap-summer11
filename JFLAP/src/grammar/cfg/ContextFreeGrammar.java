@@ -23,6 +23,7 @@ package grammar.cfg;
 import javax.swing.JOptionPane;
 
 import grammar.*;
+import gui.errors.BooleanWrapper;
 import gui.grammar.automata.GrammarCreationException;
 
 /**
@@ -49,16 +50,12 @@ public class ContextFreeGrammar extends Grammar {
 	 * 
 	 * @param production
 	 *            the production to check
-	 * @throws IllegalArgumentException
+	 * @return Boolean wrapper false
 	 *             if the production is unrestricted on the left hand side
 	 */
-	public void checkProduction(Production production) {
-		if (!ProductionChecker.isRestrictedOnLHS(production)){
-            javax.swing.JOptionPane.showMessageDialog(null,
-                    "Your production is unrestricted on the left hand side.");
-			throw new IllegalArgumentException(
+	public BooleanWrapper checkProduction(Production production) {
+		return new BooleanWrapper(!ProductionChecker.isRestrictedOnLHS(production),
 					"The production is unrestricted on the left hand side.");
-        }
 	}
 
 	@Override

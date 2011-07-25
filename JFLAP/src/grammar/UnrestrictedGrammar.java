@@ -1,6 +1,7 @@
 /*
+ *  
  *  JFLAP - Formal Languages and Automata Package
- * 
+ *                                                                                                                                         
  * 
  *  Susan H. Rodger
  *  Computer Science Department

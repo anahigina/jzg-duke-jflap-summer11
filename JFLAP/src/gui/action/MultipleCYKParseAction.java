@@ -61,7 +61,7 @@ public class MultipleCYKParseAction extends CYKParseAction{
 		myGrammar=g;
 		if (g == null)
 			return;
-		if (g.getTerminals().length==0)
+		if (g.getTerminalAlphabet().length==0)
 		{
 			JFLAPError.ACCEPTS_NO_STRING.show();
 			myErrorInTransform=true;

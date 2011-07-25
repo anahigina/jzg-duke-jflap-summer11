@@ -21,6 +21,10 @@
 package grammar.parse;
 
 import javax.swing.tree.*;
+
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.variable.Variable;
 import grammar.Production;
 import java.util.Arrays;
 
@@ -43,7 +47,7 @@ public class ParseNode extends DefaultMutableTreeNode {
 	/**
 	 * Instantiates a new parse node.
 	 * 
-	 * @param derivation
+	 * @param a
 	 *            the derivation of this rule
 	 * @param productions
 	 *            the productions that led to this derivation
@@ -51,9 +55,9 @@ public class ParseNode extends DefaultMutableTreeNode {
 	 *            the positions in the parent string derivation that the
 	 *            productions were substituted in to achieve this derivation
 	 */
-	public ParseNode(String derivation, Production[] productions,
+	public ParseNode(SymbolString a, Production[] productions,
 			int[] substitutions) {
-		this.derivation = derivation;
+		this.derivation = a;
 		if (productions.length != substitutions.length)
 			throw new IllegalArgumentException(
 					"Production and substitution array sizes mismatch!");
@@ -76,7 +80,7 @@ public class ParseNode extends DefaultMutableTreeNode {
 	 * 
 	 * @return the derivation string
 	 */
-	public String getDerivation() {
+	public SymbolString getDerivation() {
 		return derivation;
 	}
 
@@ -108,7 +112,7 @@ public class ParseNode extends DefaultMutableTreeNode {
 	 * @return a string representation of those object
 	 */
 	public String toString() {
-		StringBuffer sb = new StringBuffer(derivation);
+		StringBuffer sb = new StringBuffer(derivation.toString());
 		sb.append(", ");
 		sb.append(Arrays.asList(productions) + ", ");
 		sb.append('[');
@@ -122,7 +126,7 @@ public class ParseNode extends DefaultMutableTreeNode {
 	}
 
 	/** The current string derivation. */
-	private String derivation;
+	private SymbolString derivation;
 
 	/** The grammar rules used to achieve this derivation. */
 	private Production[] productions;

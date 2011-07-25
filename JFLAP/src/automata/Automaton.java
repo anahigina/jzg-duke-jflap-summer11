@@ -36,6 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.FormallyDefinedObject;
 import automata.event.AutomataStateEvent;
 import automata.event.AutomataStateListener;
@@ -60,7 +61,7 @@ import gui.viewer.AutomatonPane;
  * @author Thomas Finley
  */
 
-public class Automaton extends FormallyDefinedObject implements Serializable, Cloneable {
+public class Automaton extends FormalDefinition implements Serializable, Cloneable {
 	/**
 	 * Creates an instance of <CODE>Automaton</CODE>. The created instance
 	 * has no states and no transitions.

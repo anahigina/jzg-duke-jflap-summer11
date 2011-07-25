@@ -62,7 +62,7 @@ public class Operations {
 			return (Map) CACHED_FIRST.get(grammar);
 		Map first = new HashMap();
 		// Put the terminals in the map.
-		String[] terminals = grammar.getTerminals();
+		String[] terminals = grammar.getTerminalAlphabet();
 		for (int i = 0; i < terminals.length; i++) {
 			Set termSet = new HashSet();
 			termSet.add(terminals[i]);

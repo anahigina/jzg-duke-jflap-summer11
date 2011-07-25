@@ -100,7 +100,7 @@ public class CYKParseAction extends GrammarAction{
 		myGrammar=g;
 		if (g == null)
 			return;
-		if (g.getTerminals().length==0)
+		if (g.getTerminalAlphabet().length==0)
 		{
 			JFLAPError.ACCEPTS_NO_STRING.show();
 			myErrorInTransform=true;
@@ -163,7 +163,7 @@ public class CYKParseAction extends GrammarAction{
 		Grammar g2 = UselessProductionRemover
 				.getUselessProductionlessGrammar(g);
 		
-		if (g2.getTerminals().length==0)
+		if (g2.getTerminalAlphabet().length==0)
 		{
 			JFLAPError.ACCEPTS_NO_STRING.show();
 			myErrorInTransform=true;

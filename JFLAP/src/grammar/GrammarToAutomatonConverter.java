@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.Automaton;
 import automata.State;
 import automata.Transition;
@@ -134,5 +135,7 @@ public abstract class GrammarToAutomatonConverter {
 
 	protected HashMap MAP;
 
-	protected String BOTTOM_OF_STACK = "Z";
+	protected static final SymbolString EMPTY = new SymbolString();
+	
+//	protected String BOTTOM_OF_STACK = "Z";
 }

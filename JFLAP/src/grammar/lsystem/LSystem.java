@@ -24,6 +24,8 @@ import grammar.*;
 import java.io.Serializable;
 import java.util.*;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
+
 /**
  * The <CODE>LSystem</CODE> class represents L-systems. This does not do any
  * simulation of L-systems, but rather has the minimal mathematical definitions
@@ -88,7 +90,7 @@ public class LSystem implements Serializable {
 		Map reps = new HashMap();
 		Production[] p = replacements.getProductions();
 		for (int i = 0; i < p.length; i++) {
-			String replace = p[i].getLHS();
+			SymbolString replace = p[i].getLHS();
 			ArrayList currentReplacements = null;
 			if (!reps.containsKey(replace))
 				reps.put(replace, currentReplacements = new ArrayList());

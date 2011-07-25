@@ -21,18 +21,24 @@ import JFLAPnew.formaldef.symbols.Symbol;
 public class FormalDefinition extends TreeSet<IAlphabet> implements IComplete {
 
 	public FormalDefinition(Class<? extends IAlphabet> ... alphabets){
+		initializeAlphabets(alphabets); 
+			
+	}
+	
+	public FormalDefinition(){
+		initializeAlphabets(FormalDefintionFactory.getDefinitionRequirements(this.getClass()));
+	}
+
+	private void initializeAlphabets(Class<? extends IAlphabet>... alphabets) {
 		for (Class<? extends IAlphabet> alph: alphabets)
 			try {
 				this.add(alph.getConstructor(FormalDefinition.class).newInstance(this));
 			} catch (Exception e) {
 				throw new AlphabetException("Error constructing a Formal Defintion from classes");
-			} 
-			
+			}
 	}
 	
-	public FormalDefinition(){
-		super();
-	}
+	
 	
 	public <T extends Alphabet> T getAlphabetByClass(Class<T> clazz) {
 		for (IAlphabet alph : this){

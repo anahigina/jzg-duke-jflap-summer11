@@ -20,6 +20,8 @@
 
 package automata.pda;
 
+import JFLAPnew.formaldef.alphabets.specific.StackAlphabet;
+import JFLAPnew.formaldef.symbols.Symbol;
 import automata.Automaton;
 
 /**
@@ -52,5 +54,13 @@ public class PushdownAutomaton extends Automaton {
 	 */
 	protected Class getTransitionClass() {
 		return automata.pda.PDATransition.class;
+	}
+
+	public Symbol getBottomOfStackSymbol() {
+		return this.getStackAlphabet().getBottomOfStackSymbol();
+	}
+
+	private StackAlphabet getStackAlphabet() {
+		return this.getAlphabetByClass(StackAlphabet.class);
 	}
 }

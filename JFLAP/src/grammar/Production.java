@@ -60,6 +60,10 @@ public class Production implements Serializable, Cloneable, Comparable<Productio
 		myRHS = rhs;
 	}
 
+	public Production(Symbol lhs, Symbol rhs) {
+		this(new SymbolString(lhs), new SymbolString(rhs));
+	}
+
 	/**
 	 * Sets the right hand side of production to <CODE>rhs</CODE>.
 	 * 

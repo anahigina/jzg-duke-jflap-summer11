@@ -99,4 +99,47 @@ public class SymbolString extends LinkedList<Symbol> implements Comparable<Symbo
 		
 		return 0;
 	}
+
+	public boolean concat(Symbol sym) {
+		return this.add(sym);
+	}
+
+	public SymbolString reverse() {
+		SymbolString reverse = new SymbolString();
+		for (Symbol s: this)
+			reverse.addFirst(s);
+		return reverse;
+	}
+	
+	@Override
+	public int indexOf(Object other){
+		if (other instanceof Symbol)
+			return super.indexOf(other);
+		return indexOfSubSymbolString((SymbolString) other);
+		
+	}
+
+	public int indexOfSubSymbolString(SymbolString o) {
+		if (o.size() > this.size())
+			return -1;
+		for (int i = 0; i< this.size(); i++){
+			Boolean check = true;
+			for (int j = 0; j + o.size() <= this.size(); j++){
+				check = check && this.get(i+j).equals(o.get(j));
+			}
+			if (check) return i;
+		}
+		return -1;
+	}
+
+	public SymbolString subList(int i) {
+		return (SymbolString) super.subList(i, this.size());
+	}
+
+	public static SymbolString concat(SymbolString ... strings) {
+		SymbolString concat = new SymbolString();
+		for (SymbolString ss: strings)
+			concat.concat(ss);
+		return concat;
+	}
 }

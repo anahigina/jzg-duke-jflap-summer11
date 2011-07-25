@@ -25,6 +25,9 @@ import grammar.Production;
 import grammar.UnrestrictedGrammar;
 import java.util.*;
 
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
+
 /**
  * This class is a utility class for determining some facts about unrestricted
  * grammars. As structures equivalent in power to Turing machines, a brute force
@@ -44,15 +47,15 @@ public class Unrestricted {
 	 * Given a string and a smaller set, this returns the minimum length that
 	 * the string can derive as indicated by the smaller set.
 	 * 
-	 * @param string
+	 * @param symbolString
 	 *            the string to get the "smaller"
 	 * @param smaller
 	 *            the "smaller" set, as returned by {@link #smallerSymbols}
 	 */
-	public static int minimumLength(String string, Set smaller) {
+	public static int minimumLength(SymbolString symbolString, Set<Symbol> smaller) {
 		int length = 0;
-		for (int j = 0; j < string.length(); j++)
-			if (!smaller.contains(string.substring(j, j + 1)))
+		for (Symbol s: symbolString)
+			if (!smaller.contains(s))
 				length++;
 		return length;
 	}

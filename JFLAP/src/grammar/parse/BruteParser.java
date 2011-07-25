@@ -22,7 +22,13 @@ package grammar.parse;
 
 import grammar.Grammar;
 import grammar.Production;
+import gui.errors.BooleanWrapper;
+
 import java.util.*;
+
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
 
 /**
  * The <CODE>BruteParser</CODE> is an abstract class that will perform a brute
@@ -43,7 +49,7 @@ public abstract class BruteParser {
 	 * This will instantiate a new brute parser. All this does is call
 	 * {@link #init} with the grammar and target string.
 	 */
-	public BruteParser(Grammar grammar, String target) {
+	public BruteParser(Grammar grammar, SymbolString target) {
 		init(grammar, target);
 	}
 
@@ -65,19 +71,18 @@ public abstract class BruteParser {
 	/**
 	 * This will initialize data structures.
 	 */
-	protected void init(Grammar grammar, String target) {
-		for (int i = 0; i < target.length(); i++)
-			if (!grammar.isTerminal(target.substring(i, i + 1)))
-				throw new IllegalArgumentException(
-						"String to parse has nonterminal "
-								+ target.substring(i, i + 1) + ".");
+	protected BooleanWrapper init(Grammar grammar, SymbolString target) {
+		for (Symbol s: target)
+			if (!(s instanceof Terminal))
+				return new BooleanWrapper(false, 
+						"String to parse has nonterminal " + s + ".");
 
 		queue.clear();
 
 		grammar = Unrestricted.optimize(grammar);
 		if (grammar == null)
-			return;
-		queue.add(new ParseNode(grammar.getStartVariable(), P, S));
+			return new BooleanWrapper(false, "This grammar accepts no language.");
+		queue.add(new ParseNode(new SymbolString(grammar.getStartVariable()), P, S));
 		consideredNodes = 0;
 		deletedNodes = 0;
 
@@ -87,6 +92,7 @@ public abstract class BruteParser {
 		this.grammar = grammar;
 		productions = grammar.getProductions();
 		this.target = target;
+		return new BooleanWrapper(true);
 	}
 
 	/**
@@ -154,33 +160,34 @@ public abstract class BruteParser {
 	 * Returns a list of possible one step parses for a given string. The first
 	 * entry is always the identity.
 	 */
-	private List getPossibilities(String c) {
-		List possibilities = new ArrayList();
+	private List<ParseNode> getPossibilities(SymbolString c) {
+		List<ParseNode> possibilities = new ArrayList<ParseNode>();
 		if (prederived.containsKey(c))
-			return (List) prederived.get(c);
-		HashSet alreadyEncountered = new HashSet();
-		if (c.length() == 0) {
+			return (List<ParseNode>) prederived.get(c);
+		HashSet<SymbolString> alreadyEncountered = new HashSet<SymbolString>();
+		if (c.size() == 0) {
 			possibilities.add(E);
 			return possibilities;
 		}
 		for (int i = -1; i < productions.length; i++) {
-			Production prod = i == -1 ? new Production(c.substring(0, 1), c
-					.substring(0, 1)) : productions[i];
+			Production prod = 
+					i == -1 ? new Production(c.getFirst(), 
+							c.getFirst()) : productions[i];
 			// Find the start of the production.
 			int start = c.indexOf(prod.getLHS());
-			int lengthSubs = prod.getLHS().length();
+			int lengthSubs = prod.getLHS().size();
 			if (start == -1)
 				continue;
-			List list = getPossibilities(c.substring(start + lengthSubs));
-			Iterator it = list.iterator();
-			String prepend = c.substring(0, start) + prod.getRHS();
-			int lengthReplace = start + prod.getLHS().length();
+			List<ParseNode> list = getPossibilities(c.subList(start + lengthSubs));
+			Iterator<ParseNode> it = list.iterator();
+			SymbolString prepend = SymbolString.concat((SymbolString)c.subList(0, start),prod.getRHS());
+			int lengthReplace = start + prod.getLHS().size();
 			// Make adjustments for each entry.
 			while (it.hasNext()) {
-				ParseNode node = (ParseNode) it.next();
-				String d = node.getDerivation();
+				ParseNode node = it.next();
+				SymbolString d = node.getDerivation();
 				Production[] p = node.getProductions();
-				String a = prepend + d;
+				SymbolString a = SymbolString.concat(prepend, d);
 				int[] s = node.getSubstitutions();
 				if (i == -1) {
 					int[] newS = new int[s.length];
@@ -220,7 +227,7 @@ public abstract class BruteParser {
 
 	private static final int[] S = new int[0];
 
-	private static final ParseNode E = new ParseNode("", P, S);
+	private static final ParseNode E = new ParseNode(new SymbolString(), P, S);
 
 	/**
 	 * Any node that is not accepted and can have no children is futile. Since
@@ -278,11 +285,11 @@ public abstract class BruteParser {
 	 * result in the target, just that it has not been firmly ruled out. This
 	 * method is used for optimization purposes by the parser.
 	 * 
-	 * @param derivation
+	 * @param symbolString
 	 */
-	public boolean isPossibleDerivation(String derivation) {
-		return Unrestricted.minimumLength(derivation, smaller) <= target
-				.length();
+	public boolean isPossibleDerivation(SymbolString symbolString) {
+		return Unrestricted.minimumLength(symbolString, smaller) <= target
+				.size();
 	}
 
 	/**
@@ -354,13 +361,13 @@ public abstract class BruteParser {
 	 *            the brute parser event to distribute
 	 */
 	protected void distributeEvent(BruteParserEvent event) {
-		Iterator it = listeners.iterator();
+		Iterator<BruteParserListener> it = listeners.iterator();
 		while (it.hasNext())
-			((BruteParserListener) it.next()).bruteParserStateChange(event);
+			it.next().bruteParserStateChange(event);
 	}
 
 	/** The set of listeners. */
-	protected Set listeners = new HashSet();
+	protected Set<BruteParserListener> listeners = new HashSet<BruteParserListener>();
 
 	/** This is the grammar. */
 	protected Grammar grammar;
@@ -369,7 +376,7 @@ public abstract class BruteParser {
 	protected Production[] productions;
 
 	/** This is the target string. */
-	protected String target;
+	protected SymbolString target;
 
 	/** This should be set to done when the operation has completed. */
 	private boolean isDone = false;
@@ -381,16 +388,16 @@ public abstract class BruteParser {
 	private Thread parseThread = null;
 
 	/** This set holds those strings already added to the tree. */
-	private Set alreadyAdded = new HashSet();
+	private Set<SymbolString> alreadyAdded = new HashSet<SymbolString>();
 
 	/**
 	 * This holds those strings that have already been derived, with a map to
 	 * those nodes for each string.
 	 */
-	private Map prederived = new HashMap();
+	private Map<SymbolString, ParseNode> prederived = new HashMap<SymbolString, ParseNode>();
 
 	/** This holds the list of nodes for the BFS. */
-	protected LinkedList queue = new LinkedList();
+	protected LinkedList<ParseNode> queue = new LinkedList<ParseNode>();
 
 	/** The number of explored nodes. */
 	private int consideredNodes = 0;
@@ -407,5 +414,5 @@ public abstract class BruteParser {
 	/**
 	 * The "smaller" set, those symbols that may possibly reduce to nothing.
 	 */
-	protected Set smaller;
+	protected Set<Symbol> smaller;
 }

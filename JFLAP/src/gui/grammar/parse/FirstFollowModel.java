@@ -45,7 +45,7 @@ public class FirstFollowModel extends AbstractTableModel {
 	public FirstFollowModel(Grammar grammar) {
 		variables = grammar.getVariables();
 		Arrays.sort(variables);
-		terminals = grammar.getTerminals();
+		terminals = grammar.getTerminalAlphabet();
 
 		firstSets = new String[variables.length];
 		followSets = new String[variables.length];

@@ -21,6 +21,7 @@
 package automata.pda;
 
 import gui.environment.Universe;
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.Transition;
 import automata.State;
 
@@ -42,20 +43,20 @@ public class PDATransition extends Transition {
 	 *            the state this transition comes from
 	 * @param to
 	 *            the state this transition goes to
-	 * @param inputToRead
+	 * @param symbolString
 	 *            the string that the machine should satisfy before moving on to
 	 *            the next state.
-	 * @param stringToPop
+	 * @param lhs
 	 *            the string that the machine should pop from the stack.
-	 * @param stringToPush
+	 * @param rhs
 	 *            the string that the machine should push on to the stack.
 	 */
-	public PDATransition(State from, State to, String inputToRead,
-			String stringToPop, String stringToPush) {
+	public PDATransition(State from, State to, SymbolString symbolString,
+			SymbolString lhs, SymbolString rhs) {
 		super(from, to);
-		setInputToRead(inputToRead);
-		setStringToPop(stringToPop);
-		setStringToPush(stringToPush);
+		setInputToRead(symbolString);
+		setStringToPop(lhs);
+		setStringToPush(rhs);
 	}
 
 	/**

@@ -22,24 +22,24 @@ import JFLAPnew.formaldef.alphabets.specific.VariableAlphabet;
 public class FormalDefintionFactory {
 
 	public static Class<? extends IAlphabet>[] getDefinitionRequirements(
-			Class<? extends FormallyDefinedObject> def) {
+			Class<? extends FormalDefinition> class1) {
 		
-		if (def.isAssignableFrom(Grammar.class))
+		if (class1.isAssignableFrom(Grammar.class))
 			return new Class[]{VariableAlphabet.class, TerminalAlphabet.class};
 		
-		if (def.isAssignableFrom(FiniteStateAutomaton.class))
+		if (class1.isAssignableFrom(FiniteStateAutomaton.class))
 			return new Class[]{InputAlphabet.class};
 		
-		if (def.isAssignableFrom(PushdownAutomaton.class))
+		if (class1.isAssignableFrom(PushdownAutomaton.class))
 			return new Class[]{InputAlphabet.class, StackAlphabet.class};
 		
-		if (def.isAssignableFrom(TuringMachine.class))
+		if (class1.isAssignableFrom(TuringMachine.class))
 			return new Class[]{TapeAlphabet.class, InputAlphabet.class};
 		
-		if (def.isAssignableFrom(RegularExpression.class))
+		if (class1.isAssignableFrom(RegularExpression.class))
 			return new Class[]{InputAlphabet.class};
 		
-		if (def.isAssignableFrom(MooreMachine.class))
+		if (class1.isAssignableFrom(MooreMachine.class))
 			return new Class[]{InputAlphabet.class, OutputAlphabet.class};
 		
 		return null;
