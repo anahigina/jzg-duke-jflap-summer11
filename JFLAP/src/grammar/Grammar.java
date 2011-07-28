@@ -81,7 +81,7 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	 * @param variable
 	 *            the new start variable.
 	 */
-	public BooleanWrapper setStartVariable(String variable) {
+	public BooleanWrapper setStartVariable(Variable variable) {
 		return this.getVariables().setStartVariable(variable);
 	}
 
@@ -237,16 +237,6 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(super.toString());
-		buffer.append('\n');
-		/** print variables. */
-		buffer.append(this.getVariables());
-		
-		buffer.append('\n');
-
-		/** print terminals. */
-		buffer.append(this.getTerminalAlphabet());
-		buffer.append('\n');
-
 		/** print start variable. */
 		buffer.append("S: ");
 		buffer.append(getStartVariable());

@@ -50,6 +50,8 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
+import JFLAPnew.formaldef.symbols.variable.Variable;
+
 /**
  * CYK Parsing Action class
  * @author Kyung Min (Jason) Lee
@@ -100,7 +102,7 @@ public class CYKParseAction extends GrammarAction{
 		myGrammar=g;
 		if (g == null)
 			return;
-		if (g.getTerminalAlphabet().length==0)
+		if (g.getTerminalAlphabet().size()==0)
 		{
 			JFLAPError.ACCEPTS_NO_STRING.show();
 			myErrorInTransform=true;
@@ -163,7 +165,7 @@ public class CYKParseAction extends GrammarAction{
 		Grammar g2 = UselessProductionRemover
 				.getUselessProductionlessGrammar(g);
 		
-		if (g2.getTerminalAlphabet().length==0)
+		if (g2.getTerminalAlphabet().size()==0)
 		{
 			JFLAPError.ACCEPTS_NO_STRING.show();
 			myErrorInTransform=true;
@@ -216,10 +218,7 @@ public class CYKParseAction extends GrammarAction{
 				pp[i]=resultList.get(i);
 			}
 			pp=converter.convert(pp);
-			String var=g.getStartVariable();
-			g=new UnrestrictedGrammar();
-			g.addProductions(pp);
-			g.setStartVariable(var);
+			g = g.clone();
 			
 		}
 		myGrammar=g;

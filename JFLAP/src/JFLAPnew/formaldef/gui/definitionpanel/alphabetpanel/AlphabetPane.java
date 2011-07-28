@@ -139,16 +139,15 @@ public class AlphabetPane extends JToolBar implements ISelectable, IMenu, IUpdat
 	@Override
 	public void update() {
 		this.setBackground( amSelected ? GUIConstants.BAR_SELECTED : GUIConstants.DEFAULT);
-		setSizes(new Dimension(this.getParent().getWidth(), HEIGHT));
+		this.setPreferredSize(new Dimension(this.getParent().getPreferredSize().width, HEIGHT));
 		this.setFloatable(!JFLAPpreferences.isUserDefinedAlphabet());
 		myViewport.update();
 	}
 
 	public void setSizes(Dimension d) {
-		System.out.println("AlphabetPane Size:" + d);
-		this.setPreferredSize(d);
-		this.setMinimumSize(d);
-		this.setMaximumSize(d);
+		
+//		this.setMinimumSize(d);
+//		this.setMaximumSize(d);
 	}
 
 	@Override

@@ -46,17 +46,28 @@ public class PDATransition extends Transition {
 	 * @param symbolString
 	 *            the string that the machine should satisfy before moving on to
 	 *            the next state.
-	 * @param lhs
+	 * @param pop
 	 *            the string that the machine should pop from the stack.
-	 * @param rhs
+	 * @param push
 	 *            the string that the machine should push on to the stack.
 	 */
 	public PDATransition(State from, State to, SymbolString symbolString,
-			SymbolString lhs, SymbolString rhs) {
+			SymbolString pop, SymbolString push) {
 		super(from, to);
 		setInputToRead(symbolString);
-		setStringToPop(lhs);
-		setStringToPush(rhs);
+		setStringToPop(pop);
+		setStringToPush(push);
+	}
+	
+	/**
+	 * Constructs a PDA transition with empty symbolstring/pop/push
+	 * @param from
+	 * @param to
+	 */
+	public PDATransition(State from, State to){
+		this(from, to, new SymbolString(), 
+						new SymbolString(), 
+						new SymbolString());
 	}
 
 	/**

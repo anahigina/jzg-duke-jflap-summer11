@@ -1,6 +1,7 @@
 package JFLAPnew.formaldef.gui.definitionpanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -50,6 +51,7 @@ public class DefinitionPanel extends JPanel implements IUpdate{
 		for (IAlphabet alph: def){
 			this.add(new AlphabetPane(alph));
 		}
+		this.add(Box.createVerticalGlue());
 		this.update();
 		
 	}
@@ -61,7 +63,7 @@ public class DefinitionPanel extends JPanel implements IUpdate{
 	
 	@Override
 	public Component add(Component comp) {
-		if (!(comp instanceof AlphabetPane)) return comp;
+		if (!(comp instanceof AlphabetPane)) return super.add(comp);
 		AlphabetPane pane = (AlphabetPane) comp;
 		myPanes.add(pane);
 		pane.addMouseListener(new MouseClickAdapter<AlphabetPane>() {
@@ -85,15 +87,12 @@ public class DefinitionPanel extends JPanel implements IUpdate{
 	@Override
 	public void update() {
 		int width = (myParent != null) ? myParent.getWidth() : AlphabetPane.HEIGHT*20;
-		this.setSize(new Dimension(width, myDef.size()*AlphabetPane.HEIGHT));
+		this.setPreferredSize(new Dimension(width, myDef.size()*AlphabetPane.HEIGHT));
 		for (AlphabetPane c: myPanes){
 			c.update();
 		}
-//		this.setPreferredSize(
-//				new Dimension(this.getPreferredSize().width, 
-//						this.getComponentCount()*AlphabetPane.HEIGHT));
-		this.repaint();
-		this.updateUI();
+		super.repaint();
+		super.updateUI();
 	}
 
 	public void setSelectedBar(AlphabetPane component) {
@@ -120,13 +119,6 @@ public class DefinitionPanel extends JPanel implements IUpdate{
 			comp = (JComponent) comp.getParent();
 		}
 		((DefinitionPanel)comp).update();
-	}
-
-	@Override
-	public void repaint() {
-		System.out.println(this.getSize());
-		System.out.println(this.getPreferredSize());
-		super.repaint();
 	}
 
 }

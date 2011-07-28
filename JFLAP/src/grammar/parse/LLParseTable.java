@@ -22,7 +22,15 @@ package grammar.parse;
 
 import grammar.*;
 import java.util.*;
+
 import javax.swing.table.AbstractTableModel;
+
+import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
+import JFLAPnew.formaldef.symbols.variable.Variable;
+
 import java.io.Serializable;
 
 /**
@@ -44,15 +52,15 @@ public class LLParseTable extends AbstractTableModel implements Serializable,
 	 *            the grammar to create the table for
 	 */
 	public LLParseTable(Grammar grammar) {
-		variables = grammar.getVariables();
-		Arrays.sort(variables);
-		terminals = grammar.getTerminalAlphabet();
-		Arrays.sort(terminals);
+<<<<<<< .mine
+		this.grammar = grammar;
+		variables = grammar.getVariables().getSymbols();
+		terminals = grammar.getTerminalAlphabet().getSymbols();
 
-		entries = new SortedSet[variables.length][terminals.length + 1];
+		entries = new SortedSet[variables.size()][terminals.size() + 1];
 		for (int i = 0; i < entries.length; i++)
 			for (int j = 0; j < entries[i].length; j++)
-				entries[i][j] = new TreeSet();
+				entries[i][j] = new TreeSet<SymbolString>();
 	}
 
 	/**
@@ -64,10 +72,10 @@ public class LLParseTable extends AbstractTableModel implements Serializable,
 	public LLParseTable(LLParseTable table) {
 		variables = table.variables;
 		terminals = table.terminals;
-		entries = new SortedSet[variables.length][terminals.length + 1];
+		entries = new TreeSet[variables.size()][terminals.size() + 1];
 		for (int i = 0; i < entries.length; i++)
 			for (int j = 0; j < entries[i].length; j++)
-				entries[i][j] = new TreeSet(table.entries[i][j]);
+				entries[i][j] = new TreeSet<SymbolString>(table.entries[i][j]);
 	}
 
 	/**
@@ -85,14 +93,11 @@ public class LLParseTable extends AbstractTableModel implements Serializable,
 	 * @param object
 	 *            the object to compare against
 	 */
-	public boolean equals(Object object) {
+	public boolean equals(LLParseTable other) {
 		try {
-			LLParseTable other = (LLParseTable) object;
-			if (!Arrays.equals(variables, other.variables))
+			if (!this.grammar.equals(other.grammar))
 				return false;
-			if (!Arrays.equals(terminals, other.terminals))
-				return false;
-			for (int i = 0; i < variables.length; i++)
+			for (int i = 0; i < variables.size(); i++)
 				if (!Arrays.equals(entries[i], other.entries[i]))
 					return false;
 			return true;
@@ -109,7 +114,7 @@ public class LLParseTable extends AbstractTableModel implements Serializable,
 	public int hashCode() {
 		// Lazy, stupid, and dangerous, but unlike me has the virtue
 		// of working...
-		return variables.length ^ terminals.length;
+		return variables.size() ^ terminals.size();
 	}
 
 	/**
@@ -124,28 +129,14 @@ public class LLParseTable extends AbstractTableModel implements Serializable,
 	 *             if either variable or lookahead is not a variable or terminal
 	 *             (or $) respectively in the grammar
 	 */
-	private int[] getLocation(String variable, String lookahead) {
+	private int[] getLocation(Variable variable, SymbolString lookahead) {
 		int[] r = new int[2];
-		r[0] = getRow(variable);
+		r[0] = (variable);
 		r[1] = getColumn(lookahead) - 1;
 		return r;
 	}
 
-	/**
-	 * Returns the row location in the table model of the variable.
-	 * 
-	 * @param variable
-	 *            the variable to find the row for
-	 * @return the row where this variable is
-	 * @throws IllegalArgumentException
-	 *             if the variable is not a variable in the grammar
-	 */
-	public int getRow(String variable) {
-		int row = Arrays.binarySearch(variables, variable);
-		if (row < 0)
-			throw new IllegalArgumentException(variable + " is not a variable!");
-		return row;
-	}
+	
 
 	/**
 	 * Returns the column location in the table model of the lookahead terminal.
@@ -154,16 +145,19 @@ public class LLParseTable extends AbstractTableModel implements Serializable,
 	 *             if either variable or lookahead is not a variable or terminal
 	 *             (or $) respectively in the grammar
 	 */
-	public int getColumn(String lookahead) {
-		int column = terminals.length;
-		if (!lookahead.equals("$"))
-			column = Arrays.binarySearch(terminals, lookahead);
+	public int getColumn(SymbolString lookahead) {
+		int column = terminals.size();
+		if (!(lookahead.size() == 1 && 
+				lookahead.getFirst().equals(GUIConstants.END_OF_STRING)))
+			column = SortedSet.binarySearch(terminals, lookahead.getFirst());
 		if (column < 0)
 			throw new IllegalArgumentException(lookahead
 					+ " is not a terminal!");
 		return column + 1;
 	}
 
+	
+	
 	/**
 	 * Given another parse table with the same variable and lookahead, return a
 	 * listing of those pairs of variables and terminals where there are
@@ -434,14 +428,18 @@ public class LLParseTable extends AbstractTableModel implements Serializable,
 		frozen = !editable;
 	}
 
+	/** The grammar used in this parse table. */
+	private Grammar grammar;
+	
 	/** The list of terminals, each corresponding to a column. */
-	private String[] terminals;
+	private Set<Terminal> terminals;
 
 	/** The variables in the grammar, each corresponding to a row. */
-	private String[] variables;
+	private Set<Variable> variables;
 
+	
 	/** The entries in the parse table. */
-	private SortedSet[][] entries;
+	private SortedSet<SymbolString>[][] entries;
 
 	/** Is the table noneditable? */
 	private boolean frozen = false;

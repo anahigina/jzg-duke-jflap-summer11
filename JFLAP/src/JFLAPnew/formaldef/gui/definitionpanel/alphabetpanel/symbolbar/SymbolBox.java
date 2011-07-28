@@ -49,10 +49,11 @@ public class SymbolBox extends JButton implements IMenu, ISymbol, IUpdate {
 
 	@Override
 	public void update(){
-		this.setText(mySymbol.getString());
+		this.setText(mySymbol.isSpecial()? 
+				"<html><u><i><b>" + mySymbol.getString() + "</b></i></u></html>": 
+				mySymbol.getString());
 		this.setBackground(mySymbol.isSpecial() ? GUIConstants.SPECIAL_SYMBOL : GUIConstants.DEFAULT);
 	
-		System.out.println("Box " + this.getSymbol() + " updated");
 	}
 	
 	

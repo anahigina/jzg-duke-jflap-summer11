@@ -50,8 +50,9 @@ public class SymbolBarScrollPane extends JScrollPane  implements IUpdate{
 	@Override
 	public void update() {
 		myBar.update();
-		this.repaint();
+		
 		this.setMaximumSize(new Dimension(myBar.getSize().width + 3, myBar.getSize().height));
+		this.repaint();
 //		this.setMaximumSize(myBar.getSize());
 //		this.setPreferredSize(myBar.getPreferredSize());
 //		System.out.println("Bar Size: " + myBar.getSize());

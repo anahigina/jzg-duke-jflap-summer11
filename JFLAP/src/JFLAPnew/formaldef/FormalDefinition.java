@@ -18,14 +18,16 @@ import JFLAPnew.formaldef.alphabets.specific.TerminalAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.VariableAlphabet;
 import JFLAPnew.formaldef.symbols.Symbol;
 
-public class FormalDefinition extends TreeSet<IAlphabet> implements IComplete {
+public abstract class FormalDefinition extends TreeSet<IAlphabet> implements IComplete {
 
 	public FormalDefinition(Class<? extends IAlphabet> ... alphabets){
+		super();
 		initializeAlphabets(alphabets); 
 			
 	}
 	
 	public FormalDefinition(){
+		super();
 		initializeAlphabets(FormalDefintionFactory.getDefinitionRequirements(this.getClass()));
 	}
 
@@ -39,8 +41,7 @@ public class FormalDefinition extends TreeSet<IAlphabet> implements IComplete {
 	}
 	
 	
-	
-	public <T extends Alphabet> T getAlphabetByClass(Class<T> clazz) {
+	public <T extends IAlphabet> T getAlphabetByClass(Class<T> clazz) {
 		for (IAlphabet alph : this){
 			if (alph.getClass().isAssignableFrom(clazz))
 				return (T) alph;
@@ -92,5 +93,24 @@ public class FormalDefinition extends TreeSet<IAlphabet> implements IComplete {
 		
 	}
 
+	
+	public boolean equals(FormalDefinition other){
+		for (IAlphabet alph: this){
+			if (!other.containsByClass(alph.getClass()) || 
+					!alph.equals(other.getAlphabetByClass(alph.getClass())))
+				return false;
+		}
+		return true;
+	}
+
+	public boolean containsByClass(Class<? extends IAlphabet> clazz) {
+		for (IAlphabet alph : this){
+			if (alph.getClass().isAssignableFrom(clazz))
+				return true;
+		}
+		return false;
+	}
+
+	public abstract String getName();
 
 }

@@ -63,4 +63,9 @@ public class PushdownAutomaton extends Automaton {
 	private StackAlphabet getStackAlphabet() {
 		return this.getAlphabetByClass(StackAlphabet.class);
 	}
+
+	@Override
+	public String getName() {
+		return "Pushdown Automata";
+	}
 }

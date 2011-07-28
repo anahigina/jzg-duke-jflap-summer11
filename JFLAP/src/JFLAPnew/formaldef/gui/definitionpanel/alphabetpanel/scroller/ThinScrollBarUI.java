@@ -40,7 +40,6 @@ public class ThinScrollBarUI extends BasicScrollBarUI {
          */
         int itemH = sbSize.height - (sbInsets.top + sbInsets.bottom);
         int itemY = sbInsets.top;
-        System.out.println("HEIGHT = " + itemH);
         boolean ltr = sb.getComponentOrientation().isLeftToRight();
 
         int leftLimitX = sbInsets.left;
