@@ -64,4 +64,9 @@ public class ContextFreeGrammar extends Grammar {
 		return false;
 	}
 
+	@Override
+	public String getName() {
+		return "Context Free Grammar";
+	}
+
 }
