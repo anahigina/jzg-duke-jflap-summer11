@@ -51,4 +51,9 @@ public class MealyMachine extends Automaton
     {
         return MealyTransition.class;
     }
+
+	@Override
+	public String getName() {
+		return "Mealy Machine";
+	}
 }
