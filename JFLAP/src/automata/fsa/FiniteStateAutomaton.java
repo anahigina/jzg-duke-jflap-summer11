@@ -46,4 +46,9 @@ public class FiniteStateAutomaton extends Automaton {
 	protected Class getTransitionClass() {
 		return automata.fsa.FSATransition.class;
 	}
+
+	@Override
+	public String getName() {
+		return "Finite State Automata";
+	}
 }
