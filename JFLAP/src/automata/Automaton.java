@@ -61,7 +61,7 @@ import gui.viewer.AutomatonPane;
  * @author Thomas Finley
  */
 
-public class Automaton extends FormalDefinition implements Serializable, Cloneable {
+public abstract class Automaton extends FormalDefinition implements Serializable, Cloneable {
 	/**
 	 * Creates an instance of <CODE>Automaton</CODE>. The created instance
 	 * has no states and no transitions.
@@ -995,7 +995,7 @@ public class Automaton extends FormalDefinition implements Serializable, Cloneab
 	/**
 	 * Reset all non-transient data structures.
 	 */
-    protected void clear(){
+    public void clear(){
     	
     	
     	
@@ -1042,5 +1042,6 @@ public class Automaton extends FormalDefinition implements Serializable, Cloneab
         }
         
     }
+
 
 }
