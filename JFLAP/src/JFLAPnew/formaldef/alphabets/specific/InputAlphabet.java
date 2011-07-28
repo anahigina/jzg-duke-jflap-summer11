@@ -1,8 +1,11 @@
 package JFLAPnew.formaldef.alphabets.specific;
 
+import javax.swing.JOptionPane;
+
 import gui.errors.BooleanWrapper;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.Alphabet;
+import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;
 
 public class InputAlphabet extends Alphabet<Terminal>{
@@ -16,31 +19,39 @@ public class InputAlphabet extends Alphabet<Terminal>{
 	}
 
 	@Override
-	public BooleanWrapper canAdd(Terminal sym) {
+	public BooleanWrapper add(Terminal sym) {
 		TapeAlphabet t = this.getParent().getAlphabetByClass(TapeAlphabet.class);
 		if (t != null){
-			return  BooleanWrapper.combineWrappers(
-				 		new BooleanWrapper(t.contains(sym), "This symbol is not a member of the " +
-				 							t.getName() + " Therefore, since " + this.getName() + " is a subset of the " +
-											t.getName() + " this symbol cannot be added."),
-						super.canAdd(sym));
+			if (t.contains(sym)){
+				return super.add(t.getSymbol(sym.getString()));
+			}
+			else{
+			JOptionPane.showInputDialog("This symbol will be added to " + t.getName() + " as well.");
+			BooleanWrapper canAdd = t.add(sym);
+			if (canAdd.isTrue()) canAdd = super.add(sym);
+			return canAdd;
+			}
 		}
-		return super.canAdd(sym);
+		return super.add(sym);
+	}
+	
+	@Override
+	public BooleanWrapper modify(Terminal sym, String change) {
+		TapeAlphabet t = this.getParent().getAlphabetByClass(TapeAlphabet.class);
+		if (t != null){
+			return t.modify(sym, change);
+		}
+		return super.modify(sym, change);
 	}
 
 	@Override
 	public Integer getPriority() {
-		return 4;
+		return GUIConstants.INPUT_PRIORITY;
 	}
 
 	@Override
 	public String getName() {
 		return "Input Alphabet";
-	}
-
-	@Override
-	public char[] getDisallowedCharacers() {
-		return new char[0];
 	}
 
 }

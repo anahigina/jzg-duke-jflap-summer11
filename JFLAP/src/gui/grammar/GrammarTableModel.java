@@ -26,6 +26,8 @@ import gui.GrowableTableModel;
 import java.util.ArrayList;
 import javax.swing.Icon;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
+
 /**
  * The <CODE>GrammarTableModel</CODE> is used as a model for the input of a
  * grammar. The first column is the left hand side of a production, the second
@@ -40,12 +42,14 @@ import javax.swing.Icon;
  */
 
 public class GrammarTableModel extends GrowableTableModel {
-	/**
-	 * Instantiates a <CODE>GrammarTableModel</CODE>.
-	 */
-	public GrammarTableModel() {
-		super(3);
-	}
+
+
+//	/**
+//	 * Instantiates a <CODE>GrammarTableModel</CODE>.
+//	 */
+//	public GrammarTableModel() {
+//		super(3);
+//	}
 
 	/**
 	 * Instantiates a <CODE>GrammarTableModel</CODE>.
@@ -54,7 +58,8 @@ public class GrammarTableModel extends GrowableTableModel {
 	 *            the grammar to have for the grammar table model initialized to
 	 */
 	public GrammarTableModel(Grammar grammar) {
-		this();
+		super(3);
+		myGrammar = grammar;
 		Production[] ps = grammar.getProductions();
 		for (int i = 0; i < ps.length; i++)
 			addProduction(ps[i]);
@@ -114,7 +119,8 @@ public class GrammarTableModel extends GrowableTableModel {
 		String lhs = (String) getValueAt(row, 0);
 		if (lhs.equals(""))
 			return null;
-		return new Production(lhs, (String) getValueAt(row, 2));
+		return new Production(SymbolString.createFromString(lhs, myGrammar),
+								SymbolString.createFromString((String) getValueAt(row, 2), myGrammar));
 	}
 
 	/**
@@ -189,9 +195,20 @@ public class GrammarTableModel extends GrowableTableModel {
 			return null;
 		return super.getValueAt(row, column);
 	}
+	
+	/**
+	 * Gets the grammar associated with this table model
+	 * @return
+	 */
+	public Grammar getAssociatedGrammar() {
+		return myGrammar;
+	}
 
 	/**
 	 * The arrow icon. This is simply the item returned for the second column.
 	 */
 	private static Icon ARROW = new ArrowIcon(20, 8);
+	/** the Grammar associated with this table */
+	private Grammar myGrammar;
+	
 }

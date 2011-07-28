@@ -24,6 +24,10 @@ import grammar.Production;
 
 import java.util.*;
 
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.variable.Variable;
+
 /**
  * CYK Parser 
  * It parses grammar that is in CNF form and returns whether the String is accepted by language or not.
@@ -38,7 +42,7 @@ public class CYKParser {
 	private Production[] myProductions;
 
 	/** Start variable of the grammar */
-	private static String START_VARIABLE;
+	private static Variable START_VARIABLE;
 	
 	/** Length of the input String */
 	private int myTargetLength;
@@ -47,10 +51,10 @@ public class CYKParser {
 	private ArrayList <Production> myAnswerProductions;
 	
 	/** Map to store the result of subparts */
-	private HashMap <String, HashSet<String>> myMap;
+	private HashMap <String, HashSet<SymbolString>> myMap;
 	
 	/** Input string that CYK is trying to parse */
-	private String myTarget;
+	private SymbolString myTarget;
 	
 	private OrderCorrectly myOrderComparator;
 	/**
@@ -68,10 +72,10 @@ public class CYKParser {
 	 * Check whether the grammar accepts the string or not 
 	 * using DP
 	 */
-	public boolean solve(String target)
+	public boolean solve(SymbolString target)
 	{
 		myMap=new HashMap <String, HashSet<String>>();
-		int targetLength=target.length();
+		int targetLength=target.size();
 		myTargetLength=targetLength;
 		myTarget=target;
 		
@@ -80,8 +84,8 @@ public class CYKParser {
 		
 		for (int i=0; i<targetLength; i++)
 		{
-			String a=target.substring(i,i+1);
-			HashSet <String> temp=new HashSet <String>();
+			SymbolString a=target.subList(i,i+1);
+			HashSet<SymbolString> temp=new HashSet <SymbolString>();
 			int count=0;
 
 			for (int j=0; j<myProductions.length; j++)

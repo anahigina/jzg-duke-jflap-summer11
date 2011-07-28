@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import JFLAPnew.formaldef.AlphabetException;
+import JFLAPnew.formaldef.alphabets.IAlphabet;
 import JFLAPnew.formaldef.symbols.variable.Variable;
 
 public class SymbolHelper {
@@ -91,4 +92,7 @@ public class SymbolHelper {
 			return symbols;
 		}
 	
+		
+		
+		
 }

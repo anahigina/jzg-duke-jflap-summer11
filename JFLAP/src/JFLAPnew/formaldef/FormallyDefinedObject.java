@@ -16,9 +16,9 @@ public abstract class FormallyDefinedObject implements IFormallyDefined {
 		myDefintion = fd;
 	}
 	
-	public void resetDefintion(){
-		myDefintion = new FormalDefinition(
-				FormalDefintionFactory.getDefinitionRequirements(this.getClass()));
-	}
+//	public void resetDefintion(){
+//		myDefintion = new FormalDefinition(
+//				FormalDefintionFactory.getDefinitionRequirements(this.getClass()));
+//	}
 	
 }

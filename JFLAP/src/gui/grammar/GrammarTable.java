@@ -43,13 +43,6 @@ import debug.EDebug;
  */
 
 public class GrammarTable extends HighlightTable {
-	/**
-	 * Instantiates a <CODE>GrammarTable</CODE> with an empty grammar.
-	 */
-	public GrammarTable() {
-		super(new GrammarTableModel());
-		initView();
-	}
 
 	/**
 	 * Instantiates a <CODE>GrammarTable</CODE> with a given table model.
@@ -123,38 +116,41 @@ public class GrammarTable extends HighlightTable {
 	 *             if the grammar class passed in could not be instantiated with
 	 *             an empty constructor, or is not even a subclass of <CODE>Grammar</CODE>.
 	 */
-	public Grammar getGrammar(Class grammarClass) {
-		Grammar grammar = null;
-		try {
-			grammar = (Grammar) grammarClass.newInstance();
-		} catch (NullPointerException e) {
-            EDebug.print("Throwing a Null Pointer Back at YOU.");
-			throw e;
-		} catch (Throwable e) {
-			throw new IllegalArgumentException("Bad grammar class "
-					+ grammarClass);
-		}
-		GrammarTableModel model = getGrammarModel();
-		// Make sure we're not editing anything anymore.
-		if (getCellEditor() != null)
-			getCellEditor().stopCellEditing();
-		// Add the productions.
-		for (int row = 0; row < model.getRowCount(); row++) {
-			Production p = model.getProduction(row);
-			if (p == null)
-				continue;
-			try {
-				grammar.addProduction(p);
-				if (grammar.getStartVariable() == null)
-					grammar.setStartVariable(p.getLHS());
-			} catch (IllegalArgumentException e) {
-				setRowSelectionInterval(row, row);
-				JOptionPane.showMessageDialog(this, e.getMessage(),
-						"Production Error", JOptionPane.ERROR_MESSAGE);
-				return null;
-			}
-		}
-		return grammar;
+	//TODO: check this out - everything is going to be added dynamically and tehn updated, so 
+	//this method will no longer be needed. Make sure it is all ok.
+	public Grammar getGrammar() {
+//		Grammar grammar = null;
+//		try {
+//			grammar = (Grammar) grammarClass.newInstance();
+//		} catch (NullPointerException e) {
+//            EDebug.print("Throwing a Null Pointer Back at YOU.");
+//			throw e;
+//		} catch (Throwable e) {
+//			throw new IllegalArgumentException("Bad grammar class "
+//					+ grammarClass);
+//		}
+//		GrammarTableModel model = getGrammarModel();
+//		// Make sure we're not editing anything anymore.
+//		if (getCellEditor() != null)
+//			getCellEditor().stopCellEditing();
+//		// Add the productions.
+//		for (int row = 0; row < model.getRowCount(); row++) {
+//			Production p = model.getProduction(row);
+//			if (p == null)
+//				continue;
+//			try {
+//				grammar.addProduction(p);
+//				if (grammar.getStartVariable() == null)
+//					grammar.setStartVariable(p.getLHS());
+//			} catch (IllegalArgumentException e) {
+//				setRowSelectionInterval(row, row);
+//				JOptionPane.showMessageDialog(this, e.getMessage(),
+//						"Production Error", JOptionPane.ERROR_MESSAGE);
+//				return null;
+//			}
+//		}
+//		return grammar;
+		return ((GrammarTableModel) this.getModel()).getAssociatedGrammar();
 	}
 
 	/** Modified to use the set renderer highlighter. */

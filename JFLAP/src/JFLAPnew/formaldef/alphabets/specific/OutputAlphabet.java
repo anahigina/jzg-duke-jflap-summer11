@@ -2,6 +2,7 @@ package JFLAPnew.formaldef.alphabets.specific;
 
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.Alphabet;
+import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;
 
 public class OutputAlphabet extends Alphabet<Terminal> {
@@ -16,7 +17,7 @@ public class OutputAlphabet extends Alphabet<Terminal> {
 
 	@Override
 	public Integer getPriority() {
-		return 6;
+		return GUIConstants.OUTPUT_PRIORITY;
 	}
 
 	@Override
@@ -24,9 +25,4 @@ public class OutputAlphabet extends Alphabet<Terminal> {
 		return "Output Alphabet";
 	}
 
-	@Override
-	public char[] getDisallowedCharacers() {
-		return new char[0];
-	}
-	
 }

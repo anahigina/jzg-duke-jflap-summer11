@@ -24,6 +24,7 @@ import java.util.*;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 
+import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.FormallyDefinedObject;
 
 /**
@@ -32,7 +33,7 @@ import JFLAPnew.formaldef.FormallyDefinedObject;
  * @author Thomas Finley
  */
 
-public class RegularExpression extends FormallyDefinedObject implements Serializable {
+public class RegularExpression extends FormalDefinition implements Serializable {
 	/**
 	 * Instantiates a blank regular expression.
 	 */
@@ -251,6 +252,12 @@ public class RegularExpression extends FormallyDefinedObject implements Serializ
 		listeners = new HashSet();
 	}
 
+	@Override
+	public String getName() {
+		return "Regular Expression";
+	}
+	
+	
 	/** The string of the regular expression. */
 	private String string;
 
@@ -259,4 +266,6 @@ public class RegularExpression extends FormallyDefinedObject implements Serializ
 
 	/** The referrence object that holds the change. */
 	private Reference reference = null;
+
+	
 }

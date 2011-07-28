@@ -30,11 +30,14 @@ import JFLAPnew.formaldef.symbols.SymbolString;
  * Class to determine the whether loaded grammar is Turing Converted Grammar or not
  * @author Kyung Min (Jason) Lee
  *
+ *	As of the SymbolPackage addition, this class should no longer be needed as every 
+ *	grammar will have a standard format
  */
-public final class TuringChecker {
+@Deprecated
+public class TuringChecker {
 
-	private static final SymbolString LHS_DEFAULT={"S", "S", "S"};
-	private static final SymbolString RHS_DEFAULT={"V(==)S", "SV(==)", "T"};
+//	private static final SymbolString LHS_DEFAULT={"S", "S", "S"};
+//	private static final SymbolString RHS_DEFAULT={"V(==)S", "SV(==)", "T"};
 	
 	/**
 	 * Checks whether loaded grammar is Turing Converted Grammar or not.
@@ -56,10 +59,10 @@ public final class TuringChecker {
 			{
 				SymbolString lhs=p[i].getLHS();
 				SymbolString rhs=p[i].getRHS();
-				if (lhs.equals(LHS_DEFAULT[i]) && rhs.equals(RHS_DEFAULT[i]))
-				{
-					count++;
-				}
+//				if (lhs.equals(LHS_DEFAULT[i]) && rhs.equals(RHS_DEFAULT[i]))
+//				{
+//					count++;
+//				}
 			}
 			if (count==3)
 				return true;

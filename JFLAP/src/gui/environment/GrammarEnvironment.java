@@ -71,7 +71,7 @@ public class GrammarEnvironment extends Environment {
 	 * @return the <CODE>Grammar</CODE> for this environment
 	 */
 	public Serializable getObject() {
-		return getGrammar(UnboundGrammar.class);
+		return getGrammar(Grammar.class);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class GrammarEnvironment extends Environment {
 	 * @return the <CODE>ContextFreeGrammar</CODE> for this environment
 	 */
 	public Grammar getGrammar() {
-		return input.getGrammar();
+		return input.getGrammar(Grammar.class);
 	}
 
 	/**

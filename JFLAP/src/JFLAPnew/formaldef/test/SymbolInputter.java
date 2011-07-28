@@ -9,8 +9,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import JFLAPnew.formaldef.gui.DefinitionPanel;
-import JFLAPnew.formaldef.gui.actions.AddSymbolAction;
+import JFLAPnew.formaldef.gui.definitionpanel.DefinitionPanel;
+import JFLAPnew.formaldef.gui.definitionpanel.actions.AddSymbolAction;
 
 
 public class SymbolInputter extends JTextField implements ActionListener{

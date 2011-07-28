@@ -38,13 +38,6 @@ import java.awt.*;
  */
 
 public class GrammarInputPane extends JPanel {
-	/**
-	 * Instantiates an empty <CODE>GrammarInputPane</CODE>.
-	 */
-	public GrammarInputPane() {
-		model = new GrammarTableModel();
-		initView();
-	}
 
 	/**
 	 * Instantiates a <CODE>GrammarInputPane</CODE> that holds and displays
@@ -118,20 +111,10 @@ public class GrammarInputPane extends JPanel {
 		add(new TableTextSizeSlider(table), BorderLayout.NORTH);
 	}
 
-	/**
-	 * Returns the grammar that has been defined through this <CODE>GrammarInputPane</CODE>.
-	 * This method returns a grammar of the type <CODE>ContextFreeGrammar</CODE>.
-	 * 
-	 * @return the grammar defined by this input pane, or <CODE>null</CODE> if
-	 *         an error occurred
-	 */
-	public Grammar getGrammar() {
-		return getGrammar(ContextFreeGrammar.class);
-	}
 
 	/**
 	 * Returns the grammar that has been defined through this <CODE>GrammarInputPane</CODE>,
-	 * where the grammar is an instance of the class passed into this function.
+	 * where the grammar is cast to the class passed into this function.
 	 * 
 	 * @param grammarClass
 	 *            the type of grammar that is passed in
@@ -140,19 +123,10 @@ public class GrammarInputPane extends JPanel {
 	 *             if the grammar class passed in could not be instantiated with
 	 *             an empty constructor, or is not even a subclass of <CODE>Grammar</CODE>.
 	 */
-	public Grammar getGrammar(Class grammarClass) {
-		return table.getGrammar(grammarClass);
+	public <T extends Grammar> T getGrammar(Class<T> clazz) {
+		return clazz.cast(table.getGrammar());
 	}
 
-	/**
-	 * Returns the grammar that has been defined through this <CODE>GrammarInputPane</CODE>.
-	 * 
-	 * @return the grammar defined by this input pane, or <CODE>null</CODE> if
-	 *         an error occurred
-	 */
-	public RegularGrammar getRegularGrammar() {
-		return (RegularGrammar) getGrammar(RegularGrammar.class);
-	}
 
 	/**
 	 * Returns the table.

@@ -25,6 +25,7 @@ import gui.viewer.AutomatonPane;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.State;
 import automata.Transition;
 import automata.pda.PDATransition;
@@ -56,7 +57,7 @@ public class PDATransitionCreator extends TableTransitionCreator {
 	 *            to too state
 	 */
 	protected Transition initTransition(State from, State to) {
-		return new PDATransition(from, to, "", "", "");
+		return new PDATransition(from, to);
 	}
 
 	/**
@@ -104,9 +105,12 @@ public class PDATransitionCreator extends TableTransitionCreator {
 	 * Modifies a transition according to what's in the table.
 	 */
 	public Transition modifyTransition(Transition transition, TableModel model) {
-		String input = (String) model.getValueAt(0, 0);
-		String pop = (String) model.getValueAt(0, 1);
-		String push = (String) model.getValueAt(0, 2);
+		SymbolString input = SymbolString.createFromString((String) model.getValueAt(0, 0), 
+				this.getAutomaton());
+		SymbolString pop = SymbolString.createFromString((String) model.getValueAt(0, 1),
+				this.getAutomaton());
+		SymbolString push =  SymbolString.createFromString((String) model.getValueAt(0, 2),
+				this.getAutomaton());
 		PDATransition t = (PDATransition) transition;
 		try {
 			return new PDATransition(t.getFromState(), t.getToState(), input,

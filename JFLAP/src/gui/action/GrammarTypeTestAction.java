@@ -32,6 +32,10 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
 
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
+import JFLAPnew.formaldef.symbols.variable.Variable;
+
 import debug.EDebug;
 
 /**
@@ -74,7 +78,7 @@ public class GrammarTypeTestAction extends GrammarAction {
 		{
 			if (!isContextFreeGrammar(p, g))
 			{
-				checkForSpecialUnrestrictedGrammar(p);
+//				checkForSpecialUnrestrictedGrammar(p);
 			}
 		}
 	}
@@ -82,14 +86,17 @@ public class GrammarTypeTestAction extends GrammarAction {
 	/**
 	 * Check if the grammar is Unrestrcited Grammar from TM (through our conversion feature)
 	 * @param p Production to check for
+	 * 
+	 * This method should no longer be necessary following implementation of new symbol system
 	 */
+	@Deprecated
 	private void checkForSpecialUnrestrictedGrammar(Production[] p) {
 		// primitive, but it's not that bad. 
 		//Check to see if production contains three special productions that indicates, it is converted from TM\
 		Production[] sp=new Production[3];
-		sp[0]=new Production("S", "V(==)S");
-		sp[1]=new Production("S", "SV(==)");
-		sp[2]=new Production("S", "T");
+//		sp[0]=new Production("S", "V(==)S");
+//		sp[1]=new Production("S", "SV(==)");
+//		sp[2]=new Production("S", "T");
 		boolean[] count=new boolean[3];
 		for (int i=0; i<p.length; i++)
 		{
@@ -115,10 +122,10 @@ public class GrammarTypeTestAction extends GrammarAction {
 			int tt=0;
 			for (int i=0; i<p.length; i++)
 			{
-				if (p[i].getLHS().length()<=p[i].getRHS().length())
-				{
-					tt++;
-				}
+//				if (p[i].getLHS().length()<=p[i].getRHS().length())
+//				{
+//					tt++;
+//				}
 			}
 			if (tt==p.length)
 			{
@@ -166,16 +173,16 @@ public class GrammarTypeTestAction extends GrammarAction {
 			boolean isGNF=true;
 			for (int i=0; i<p.length; i++)
 			{
-				if (p[i].getRHS().length()==0)
+				if (p[i].getRHS().size()==0)
 					count++;
 				else
 				{
-					char firstCh=p[i].getRHS().charAt(0);
-					if (ProductionChecker.isTerminal(firstCh))
+					Symbol first=p[i].getRHS().getFirst();
+					if (first instanceof Terminal)
 					{
-						for (int j=1; j<p[i].getRHS().length(); j++)
+						for (int j=1; j<p[i].getRHS().size(); j++)
 						{
-							if (!ProductionChecker.isVariable(p[i].getRHS().charAt(j)))
+							if (p[i].getRHS().get(j) instanceof Variable)
 							{
 								isGNF=false;
 							}

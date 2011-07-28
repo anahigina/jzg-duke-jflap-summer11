@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Observable;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -19,7 +20,7 @@ import JFLAPnew.formaldef.symbols.Symbol;
 import JFLAPnew.formaldef.symbols.SymbolHelper;
 import JFLAPnew.formaldef.symbols.variable.Variable;
 
-public abstract class Alphabet<T extends Symbol> implements IAlphabet<T> {
+public abstract class Alphabet<T extends Symbol> extends Observable implements IAlphabet<T> {
 
 
 	private TreeSet<T> mySymbols;
@@ -49,7 +50,19 @@ public abstract class Alphabet<T extends Symbol> implements IAlphabet<T> {
 		return this.getPriority().compareTo(o.getPriority());
 	}
 	
+	
 	public boolean equals(IAlphabet o){
+		if (!this.equalsByPriority(o))
+			return false;
+		Set<T> a1 = this.clone().getSymbols(),
+				a2 = o.clone().getSymbols();
+		a1.removeAll(o.getSymbols());
+		a2.removeAll(this.getSymbols());
+		return a1.isEmpty() && a2.isEmpty();
+		
+	}
+	
+	public boolean equalsByPriority(IAlphabet o){
 		return this.getPriority().equals(o.getPriority());
 	}
 
@@ -101,7 +114,7 @@ public abstract class Alphabet<T extends Symbol> implements IAlphabet<T> {
 	}
 
 	@Override
-	public boolean containsSymbolString(String... strings) {
+	public boolean containsSymbolWithString(String... strings) {
 		for	(String s: strings){
 			if (!this.contains(this.createDesiredSymbol(s))) 
 				return false; 
@@ -123,7 +136,7 @@ public abstract class Alphabet<T extends Symbol> implements IAlphabet<T> {
 	public BooleanWrapper canAdd(T sym) {
 		if (sym.length() <= 0)
 			return new BooleanWrapper(false, "You may not add a symbol of no length.");
-		for (char c: this.getDisallowedCharacers()){
+		for (Character c: this.getDisallowedCharacters()){
 			if (sym.containsCharacters(c))
 				return new BooleanWrapper(false, "The character " + c + " is disallowed for this " + this.getName() +
 						". For more information on allowability rules, visit <LINKLINK>.");
@@ -190,7 +203,7 @@ public abstract class Alphabet<T extends Symbol> implements IAlphabet<T> {
 	@Override
 	public BooleanWrapper modify(T from, String to) {
 		BooleanWrapper canChange = this.canModify(from, to);
-		if (canChange.isTrue()) this.getSymbol(from.getString()).setString(to);
+		if (canChange.isTrue()) from.setString(to);
 		return canChange;
 	}
 
@@ -254,7 +267,32 @@ public abstract class Alphabet<T extends Symbol> implements IAlphabet<T> {
 		
 	}
 
-	
-	
+	/**
+	 * Returns the "index" of the item in this Alphabet.
+	 * 
+	 * @param variable
+	 *            the variable to find the row for
+	 * @return the index of the symbol
+	 * 				-1 if the symbol is not in the ALphabet
+	 */
+	public int getIndex(T sym) {
+		int index = mySymbols.size()-1;
+		for (T s : mySymbols.descendingSet()){
+			if (s.equals(sym))
+				break;
+			index--;
+		}
+		return index;	
+	}
 
+	@Override
+	public ArrayList<Character> getDisallowedCharacters() {
+		return new ArrayList<Character>(Arrays.asList(new Character[]{' '}));
+	}
+	
+	@Override
+	public int size(){
+		return mySymbols.size();
+	}
+	
 }

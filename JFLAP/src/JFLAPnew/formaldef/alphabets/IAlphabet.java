@@ -2,6 +2,7 @@ package JFLAPnew.formaldef.alphabets;
 
 import gui.errors.BooleanWrapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ public interface IAlphabet<T extends Symbol> extends Comparable<IAlphabet>,
 	
 	public BooleanWrapper add(String s);
 	
-	public boolean containsSymbolString(String ... strings);
+	public boolean containsSymbolWithString(String ... strings);
 	
 	public boolean contains(T ... sym);
 	
@@ -57,8 +58,10 @@ public interface IAlphabet<T extends Symbol> extends Comparable<IAlphabet>,
 	
 	public T createDesiredSymbol(String s);
 	
-	public char[] getDisallowedCharacers();
+	public ArrayList<Character> getDisallowedCharacters();
 
 	public IAlphabet<T> clone();
+	
+	public int size();
 	
 }

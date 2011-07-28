@@ -1,23 +1,29 @@
 package JFLAPnew.formaldef.alphabets.specific;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gui.errors.BooleanWrapper;
 
 import javax.swing.JOptionPane;
 
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.Alphabet;
+import JFLAPnew.formaldef.alphabets.ISpecialSymbol;
+import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
+import JFLAPnew.formaldef.symbols.Symbol;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;
 
 public class TapeAlphabet extends Alphabet<Terminal> {
 
+	private char BLANK;
+
+
 	public TapeAlphabet(FormalDefinition parent) {
 		super(parent);
+		BLANK =  '\u25A1';
 	}
 
-
-	public TapeAlphabet() {
-		super();
-	}
 
 
 	@Override
@@ -30,38 +36,22 @@ public class TapeAlphabet extends Alphabet<Terminal> {
 		return super.remove(sym);
 	}
 	
-	
-
 	@Override
 	public BooleanWrapper canModify(Terminal from, String to) {
-		InputAlphabet input = this.getParent().getAlphabetByClass(InputAlphabet.class);
-		BooleanWrapper bw;
-		if (input.contains(from)){
-			 bw = super.canModify(from, to);
-			 input.add(from);
+		BooleanWrapper canModify = super.remove(from);
+		if (canModify.isTrue()) {
+			canModify = this.canAdd(this.createDesiredSymbol(to));
+			this.add(from);
 		}
-		else
-			bw =  super.canModify(from, to);
 		
-		return bw;
+		return canModify;
 	}
-
-
-	@Override
-	public BooleanWrapper modify(Terminal from, String to) {
-		InputAlphabet input = this.getParent().getAlphabetByClass(InputAlphabet.class);
-		
-		BooleanWrapper mod;
-		
-		if ((mod = super.modify(from, to)).isTrue() && input.contains(from))
-			mod = BooleanWrapper.combineWrappers(input.modify(from, to), mod);
-		return mod;
-	}
+	
 
 
 	@Override
 	public Integer getPriority() {
-		return 3;
+		return GUIConstants.TAPE_PRIORITY;
 	}
 
 	@Override
@@ -70,10 +60,21 @@ public class TapeAlphabet extends Alphabet<Terminal> {
 	}
 	
 	@Override
-	public char[] getDisallowedCharacers() {
-		//TODO: Add blank? anything else?
-		return new char[0];
+	public ArrayList<Character> getDisallowedCharacters() {
+		ArrayList<Character> disallowed = super.getDisallowedCharacters();
+		disallowed.add(this.getBlankSymbol());
+		return disallowed;
 	}
+
+
+	public void setBlankSymbol(char c){
+		BLANK = c;
+	}
+	
+	private char getBlankSymbol() {
+		return BLANK;
+	}
+
 
 
 }

@@ -43,6 +43,7 @@ import pumping.PumpingLemma;
 import pumping.RegularPumpingLemma;
 
 import regular.RegularExpression;
+import JFLAPnew.formaldef.gui.definitioncreator.DefinitionCreationPanel;
 import automata.Automaton;
 import automata.mealy.MealyMachine;
 import automata.mealy.MooreMachine;
@@ -192,7 +193,11 @@ public class EnvironmentFactory {
 			Environment env = new LSystemEnvironment(lsinput);
 			env.add(lsinput, EDITOR_NAME, EDITOR_PERMANENT_TAG);
 			return env;
-		} else {
+		} else if (object instanceof MetaDefinition){
+			Environment env = new DefinitionCreationEnvironment(input);
+		}
+		
+		else {
 			JOptionPane.showMessageDialog(null, "Unknown type "
 					+ object.getClass() + " read!", "Bad Type",
 					JOptionPane.ERROR_MESSAGE);

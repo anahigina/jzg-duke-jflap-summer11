@@ -3,9 +3,11 @@ package JFLAPnew.formaldef.alphabets.specific;
 import gui.errors.BooleanWrapper;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.Alphabet;
+import JFLAPnew.formaldef.alphabets.Alphabets;
 import JFLAPnew.formaldef.alphabets.ISpecialSymbol;
 import JFLAPnew.formaldef.grouping.GroupingPair;
 import JFLAPnew.formaldef.grouping.IGrouping;
+import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
 import JFLAPnew.formaldef.symbols.Symbol;
 import JFLAPnew.formaldef.symbols.SymbolHelper;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;
@@ -66,17 +68,16 @@ public class VariableAlphabet extends GrammarAlphabet<Variable> implements IGrou
 	}
 
 	public Variable getStartVariable() {
-		return this.getSpecialSymbol();
+		if (Alphabets.getSpecialSymbols(this).isEmpty())
+			return null;
+		return Alphabets.getSpecialSymbols(this).get(0);
 	}
 	
-	public BooleanWrapper setStartVariable(Variable variable) {
-		return this.setSpecialSymbol(variable.getString());
-	}
 
 
 	@Override
 	public Integer getPriority() {
-		return 1;
+		return GUIConstants.VARIABLE_PRIORITY;
 	}
 
 	@Override
@@ -102,44 +103,6 @@ public class VariableAlphabet extends GrammarAlphabet<Variable> implements IGrou
 		return myGrouping != null;
 	}
 
-	@Override
-	public char[] getDisallowedCharacers() {
-		return new char[0];
-	}
-
-
-	
-	
-	
-	@Override
-	public Variable getSpecialSymbol() {
-		for (Variable s: this.getSymbols())
-			if (s.isSpecial())
-				return s;
-		return null;
-	}
-	
-	@Override
-	public BooleanWrapper setSpecialSymbol(Variable t) {
-		return this.setSpecialSymbol(t.getString());
-	}
-
-	@Override
-	public BooleanWrapper setSpecialSymbol(String string) {
-		Variable sym = this.getSymbol(string);
-		if (sym != null){
-			this.clearSpecialSymbol();
-			sym.setSpecial(true);
-		}
-		return new BooleanWrapper(sym != null, "The " + this.getName() + " does not contain a symbol " + 
-							"corresponding to the input string");
-	}
-
-	@Override
-	public void clearSpecialSymbol() {
-		for (Variable s: this.getSymbols())
-			s.setSpecial(false);
-	}
 	
 	@Override
 	public String getSpecialSymbolName() {
@@ -147,8 +110,8 @@ public class VariableAlphabet extends GrammarAlphabet<Variable> implements IGrou
 	}
 
 
-	public BooleanWrapper setStartVariable(String variable) {
-		return this.setSpecialSymbol(variable);
+	public BooleanWrapper setStartVariable(Variable variable) {
+		return Alphabets.setSpecialSymbol(this, variable);
 	}
 
 

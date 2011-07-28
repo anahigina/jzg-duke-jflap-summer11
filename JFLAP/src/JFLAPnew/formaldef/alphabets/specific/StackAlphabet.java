@@ -3,7 +3,9 @@ package JFLAPnew.formaldef.alphabets.specific;
 import gui.errors.BooleanWrapper;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.Alphabet;
+import JFLAPnew.formaldef.alphabets.Alphabets;
 import JFLAPnew.formaldef.alphabets.ISpecialSymbol;
+import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;
 
 public class StackAlphabet extends Alphabet<Terminal> implements ISpecialSymbol<Terminal>{
@@ -18,7 +20,7 @@ public class StackAlphabet extends Alphabet<Terminal> implements ISpecialSymbol<
 
 	@Override
 	public Integer getPriority() {
-		return 5;
+		return GUIConstants.STACK_PRIORITY;
 	}
 	
 	@Override
@@ -29,11 +31,11 @@ public class StackAlphabet extends Alphabet<Terminal> implements ISpecialSymbol<
 	}
 
 	public Terminal getBottomOfStackSymbol() {
-		return this.getSpecialSymbol();
+		return Alphabets.getSpecialSymbols(this).get(0);
 	}
 	
 	public BooleanWrapper setBottomOfStackSymbol(Terminal t) {
-		return this.setSpecialSymbol(t);
+		return Alphabets.setSpecialSymbol(this, t);
 	}
 
 
@@ -42,41 +44,6 @@ public class StackAlphabet extends Alphabet<Terminal> implements ISpecialSymbol<
 		return "Stack Alphabet";
 	}
 	
-	@Override
-	public char[] getDisallowedCharacers() {
-		return new char[0];
-	}
-	
-	@Override
-	public Terminal getSpecialSymbol() {
-		for (Terminal s: this.getSymbols())
-			if (s.isSpecial())
-				return s;
-		return null;
-	}
-	
-	@Override
-	public BooleanWrapper setSpecialSymbol(Terminal t) {
-		return this.setSpecialSymbol(t.getString());
-	}
-
-	@Override
-	public BooleanWrapper setSpecialSymbol(String string) {
-		Terminal sym = this.getSymbol(string);
-		if (sym != null){
-			this.clearSpecialSymbol();
-			sym.setSpecial(true);
-		}
-		return new BooleanWrapper(sym != null, "The " + this.getName() + " does not contain a symbol " + 
-							"corresponding to the input string");
-	}
-
-	@Override
-	public void clearSpecialSymbol() {
-		for (Terminal s: this.getSymbols())
-			s.setSpecial(false);
-	}
-
 	@Override
 	public String getSpecialSymbolName() {
 		return "Bottom of Stack Symbol";

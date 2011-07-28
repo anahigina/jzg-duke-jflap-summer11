@@ -32,12 +32,6 @@ import grammar.Grammar;
  */
 
 public class ImmutableGrammarTableModel extends GrammarTableModel {
-	/**
-	 * Instantiates a <CODE>GrammarTableModel</CODE>.
-	 */
-	public ImmutableGrammarTableModel() {
-		super();
-	}
 
 	/**
 	 * Instantiates a <CODE>GrammarTableModel</CODE>.

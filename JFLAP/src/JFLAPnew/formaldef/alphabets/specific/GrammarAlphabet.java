@@ -1,5 +1,8 @@
 package JFLAPnew.formaldef.alphabets.specific;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gui.errors.BooleanWrapper;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.Alphabet;
@@ -29,8 +32,15 @@ public abstract class GrammarAlphabet<T extends Symbol> extends Alphabet<T> {
 
 
 	protected BooleanWrapper checkIdentical(String string, String otherAlphName) {
-		return new BooleanWrapper(!this.containsSymbolString(string), "You may not add a symbol to " + this.getName() + 
+		return new BooleanWrapper(!this.containsSymbolWithString(string), "You may not add a symbol to " + this.getName() + 
 				 " which has String identical to a symbol in the " + otherAlphName);
+	}
+
+	@Override
+	public ArrayList<Character> getDisallowedCharacters() {
+		ArrayList<Character> disallowed = super.getDisallowedCharacters();
+		disallowed.add(new Character('$'));
+		return disallowed;
 	}
 	
 

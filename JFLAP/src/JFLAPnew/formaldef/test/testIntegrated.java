@@ -12,9 +12,10 @@ import gui.editor.EditorPane;
 import gui.environment.AutomatonEnvironment;
 import gui.environment.Environment;
 import JFLAPnew.formaldef.FormalDefinition;
-import JFLAPnew.formaldef.gui.DefinitionPanel;
-import JFLAPnew.formaldef.gui.chooser.ModuleChooser;
-import JFLAPnew.formaldef.gui.chooser.ModuleChooserPanel;
+import JFLAPnew.formaldef.MetaDefinition;
+import JFLAPnew.formaldef.gui.definitioncreator.chooser.ModuleChooser;
+import JFLAPnew.formaldef.gui.definitioncreator.chooser.ModuleChooserPanel;
+import JFLAPnew.formaldef.gui.definitionpanel.DefinitionPanel;
 import automata.Automaton;
 
 public class testIntegrated {
@@ -28,7 +29,7 @@ public class testIntegrated {
 	 */
 	public static void main(String[] args) {
 		
-		FormalDefinition formalDef = new FormalDefinition(new ModuleChooser(X,Y).getSelection());
+		FormalDefinition formalDef = new MetaDefinition(new ModuleChooser(X,Y).getSelection());
 		
 		DefinitionPanel defPanel = new DefinitionPanel(formalDef, DIMENSION);
 		

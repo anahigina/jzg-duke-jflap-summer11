@@ -30,6 +30,11 @@ public class SymbolString extends LinkedList<Symbol> implements Comparable<Symbo
 			this.add(s);
 	}
 
+	@Override
+	public SymbolString subList(int start, int end){
+		return new SymbolString(super.subList(start, end).toArray(new Symbol[0]));
+	}
+	
 	public String toString(){
 		String string = "";
 		for (Symbol s: this){
@@ -38,7 +43,7 @@ public class SymbolString extends LinkedList<Symbol> implements Comparable<Symbo
 		return string;
 	}
 	
-	public static LinkedList<? extends Symbol> createFromString(String in,
+	public static SymbolString createFromString(String in,
 			FormalDefinition def) {
 		
 		String temp = "";
@@ -47,7 +52,7 @@ public class SymbolString extends LinkedList<Symbol> implements Comparable<Symbo
 		for (int i = 0; i < in.length(); i++){
 			temp += in.charAt(i);
 			for (IAlphabet alph: def){
-				if (alph.containsSymbolString(temp)){
+				if (alph.containsSymbolWithString(temp)){
 					symbols.add(alph.createDesiredSymbol(temp));
 					temp = "";
 					break;

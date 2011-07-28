@@ -32,12 +32,6 @@ import gui.errors.BooleanWrapper;
  */
 
 public class UnboundGrammar extends Grammar {
-	/**
-	 * Creates a new grammar.
-	 */
-	public UnboundGrammar() {
-		setStartVariable("S");
-	}
 
 	/**
 	 * Every production is all right except those with lambda in the left hand
@@ -61,6 +55,11 @@ public class UnboundGrammar extends Grammar {
 	public boolean isConverted() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public String getName() {
+		return "Unbound Grammar";
 	}
 
 }

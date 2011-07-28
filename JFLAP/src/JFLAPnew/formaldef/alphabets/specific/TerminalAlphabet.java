@@ -1,8 +1,12 @@
 package JFLAPnew.formaldef.alphabets.specific;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gui.errors.BooleanWrapper;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.Alphabet;
+import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;
 
 public class TerminalAlphabet extends GrammarAlphabet<Terminal> {
@@ -31,7 +35,7 @@ public class TerminalAlphabet extends GrammarAlphabet<Terminal> {
 
 	@Override
 	public Integer getPriority() {
-		return 2;
+		return GUIConstants.TERMINAL_PRIORITY;
 	}
 
 	@Override
@@ -40,13 +44,15 @@ public class TerminalAlphabet extends GrammarAlphabet<Terminal> {
 	}
 
 	@Override
-	public char[] getDisallowedCharacers() {
+	public ArrayList<Character> getDisallowedCharacters() {
 		VariableAlphabet vars = this.getParent().getAlphabetByClass(VariableAlphabet.class);
-		if (vars.usingGrouping()){
-			return new char[]{vars.getGrouping().getOpenGroup().charAt(0), 
-								vars.getGrouping().getCloseGroup().charAt(0)};
+		ArrayList<Character> disallowed = super.getDisallowedCharacters();
+		if (vars != null && vars.usingGrouping()){
+			disallowed.add(vars.getGrouping().getOpenGroup().charAt(0));
+			disallowed.add(vars.getGrouping().getCloseGroup().charAt(0));
 		}
-		return new char[0];
+		return disallowed;
 	}
+
 	
 }

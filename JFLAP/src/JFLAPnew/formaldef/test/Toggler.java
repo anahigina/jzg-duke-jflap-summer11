@@ -1,5 +1,6 @@
 package JFLAPnew.formaldef.test;
 
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -13,16 +14,16 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
 import JFLAPnew.JFLAPpreferences;
-import JFLAPnew.formaldef.gui.DefinitionPanel;
-import JFLAPnew.formaldef.gui.symbolbar.IUpdate;
+import JFLAPnew.formaldef.gui.definitionpanel.DefinitionPanel;
+import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.IUpdate;
 
 public class Toggler extends JPanel {
 
-	private List<IUpdate> myUpdates;
+	private List<Component> myUpdates;
 
 	
 	public Toggler(){
-		myUpdates = new ArrayList<IUpdate>();
+		myUpdates = new ArrayList<Component>();
 		this.add(new ToggleButton(this, this.getSize()));
 		this.setVisible(true);
 	}
@@ -60,12 +61,12 @@ public class Toggler extends JPanel {
 
 	}
 
-	public void addUpdatable(IUpdate update) {
+	public void addUpdatable(Component update) {
 		myUpdates.add(update);		
 	}
 
 	protected void updateAll() {
-		for (IUpdate up : myUpdates)	
-			up.update();
+		for (Component up : myUpdates)	
+			up.repaint();
 	}
 }

@@ -61,4 +61,9 @@ public class UnrestrictedGrammar extends Grammar {
 	public boolean isConverted() {
 		return false;
 	}
+
+	@Override
+	public String getName() {
+		return "Unrestricted Grammar";
+	}
 }
