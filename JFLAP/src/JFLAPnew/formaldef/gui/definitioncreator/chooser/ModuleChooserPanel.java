@@ -15,6 +15,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -42,7 +43,7 @@ public abstract class ModuleChooserPanel extends JPanel implements ActionListene
 	
 	private ArrayList<ChooserOption> myChoices;
 	
-	public ModuleChooserPanel(){
+	public ModuleChooserPanel(Class<? extends FormalDefinition> ... toDisable){
 		myChoices = new ArrayList<ChooserOption>();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBorder(BorderFactory.createTitledBorder("Select Modules"));
@@ -50,6 +51,9 @@ public abstract class ModuleChooserPanel extends JPanel implements ActionListene
 			ChooserOption op = this.createChooserOption(clazz);
 			myChoices.add(op);
 			this.add(op);
+		}
+		for (Class<? extends FormalDefinition> clazz : toDisable){
+			this.setEnableVisibleBy(clazz, false, true);
 		}
 		JButton button = new JButton("Continue");
 		button.addActionListener(this);
@@ -59,7 +63,6 @@ public abstract class ModuleChooserPanel extends JPanel implements ActionListene
 
 	private ChooserOption createChooserOption(Class<? extends FormalDefinition> def) 
 	{
-		System.out.println(FormalDefintionFactory.getGenericName(def));
 		return new ChooserOption(FormalDefintionFactory.getGenericName(def),
 								 FormalDefintionFactory.getHotkey(def),
 								 def,
@@ -71,7 +74,7 @@ public abstract class ModuleChooserPanel extends JPanel implements ActionListene
 	public void actionPerformed(ActionEvent e) {
 		HashSet<Class<? extends FormalDefinition>> selection = new HashSet<Class<? extends FormalDefinition>>();
 		for (ChooserOption op: myChoices){
-			if (op.isSelected())
+			if (op.isSelected() && op.isEnabled())
 				selection.add(op.getDefinitionClass());
 		}
 		if (selection.isEmpty()){
@@ -84,5 +87,20 @@ public abstract class ModuleChooserPanel extends JPanel implements ActionListene
 	}
 
 	public abstract void onContinueAction(HashSet<Class<? extends FormalDefinition>> selection);
+
+	
+	public  List<ChooserOption> getOptions() {
+		return myChoices;
+	}
+	
+	private void setEnableVisibleBy(Class<? extends FormalDefinition> clazz,
+			boolean enable, boolean visible) {
+		for (ChooserOption op: this.getOptions()){
+			if (op.getDefinitionClass().isAssignableFrom(clazz)){
+				op.setEnabled(enable);
+				op.setSelected(visible);
+			}
+		}
+	}
 	
 }

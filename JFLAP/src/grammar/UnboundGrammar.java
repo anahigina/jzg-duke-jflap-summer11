@@ -59,7 +59,7 @@ public class UnboundGrammar extends Grammar {
 
 	@Override
 	public String getName() {
-		return "Unbound Grammar";
+		return "Grammar";
 	}
 
 }

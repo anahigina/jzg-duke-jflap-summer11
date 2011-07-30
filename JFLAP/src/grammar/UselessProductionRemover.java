@@ -133,7 +133,7 @@ public class UselessProductionRemover {
 	 */
 	public static Variable getVariableThatBelongsInUsefulVariableSet(
 			Grammar grammar, Set set) {
-		Set<Variable> variables = grammar.getVariables().getSymbols();
+		Set<Variable> variables = grammar.getVariableAlphabet().getSymbols();
 		for (Variable v: variables) {
 			if (belongsInUsefulVariableSet(v, grammar, set)
 					&& !set.contains(v))

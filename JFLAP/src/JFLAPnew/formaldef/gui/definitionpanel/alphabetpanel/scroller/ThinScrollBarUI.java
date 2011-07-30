@@ -113,6 +113,11 @@ public class ThinScrollBarUI extends BasicScrollBarUI {
         return new Dimension(c.getWidth(), c.getHeight());
     }
 
+	public boolean isOn() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 
 }

@@ -32,9 +32,8 @@ public class Alphabets {
 
 	public static <T extends Symbol> BooleanWrapper setSpecialSymbol(
 			IAlphabet<T> alph, T symbol) {
-		Boolean contains = true;
-//				alph.contains(symbol);
-//		if (contains) Alphabets.clearSpecialSymbols(alph);
+		Boolean contains = alph.contains(symbol);
+		if (contains) Alphabets.clearSpecialSymbols(alph);
 		symbol.setSpecial(contains);
 		return new BooleanWrapper(contains, "The " + alph.getName() + 
 				" does not contain the symbol " + symbol + ".");

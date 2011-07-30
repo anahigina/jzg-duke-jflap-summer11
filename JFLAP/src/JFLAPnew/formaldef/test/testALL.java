@@ -18,7 +18,7 @@ import automata.fsa.FiniteStateAutomaton;
 
 import JFLAPnew.JFLAPpreferences;
 import JFLAPnew.formaldef.FormalDefinition;
-import JFLAPnew.formaldef.MetaDefintion;
+import JFLAPnew.formaldef.MetaDefinition;
 import JFLAPnew.formaldef.alphabets.IAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.InputAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.OutputAlphabet;
@@ -111,7 +111,7 @@ public class testALL {
 		JPanel panel = new JPanel();
 		
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-		for (FormalDefinition fd: new MetaDefintion().getDefinitions()){
+		for (FormalDefinition fd: new MetaDefinition().getDefinitions()){
 			JInternalFrame internal = new JInternalFrame(fd.getName());
 			internal.setSize(new Dimension(600, 10));
 			internal.add(new DefinitionPanel(fd, internal));

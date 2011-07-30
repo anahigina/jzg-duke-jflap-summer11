@@ -18,7 +18,10 @@ public class TapeAlphabet extends Alphabet<Terminal> {
 
 	private char BLANK;
 
-
+	public TapeAlphabet(){
+		this(null);
+	}
+	
 	public TapeAlphabet(FormalDefinition parent) {
 		super(parent);
 		BLANK =  '\u25A1';

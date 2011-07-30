@@ -161,7 +161,7 @@ public class LambdaProductionRemover {
 	 */
 	public Variable getNewVariableWithLambdaProduction(Grammar grammar,
 			Set lambdaSet) {
-		for (Variable v: grammar.getVariables().getSymbols()) {
+		for (Variable v: grammar.getVariableAlphabet().getSymbols()) {
 			if (!lambdaSet.contains(v)
 					&& isVariableWithLambdaProduction(v, grammar)) {
 				return v;
@@ -301,7 +301,7 @@ public class LambdaProductionRemover {
 	 */
 	public Variable getNewVariableThatBelongsInLambdaSet(Grammar grammar,
 			Set lambdaSet) {
-		Set<Variable> variables = grammar.getVariables().getSymbols();
+		Set<Variable> variables = grammar.getVariableAlphabet().getSymbols();
 		for (Variable v: variables) {
 			if (!isInLambdaSet(v, lambdaSet)
 					&& belongsInLambdaSet(v, grammar, lambdaSet))

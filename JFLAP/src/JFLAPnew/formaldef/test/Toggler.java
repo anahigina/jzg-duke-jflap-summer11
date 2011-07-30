@@ -14,8 +14,8 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
 import JFLAPnew.JFLAPpreferences;
+import JFLAPnew.formaldef.gui.IUpdate;
 import JFLAPnew.formaldef.gui.definitionpanel.DefinitionPanel;
-import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.IUpdate;
 
 public class Toggler extends JPanel {
 

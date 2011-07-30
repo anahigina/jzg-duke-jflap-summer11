@@ -34,7 +34,7 @@ import gui.grammar.automata.GrammarCreationException;
  * @author Ryan Cavalcante
  */
 
-public class ContextFreeGrammar extends Grammar {
+public class ContextFreeGrammar extends UnboundGrammar {
 	/**
 	 * Creates an instance of <CODE>ContextFreeGrammar</CODE>. The created
 	 * instance has no productions, no terminals, no variables, and specifically

@@ -15,6 +15,7 @@ import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.MetaDefinition;
 import JFLAPnew.formaldef.gui.definitioncreator.chooser.ModuleChooser;
 import JFLAPnew.formaldef.gui.definitioncreator.chooser.ModuleChooserPanel;
+import JFLAPnew.formaldef.gui.definitioncreator.interaction.inputpanel.SymbolInputter;
 import JFLAPnew.formaldef.gui.definitionpanel.DefinitionPanel;
 import automata.Automaton;
 

@@ -1,5 +1,9 @@
 package gui.errors;
 
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
 
 public class BooleanWrapper {
 	
@@ -46,6 +50,15 @@ public class BooleanWrapper {
 
 	public boolean isFalse() {
 		return !state;
+	}
+	
+	public static String createErrorLog(BooleanWrapper ... errors) {
+		StringBuilder sb = new StringBuilder();
+		for (BooleanWrapper error: errors){
+			sb.append(error.getMessage() + "\n");
+		}
+		return sb.toString();
+		
 	}
 
 }

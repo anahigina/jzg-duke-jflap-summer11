@@ -57,14 +57,10 @@ public abstract class Symbol implements Comparable<Symbol>, Cloneable{
 	
 	@Override
 	public int compareTo(Symbol o) {
-		System.out.println(this+" is special " + this.isSpecial());
-		System.out.println(o+" is special " + o.isSpecial());
 		if (this.isSpecial() && !o.isSpecial()){
-			
 			return 1;
 		}
 		if (!this.isSpecial() && o.isSpecial()){
-			System.out.println("COMPARED  " + o + "is special");
 			return -1;
 		}
 		return this.getString().compareTo(o.getString());

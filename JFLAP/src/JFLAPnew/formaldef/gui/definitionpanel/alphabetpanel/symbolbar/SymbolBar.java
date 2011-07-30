@@ -17,13 +17,14 @@ import javax.swing.Scrollable;
 
 import JFLAPnew.formaldef.alphabets.IAlphabet;
 import JFLAPnew.formaldef.alphabets.ISpecialSymbol;
+import JFLAPnew.formaldef.gui.IUpdate;
 import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
 import JFLAPnew.formaldef.gui.definitionpanel.MouseClickAdapter;
 import JFLAPnew.formaldef.gui.definitionpanel.actions.AddSymbolAction;
 import JFLAPnew.formaldef.gui.definitionpanel.actions.ModifySymbolAction;
 import JFLAPnew.formaldef.gui.definitionpanel.actions.RemoveSymbolAction;
 import JFLAPnew.formaldef.gui.definitionpanel.actions.SetSpecialSymbolAction;
-import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.IUpdate;
+import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.AlphabetPane;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.menu.SymbolMenu;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.menu.SymbolMenuItem;
 import JFLAPnew.formaldef.symbols.Symbol;
@@ -38,9 +39,9 @@ public class SymbolBar extends JPanel implements IUpdate, Scrollable{
 		myAlphabet = alph;
 		myBoxes = new ArrayList<SymbolBox>();
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-		this.setAlignmentY(CENTER_ALIGNMENT);
+		this.setAlignmentY(TOP_ALIGNMENT);
 		setUpBoxMenu();
-		
+//		this.setBackground(Color.ORANGE);
 	}
 
 	private void setUpBoxMenu() {
@@ -80,11 +81,17 @@ public class SymbolBar extends JPanel implements IUpdate, Scrollable{
 	@Override
 	public void update() {
 		this.removeAll();
+		int width = 0,
+				height = 0;
 		for (Symbol s: myAlphabet.getSymbols()){
 			SymbolBox sb = new SymbolBox(s);
+			sb.setPreferredSize(new Dimension(sb.getPreferredSize().width, AlphabetPane.HEIGHT));
 			this.add(sb);
+			width += sb.getPreferredSize().width;
 		}
-		this.updateUI();
+		this.setPreferredSize(new Dimension(width, AlphabetPane.HEIGHT));
+//		this.setMinimumSize(new Dimension(width, AlphabetPane.HEIGHT));
+
 	}
 
 	public SymbolMenu getBoxMenu() {

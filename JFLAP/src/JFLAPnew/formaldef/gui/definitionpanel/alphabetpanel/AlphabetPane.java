@@ -9,6 +9,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -29,7 +30,9 @@ import javax.swing.border.EtchedBorder;
 import JFLAPnew.JFLAPpreferences;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.IAlphabet;
-import JFLAPnew.formaldef.gui.definitionpanel.DefinitionPanel;
+import JFLAPnew.formaldef.gui.ISelectable;
+import JFLAPnew.formaldef.gui.ISelector;
+import JFLAPnew.formaldef.gui.IUpdate;
 import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
 import JFLAPnew.formaldef.gui.definitionpanel.MouseClickAdapter;
 import JFLAPnew.formaldef.gui.definitionpanel.actions.AddSymbolAction;
@@ -49,9 +52,8 @@ public class AlphabetPane extends JToolBar implements ISelectable, IMenu, IUpdat
 	private boolean amSelected;
 	private SymbolMenu myMenu;
 	
-	
-	public final static int HEIGHT = 50;
-	public final static Font FONT = new Font("Dialog", 1, HEIGHT/2-1);
+	public final static Font FONT = new Font("Dialog", 1, 15);
+	public final static int HEIGHT = (int) (FONT.getSize()*9/5.0);
 
 	public AlphabetPane(IAlphabet a){
 		myAlphabet = a;
@@ -129,7 +131,7 @@ public class AlphabetPane extends JToolBar implements ISelectable, IMenu, IUpdat
 
 			@Override
 			public void leftClickResponse(MouseEvent e, Component component) {
-				((DefinitionPanel)AlphabetPane.this.getParent()).setSelectedBar(AlphabetPane.this);
+				((ISelector)AlphabetPane.this.getParent()).select(AlphabetPane.this);
 			}
 		});
 		((JComponent)comp).setToolTipText(this.getToolTipText());
@@ -139,9 +141,11 @@ public class AlphabetPane extends JToolBar implements ISelectable, IMenu, IUpdat
 	@Override
 	public void update() {
 		this.setBackground( amSelected ? GUIConstants.BAR_SELECTED : GUIConstants.DEFAULT);
-		this.setPreferredSize(new Dimension(this.getParent().getPreferredSize().width, HEIGHT));
-		this.setFloatable(!JFLAPpreferences.isUserDefinedAlphabet());
 		myViewport.update();
+		this.setFloatable(!JFLAPpreferences.isUserDefinedAlphabet());
+		
+		this.setMinimumSize(new Dimension(this.getParent().getPreferredSize().width, 
+				myViewport.getMaximumSize().height));
 	}
 
 	public void setSizes(Dimension d) {
@@ -155,5 +159,32 @@ public class AlphabetPane extends JToolBar implements ISelectable, IMenu, IUpdat
 		myMenu = new SymbolMenu(new AddSymbolAction(this.getSymbolBar()));
 	}
 
-	
+//	
+//	@Override
+//	public void setSize(Dimension d){
+//		super.setSize(trimDimension(d));
+//	}
+//	
+//	
+//	@Override
+//	public void setPreferredSize(Dimension d){
+//		super.setPreferredSize(trimDimension(d));
+//	}
+//	
+//	public Dimension trimDimension(Dimension d){
+//		int height = d.height;
+//		int width = d.width;
+//		
+//		if (width < this.getMinimumSize().width)
+//			width = this.getMinimumSize().width;
+//		else if(width > this.getMaximumSize().width)
+//			width = this.getMaximumSize().width;
+//	
+//		if (height < this.getMinimumSize().height)
+//			height = this.getMinimumSize().height;
+//		else if(height > this.getMaximumSize().height)
+//			height = this.getMaximumSize().height;
+//		
+//		return new Dimension(height, width);
+//	}
 }

@@ -63,5 +63,9 @@ public interface IAlphabet<T extends Symbol> extends Comparable<IAlphabet>,
 	public IAlphabet<T> clone();
 	
 	public int size();
+
+	public void clear();
+
+	public String[] getSymbolStringArray();
 	
 }

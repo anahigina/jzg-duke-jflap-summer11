@@ -50,7 +50,7 @@ public class LRParseTable extends AbstractTableModel implements Serializable,
 	 */
 	public LRParseTable(Grammar grammar, FiniteStateAutomaton fsa) {
 		ArrayList term = new ArrayList(Arrays.asList(grammar.getTerminalAlphabet()));
-		ArrayList vars = new ArrayList(Arrays.asList(grammar.getVariables()));
+		ArrayList vars = new ArrayList(Arrays.asList(grammar.getVariableAlphabet()));
 		this.grammar = grammar;
 		Collections.sort(term);
 		Collections.sort(vars);

@@ -18,8 +18,8 @@ import javax.swing.JScrollBar;
 import javax.swing.JViewport;
 import javax.swing.plaf.ScrollBarUI;
 
+import JFLAPnew.formaldef.gui.IUpdate;
 import JFLAPnew.formaldef.gui.definitionpanel.DefinitionPanel;
-import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.IUpdate;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.symbolbar.SymbolBarScrollPane;
 
 public class ThinScrollBar extends JScrollBar{

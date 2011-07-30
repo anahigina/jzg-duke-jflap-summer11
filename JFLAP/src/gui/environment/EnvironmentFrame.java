@@ -42,6 +42,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
+import JFLAPnew.formaldef.FormalDefinition;
+import JFLAPnew.formaldef.FormalDefintionFactory;
+import JFLAPnew.formaldef.gui.definitionpanel.DefinitionPanel;
+
 /**
  * The <CODE>EnvironmentFrame</CODE> is the general sort of frame for holding
  * an environment.
@@ -67,7 +71,14 @@ public class EnvironmentFrame extends JFrame {
 		initMenuBar();
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(environment, BorderLayout.CENTER);
-
+		
+		if (environment.getObject() instanceof FormalDefinition)
+			this.getContentPane().add(new DefinitionPanel(
+											(FormalDefinition) environment.getObject(), 
+											this,
+											false), 
+											BorderLayout.SOUTH);
+		
 		// Register this frame with the universe.
 		myNumber = Universe.registerFrame(this);
 		refreshTitle();

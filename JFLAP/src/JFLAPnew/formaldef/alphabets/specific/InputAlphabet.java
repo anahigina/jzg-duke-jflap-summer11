@@ -20,13 +20,12 @@ public class InputAlphabet extends Alphabet<Terminal>{
 
 	@Override
 	public BooleanWrapper add(Terminal sym) {
-		TapeAlphabet t = this.getParent().getAlphabetByClass(TapeAlphabet.class);
+		TapeAlphabet t = this.getParentAlphabetOfClass(TapeAlphabet.class);
 		if (t != null){
 			if (t.contains(sym)){
 				return super.add(t.getSymbol(sym.getString()));
 			}
 			else{
-			JOptionPane.showInputDialog("This symbol will be added to " + t.getName() + " as well.");
 			BooleanWrapper canAdd = t.add(sym);
 			if (canAdd.isTrue()) canAdd = super.add(sym);
 			return canAdd;
@@ -37,7 +36,7 @@ public class InputAlphabet extends Alphabet<Terminal>{
 	
 	@Override
 	public BooleanWrapper modify(Terminal sym, String change) {
-		TapeAlphabet t = this.getParent().getAlphabetByClass(TapeAlphabet.class);
+		TapeAlphabet t = this.getParentAlphabetOfClass(TapeAlphabet.class);
 		if (t != null){
 			return t.modify(sym, change);
 		}

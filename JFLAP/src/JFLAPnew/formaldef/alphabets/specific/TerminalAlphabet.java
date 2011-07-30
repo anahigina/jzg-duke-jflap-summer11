@@ -14,11 +14,15 @@ public class TerminalAlphabet extends GrammarAlphabet<Terminal> {
 	public TerminalAlphabet(FormalDefinition parent) {
 		super(parent);
 	}
+	
+	public TerminalAlphabet(){
+		super();
+	}
 
 	@Override
 	public BooleanWrapper canAdd(Terminal sym) {
 		BooleanWrapper wrapper = new BooleanWrapper(true);
-		VariableAlphabet vars = this.getParent().getAlphabetByClass(VariableAlphabet.class);
+		VariableAlphabet vars = this.getParentAlphabetOfClass(VariableAlphabet.class);
 		if (vars != null){
 			if (vars.usingGrouping()){
 				wrapper = vars.checkIdentical(
@@ -45,7 +49,7 @@ public class TerminalAlphabet extends GrammarAlphabet<Terminal> {
 
 	@Override
 	public ArrayList<Character> getDisallowedCharacters() {
-		VariableAlphabet vars = this.getParent().getAlphabetByClass(VariableAlphabet.class);
+		VariableAlphabet vars = this.getParentAlphabetOfClass(VariableAlphabet.class);
 		ArrayList<Character> disallowed = super.getDisallowedCharacters();
 		if (vars != null && vars.usingGrouping()){
 			disallowed.add(vars.getGrouping().getOpenGroup().charAt(0));

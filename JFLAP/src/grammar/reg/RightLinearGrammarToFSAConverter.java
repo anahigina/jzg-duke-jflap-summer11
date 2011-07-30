@@ -104,7 +104,7 @@ public class RightLinearGrammarToFSAConverter extends
 	public void createStatesForConversion(Grammar grammar, Automaton automaton) {
 		initialize();
 		StatePlacer sp = new StatePlacer();
-		String[] variables = grammar.getVariables();
+		String[] variables = grammar.getVariableAlphabet();
 		for (int k = 0; k < variables.length; k++) {
 			String variable = variables[k];
 			Point point = sp.getPointForState(automaton);

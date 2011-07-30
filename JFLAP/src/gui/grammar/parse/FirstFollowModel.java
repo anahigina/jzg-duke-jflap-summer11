@@ -43,7 +43,7 @@ public class FirstFollowModel extends AbstractTableModel {
 	 *            variables are extracted for the first column
 	 */
 	public FirstFollowModel(Grammar grammar) {
-		variables = grammar.getVariables();
+		variables = grammar.getVariableAlphabet();
 		Arrays.sort(variables);
 		terminals = grammar.getTerminalAlphabet();
 

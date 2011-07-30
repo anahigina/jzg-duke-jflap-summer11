@@ -30,7 +30,7 @@ import grammar.*;
  * @author Ryan Cavalcante
  */
 
-public class RegularGrammar extends Grammar {
+public class RegularGrammar extends UnboundGrammar {
 	/**
 	 * Creates an instance of <CODE>RegularGrammar</CODE>. The created
 	 * instance has no productions, no terminals, no variables, and specifically

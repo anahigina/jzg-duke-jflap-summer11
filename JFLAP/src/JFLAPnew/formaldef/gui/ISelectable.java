@@ -1,4 +1,4 @@
-package JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel;
+package JFLAPnew.formaldef.gui;
 
 public interface ISelectable {
 	

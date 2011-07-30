@@ -18,7 +18,7 @@ import JFLAPnew.formaldef.alphabets.specific.TerminalAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.VariableAlphabet;
 import JFLAPnew.formaldef.symbols.Symbol;
 
-public abstract class FormalDefinition extends TreeSet<IAlphabet> implements IComplete {
+public abstract class FormalDefinition extends TreeSet<IAlphabet> implements IComplete, Comparable<FormalDefinition>{
 
 	public FormalDefinition(Class<? extends IAlphabet> ... alphabets){
 		super();
@@ -111,6 +111,22 @@ public abstract class FormalDefinition extends TreeSet<IAlphabet> implements ICo
 		return false;
 	}
 
+	@Override
+	public int compareTo(FormalDefinition o) {
+		return this.getClass().getSimpleName().compareTo(o.getClass().getSimpleName());
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof FormalDefinition)
+			return this.compareTo((FormalDefinition) o) == 0;
+		return false;
+	}
+	
 	public abstract String getName();
+
+	public void eraseAlphabets() {
+		super.clear();
+	}
 
 }

@@ -20,6 +20,7 @@
 
 package gui.action;
 
+import grammar.UnboundGrammar;
 import gui.environment.*;
 import gui.menu.MenuBarCreator;
 import gui.pumping.CFPumpingLemmaChooser;
@@ -34,6 +35,7 @@ import java.awt.event.WindowEvent;
 import java.io.Serializable;
 import javax.swing.*;
 
+import JFLAPnew.formaldef.MetaDefinition;
 import automata.mealy.MealyMachine;
 import automata.mealy.MooreMachine;
 
@@ -286,6 +288,16 @@ public class NewAction extends RestrictedAction {
                     public void actionPerformed(ActionEvent e)
                     {
                         createWindow(new CFPumpingLemmaChooser());
+                    }
+                });
+            getContentPane().add(button);
+            
+            button = new JButton("Create New Definition(s)");
+            button.addActionListener(new ActionListener()
+                {
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        createWindow(new MetaDefinition());
                     }
                 });
             getContentPane().add(button);

@@ -49,7 +49,6 @@ public class FormalDefintionFactory {
 
 	public static String getGenericName(
 			Class<? extends FormalDefinition> def) {
-		System.out.println(def);
 		if (Grammar.class.isAssignableFrom(def)) return "Grammar";
 		
 		if (FiniteStateAutomaton.class.isAssignableFrom(def)) return "Finite State Automaton";

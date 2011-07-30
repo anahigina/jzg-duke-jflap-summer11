@@ -21,12 +21,16 @@ public class VariableAlphabet extends GrammarAlphabet<Variable> implements IGrou
 	public VariableAlphabet(FormalDefinition parent) {
 		super(parent);
 	}
+	
+	public VariableAlphabet() {
+		super();
+	}
 
 	
 	@Override
 	public BooleanWrapper canAdd(Variable sym) {
 		BooleanWrapper canAdd = new BooleanWrapper(true);
-		TerminalAlphabet terminals = this.getParent().getAlphabetByClass(TerminalAlphabet.class);
+		TerminalAlphabet terminals = this.getParentAlphabetOfClass(TerminalAlphabet.class);
 		if (this.usingGrouping()){
 			if ((canAdd = checkValidGroupingSyntax(sym.getString())).isTrue()){
 				if (terminals != null)

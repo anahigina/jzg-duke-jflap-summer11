@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Set;
@@ -241,8 +242,8 @@ public abstract class Alphabet<T extends Symbol> extends Observable implements I
 
 	@Override
 	public FormalDefinition getParent() {
-		if (myParent == null)
-			throw new AlphabetException("An alphabet without a parent is a very sad alphabet indeed.");
+//		if (myParent == null)
+//			throw new AlphabetException("An alphabet without a parent is a very sad alphabet indeed.");
 		return myParent;
 	}
 
@@ -262,6 +263,7 @@ public abstract class Alphabet<T extends Symbol> extends Observable implements I
 				alph.add((T) s.clone());
 			return alph;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new AlphabetException("Error cloning the alphabet");
 		}
 		
@@ -294,5 +296,27 @@ public abstract class Alphabet<T extends Symbol> extends Observable implements I
 	public int size(){
 		return mySymbols.size();
 	}
+
+	@Override
+	public void clear() {
+		for(String s: this.getSymbolStringArray())
+			this.remove(this.createDesiredSymbol(s));
+	}
+
+	@Override
+	public String[] getSymbolStringArray() {
+		String[] strings = new String[mySymbols.size()];
+		Iterator<T> iter = mySymbols.iterator();
+		for (int i = 0; i < strings.length; i++){
+			strings[i] = iter.next().getString();
+		}
+		return strings;
+	}
+
+	@Override
+	public <T extends IAlphabet> T getParentAlphabetOfClass(Class<T> clazz) {
+		return this.getParent() == null ? null: this.getParent().getAlphabetByClass(clazz);
+	}
+
 	
 }

@@ -152,7 +152,7 @@ public class UnitProductionRemover {
 	public void initializeDependencyGraph(VariableDependencyGraph graph,
 			Grammar grammar) {
 		// StatePlacer sp = new StatePlacer();
-		Set<Variable> variables = grammar.getVariables().getSymbols();
+		Set<Variable> variables = grammar.getVariableAlphabet().getSymbols();
 		int k=0;
 		for (Variable v : variables) {
 			// Point point = sp.getPointForState(graph);
@@ -273,7 +273,7 @@ public class UnitProductionRemover {
 	public String[] getDependencies(Variable variable, Grammar grammar,
 			VariableDependencyGraph graph) {
 		ArrayList list = new ArrayList();
-		Set<Variable> variables = grammar.getVariables().getSymbols();
+		Set<Variable> variables = grammar.getVariableAlphabet().getSymbols();
 		for (Variable v: variables) {
 			if (!variable.equals(v)) {
 				if (isDependentOn(variable, v, graph)) {
@@ -320,7 +320,7 @@ public class UnitProductionRemover {
 	 */
 	public void addAllNewProductionsToGrammar(Grammar oldGrammar,
 			Grammar newGrammar, VariableDependencyGraph graph) {
-		Set<Variable> variables = oldGrammar.getVariables().getSymbols();
+		Set<Variable> variables = oldGrammar.getVariableAlphabet().getSymbols();
 		for (Variable v : variables) {
 			Variable v1 = v;
 			String[] dep = getDependencies(v1, oldGrammar, graph);

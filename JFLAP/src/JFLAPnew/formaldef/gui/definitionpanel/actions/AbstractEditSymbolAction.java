@@ -11,9 +11,9 @@ import javax.swing.KeyStroke;
 
 import JFLAPnew.formaldef.IFormallyDefined;
 import JFLAPnew.formaldef.alphabets.IAlphabet;
+import JFLAPnew.formaldef.gui.IUpdate;
 import JFLAPnew.formaldef.gui.definitionpanel.DefinitionPanel;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.AlphabetPane;
-import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.IUpdate;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.symbolbar.SymbolBar;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.symbolbar.SymbolBarScrollPane;
 import JFLAPnew.formaldef.symbols.ISymbol;

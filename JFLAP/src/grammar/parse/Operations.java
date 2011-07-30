@@ -69,7 +69,7 @@ public class Operations {
 			first.put(terminals[i], termSet);
 		}
 		// Put the variables in the map as empty sets.
-		String[] variables = grammar.getVariables();
+		String[] variables = grammar.getVariableAlphabet();
 		for (int i = 0; i < variables.length; i++) {
 			first.put(variables[i], new HashSet());
 		}
@@ -142,7 +142,7 @@ public class Operations {
 		initialSet.add("$");
 		follow.put(grammar.getStartVariable(), initialSet);
 		// Make every follow mapping empty for now.
-		String[] variables = grammar.getVariables();
+		String[] variables = grammar.getVariableAlphabet();
 		for (int i = 0; i < variables.length; i++)
 			if (!variables[i].equals(grammar.getStartVariable()))
 				follow.put(variables[i], new HashSet());
@@ -204,7 +204,7 @@ public class Operations {
 				varToProd.put(variable, new ArrayList());
 			((List) varToProd.get(variable)).add(productions[i]);
 		}
-		String[] variables = grammar.getVariables();
+		String[] variables = grammar.getVariableAlphabet();
 		for (int i = 0; i < variables.length; i++) {
 			Set followVar = (Set) follow.get(variables[i]);
             List varList = ((List) varToProd.get(variables[i]));

@@ -31,7 +31,7 @@ import gui.errors.BooleanWrapper;
  * @author Thomas Finley
  */
 
-public class UnrestrictedGrammar extends Grammar {
+public class UnrestrictedGrammar extends UnboundGrammar {
 
 	private boolean myTuringBool=false;
 	/**
