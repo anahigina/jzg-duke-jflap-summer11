@@ -2,7 +2,7 @@ package JFLAPnew.formaldef.alphabets.specific;
 
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.Alphabet;
-import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
+import JFLAPnew.formaldef.gui.GUIConstants;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;
 
 public class OutputAlphabet extends Alphabet<Terminal> {

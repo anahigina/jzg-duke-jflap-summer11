@@ -42,6 +42,7 @@ public class JFLAPpreferences {
 			vars.add(new Variable(Character.toString(upper)));
 			terms.add(new Terminal(Character.toString(lower)));
 		}
+		vars.get('S'-'A').setSpecial(true);
 		MetaDefinition def = new MetaDefinition();
 		for (Class<? extends FormalDefinition> c: FormalDefintionFactory.getAllGenericClasses()){
 			try {

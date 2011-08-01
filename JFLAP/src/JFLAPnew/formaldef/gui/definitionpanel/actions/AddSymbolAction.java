@@ -11,7 +11,7 @@ import automata.turing.TuringMachine;
 import JFLAPnew.formaldef.alphabets.IAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.InputAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.TapeAlphabet;
-import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
+import JFLAPnew.formaldef.gui.GUIConstants;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.AlphabetPane;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.symbolbar.SymbolBar;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.symbolbar.SymbolBarScrollPane;
@@ -42,7 +42,9 @@ public class AddSymbolAction extends AbstractEditSymbolAction {
 			myNew = JOptionPane.showInputDialog(null, "Input new symbol, click OK to complete");
 		if (myNew == null) //If user input nothing/hit cancel
 			return new BooleanWrapper(true);
-		if (alph instanceof InputAlphabet && alph.getParent() instanceof TuringMachine){
+		if (alph instanceof InputAlphabet && 
+				alph.getParent() instanceof TuringMachine && 
+					!alph.getParentAlphabetOfClass(TapeAlphabet.class).containsSymbolWithString(myNew)){
 			JOptionPane.showMessageDialog(null,"This symbol will be added to " + 
 							alph.getParentAlphabetOfClass(TapeAlphabet.class).getName() + " as well.");
 		}

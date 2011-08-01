@@ -25,6 +25,8 @@ import grammar.Production;
 import gui.GrowableTableModel;
 import java.util.ArrayList;
 import javax.swing.Icon;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import JFLAPnew.formaldef.symbols.SymbolString;
 
@@ -63,6 +65,27 @@ public class GrammarTableModel extends GrowableTableModel {
 		Production[] ps = grammar.getProductions();
 		for (int i = 0; i < ps.length; i++)
 			addProduction(ps[i]);
+		setUpTableListener();
+	}
+
+	/**
+	 * Sets up the table listener for the grammar table model.
+	 * This listener is used to dynamically construct productions 
+	 * and give the user immediate feedback on the validity of their
+	 * input.
+	 */
+	private void setUpTableListener() {
+		this.addTableModelListener(new TableModelListener() {
+			
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				switch(e.getType()){
+					case TableModelEvent.INSERT: System.out.println("Insert"); break;
+					case TableModelEvent.DELETE: System.out.println("Delete"); break;
+					case TableModelEvent.UPDATE: System.out.println("Update"); break;
+				}
+			}
+		});
 	}
 
 	/**

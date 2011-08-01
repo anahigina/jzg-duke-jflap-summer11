@@ -4,23 +4,29 @@ import gui.errors.BooleanWrapper;
 import gui.errors.JFLAPError;
 
 import java.awt.Container;
+import java.awt.Dialog.ModalityType;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 
 import JFLAPnew.formaldef.FormalDefinition;
+import JFLAPnew.formaldef.gui.GUIHelper;
 import JFLAPnew.formaldef.gui.definitioncreator.MultiDefitionPanel;
 
 public class CompleteButton extends JButton {
 
 	private MultiDefitionPanel myPanel;
 	
-	public CompleteButton(MultiDefitionPanel multiDefPanel) {
+	public CompleteButton(MultiDefitionPanel multiDefPanel, final boolean saveOnClose) {
 		super("Finish");
 		myPanel = multiDefPanel;
 		this.addActionListener(new ActionListener() {
@@ -28,7 +34,10 @@ public class CompleteButton extends JButton {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (CompleteButton.this.checkComplete()){
-					//TODO: PROMPT FOR SAVE
+					if (saveOnClose){
+						//TODO: PROMPT FOR SAVE
+					}
+					GUIHelper.closeAncestorFrame(CompleteButton.this);						
 				}
 			}
 		});

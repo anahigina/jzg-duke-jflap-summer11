@@ -6,7 +6,7 @@ import java.util.List;
 import gui.errors.BooleanWrapper;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.Alphabet;
-import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
+import JFLAPnew.formaldef.gui.GUIConstants;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;
 
 public class TerminalAlphabet extends GrammarAlphabet<Terminal> {

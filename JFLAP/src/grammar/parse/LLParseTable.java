@@ -25,7 +25,7 @@ import java.util.*;
 
 import javax.swing.table.AbstractTableModel;
 
-import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
+import JFLAPnew.formaldef.gui.GUIConstants;
 import JFLAPnew.formaldef.symbols.Symbol;
 import JFLAPnew.formaldef.symbols.SymbolString;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;

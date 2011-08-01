@@ -1,4 +1,4 @@
-package JFLAPnew.formaldef.gui;
+package JFLAPnew.formaldef.gui.selection;
 
 
 public interface ISelector {
@@ -9,8 +9,6 @@ public interface ISelector {
 
 	public abstract ISelectable getSelected();
 
-	public abstract boolean isActive();
-	
 	public abstract void selectNext();
 	
 	public abstract void selectPrevious();

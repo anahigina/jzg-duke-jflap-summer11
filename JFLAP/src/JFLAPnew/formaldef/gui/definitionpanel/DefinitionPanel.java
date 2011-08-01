@@ -36,31 +36,32 @@ import org.omg.CORBA.portable.BoxedValueHelper;
 
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.IAlphabet;
-import JFLAPnew.formaldef.gui.ISelectable;
-import JFLAPnew.formaldef.gui.ISelector;
+import JFLAPnew.formaldef.gui.GUIHelper;
 import JFLAPnew.formaldef.gui.IUpdate;
-import JFLAPnew.formaldef.gui.UpDownSelectingAdapter;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.AlphabetPane;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.symbolbar.SymbolBarScrollPane;
+import JFLAPnew.formaldef.gui.selection.ISelectable;
+import JFLAPnew.formaldef.gui.selection.ISelector;
+import JFLAPnew.formaldef.gui.selection.UpDownSelectingAdapter;
 
 
 public class DefinitionPanel extends JPanel implements IUpdate, ISelector, ISelectable{
 
 	public static final Border THICK_BORDER = BorderFactory.createLineBorder(Color.BLACK, 4);
-	public static final Border THIN_BORDER = BorderFactory.createLineBorder(Color.BLACK, 1);
+	========public static final Border THIN_BORDER = BorderFactory.createLineBorder(Color.BLACK, 1);
 	private FormalDefinition myDef;
 	private LinkedList<AlphabetPane> myPanes;
 	private Container myParent;
-	private boolean amActive;
 	
 	private Font TITLE_FONT = new Font("Dialog", 1, 15);
 	private boolean amSelected;
 	
-	public DefinitionPanel(FormalDefinition def, Container parent, boolean allowSelection){
+	public DefinitionPanel(FormalDefinition def, Container parent, boolean focusable){
 		myDef = def;
 		myParent = parent;
 		myPanes = new LinkedList<AlphabetPane>();
 		amSelected = false;
+//		this.setFocusable(focusable);
 		this.setBorder(BorderFactory.createTitledBorder(THIN_BORDER,
 				myDef.getName() + " Definition",
 				TitledBorder.LEADING,
@@ -71,8 +72,7 @@ public class DefinitionPanel extends JPanel implements IUpdate, ISelector, ISele
 		for (IAlphabet alph: def){
 			this.add(new AlphabetPane(alph));
 		}
-		if (amActive = allowSelection) this.select(myPanes.getFirst());
-		this.setFocusable(true);
+		if (this.isSelected()) this.select(myPanes.getFirst());
 		this.addKeyListener(new UpDownSelectingAdapter(this, false, true, myParent));
 		this.update();
 		
@@ -117,22 +117,13 @@ public class DefinitionPanel extends JPanel implements IUpdate, ISelector, ISele
 		super.repaint();
 	}
 
-	@Override
-	public void revalidate(){
-		if (myParent != null) this.update();
-	}
-	
-	@Override
-	public void repaint(){
-		this.revalidate();
-	}
 	
 	/* (non-Javadoc)
 	 * @see JFLAPnew.formaldef.gui.definitionpanel.ISelector#select(JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.AlphabetPane)
 	 */
 	@Override
 	public void select(ISelectable select) {
-		if (!isActive() || !this.isEnabled()) return;
+		if (!isFocusable() || !this.isEnabled()) return;
 		this.clearSelection();
 		select.setSelected(true);
 		this.update();
@@ -160,25 +151,13 @@ public class DefinitionPanel extends JPanel implements IUpdate, ISelector, ISele
 	}
 
 	public static void updateParentDefPanel(JComponent comp){
-		while (!(comp instanceof DefinitionPanel)){
-			comp = (JComponent) comp.getParent();
-		}
-		((DefinitionPanel)comp).update();
-	}
-
-	/* (non-Javadoc)
-	 * @see JFLAPnew.formaldef.gui.definitionpanel.ISelector#canSelect(boolean)
-	 */
-	@Override
-	public boolean isActive() {
-		return amActive;
+		GUIHelper.getAncestorOfClass(comp, DefinitionPanel.class).update();
 	}
 
 	@Override
 	public void setSelected(boolean b) {
 		amSelected = b;
-		System.out.println("Hi");
-		
+		this.requestFocusInWindow();
 	}
 
 	@Override
@@ -205,6 +184,11 @@ public class DefinitionPanel extends JPanel implements IUpdate, ISelector, ISele
 			c.setSelected(true);
 		}
 		this.update();
+	}
+
+	@Override
+	public boolean isSelectable() {
+		return this.isFocusable();
 	}
 
 	

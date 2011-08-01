@@ -75,12 +75,9 @@ public abstract class Alphabet<T extends Symbol> extends Observable implements I
 
 	@Override
 	public List<T> sortedList() {
-		List<Symbol> list = Arrays.asList(mySymbols.toArray(new Symbol[0]));
+		List<T> list = new ArrayList<T>(mySymbols);
 		Collections.sort(list);
-		List<T> out = new ArrayList<T>();
-		for (Symbol s: list)
-			out.add((T) s);
-		return out;
+		return list;
 	}
 
 
@@ -316,6 +313,41 @@ public abstract class Alphabet<T extends Symbol> extends Observable implements I
 	@Override
 	public <T extends IAlphabet> T getParentAlphabetOfClass(Class<T> clazz) {
 		return this.getParent() == null ? null: this.getParent().getAlphabetByClass(clazz);
+	}
+	
+
+
+	public static <T extends Symbol> List<T> getSpecialSymbols(IAlphabet<T> alph){
+		ArrayList<T> specials = new ArrayList<T>();
+		for (T s: alph.getSymbols())
+			if (s.isSpecial())
+				specials.add(s);
+		return specials;
+	}
+	
+	public static <T extends Symbol> T getFirstSpecialSymbol(IAlphabet<T> alph){
+		List<T> specials = Alphabet.getSpecialSymbols(alph);
+			return specials.isEmpty() ? null : specials.get(0);
+	}
+	
+	
+	public static boolean clearSpecialSymbols(IAlphabet<?> alph){
+		boolean changed = false;
+		for (Symbol s: alph.getSymbols()){
+			if (s.isSpecial()) changed = true;
+			s.setSpecial(false);
+		}
+		return changed;
+	}
+
+
+	public static <T extends Symbol> BooleanWrapper setSpecialSymbol(
+			IAlphabet<T> alph, T symbol) {
+		Boolean contains = alph.contains(symbol);
+		if (contains) Alphabet.clearSpecialSymbols(alph);
+		symbol.setSpecial(contains);
+		return new BooleanWrapper(contains, "The " + alph.getName() + 
+				" does not contain the symbol " + symbol + ".");
 	}
 
 	

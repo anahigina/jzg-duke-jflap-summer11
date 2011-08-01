@@ -63,6 +63,7 @@ public class EnvironmentFrame extends JFrame {
 	 */
 	public EnvironmentFrame(Environment environment) {
 		this.environment = environment;
+		
 		environment.addFileChangeListener(new FileChangeListener() {
 			public void fileChanged(FileChangeEvent e) {
 				refreshTitle();
@@ -114,6 +115,7 @@ public class EnvironmentFrame extends JFrame {
 		this.setLocation(50, 50);
 		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		resizeWatcher();
+		
 	}
 
 	/**

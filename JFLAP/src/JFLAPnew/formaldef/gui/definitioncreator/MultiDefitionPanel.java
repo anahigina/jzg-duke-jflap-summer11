@@ -16,13 +16,13 @@ import javax.swing.border.TitledBorder;
 
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.MetaDefinition;
-import JFLAPnew.formaldef.gui.ISelectable;
-import JFLAPnew.formaldef.gui.ISelector;
 import JFLAPnew.formaldef.gui.definitioncreator.chooser.ModuleChooser;
 import JFLAPnew.formaldef.gui.definitionpanel.DefinitionPanel;
 import JFLAPnew.formaldef.gui.definitionpanel.DefinitionPanel;
 import JFLAPnew.formaldef.gui.definitionpanel.MouseClickAdapter;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.AlphabetPane;
+import JFLAPnew.formaldef.gui.selection.ISelectable;
+import JFLAPnew.formaldef.gui.selection.ISelector;
 
 public class MultiDefitionPanel extends JPanel implements ISelector{
 
@@ -30,15 +30,16 @@ public class MultiDefitionPanel extends JPanel implements ISelector{
 	private MetaDefinition myDefintion;
 	private LinkedList<DefinitionPanel> myPanels;
 	
-	public MultiDefitionPanel(MetaDefinition def) {
+	public MultiDefitionPanel(MetaDefinition def, boolean focusable) {
 		myDefintion = def;
 		myPanels = new LinkedList<DefinitionPanel>();
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		this.setFocusable(focusable);
 		for (FormalDefinition fd: def){
 			this.add(createPanel(fd));
 		}
 		this.select(myPanels.getFirst());
-		this.setFocusable(true);
+	
 		this.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -50,13 +51,12 @@ public class MultiDefitionPanel extends JPanel implements ISelector{
 	}
 
 	private DefinitionPanel createPanel(FormalDefinition fd) {
-		DefinitionPanel frame = new DefinitionPanel(fd, this, true);
+		DefinitionPanel frame = new DefinitionPanel(fd, this, this.isFocusable());
 		frame.addMouseListener(new MouseClickAdapter<DefinitionPanel>() {
 
 			@Override
 			public void leftClickResponse(MouseEvent e,
 					DefinitionPanel component) {
-				
 				MultiDefitionPanel.this.select(component);
 			}
 		});
@@ -105,7 +105,7 @@ public class MultiDefitionPanel extends JPanel implements ISelector{
 	@Override
 	public void select(ISelectable component) {
 		DefinitionPanel panel = (DefinitionPanel) component;
-		if (component != null){
+		if (component != null && component.isSelectable()){
 			this.clearSelection();
 			panel.setSelected(true);
 			this.revalidate();
@@ -125,11 +125,6 @@ public class MultiDefitionPanel extends JPanel implements ISelector{
 				return c;
 		}
 		return null;
-	}
-
-	@Override
-	public boolean isActive() {
-		return !myPanels.isEmpty() && this.isEnabled();
 	}
 
 	@Override

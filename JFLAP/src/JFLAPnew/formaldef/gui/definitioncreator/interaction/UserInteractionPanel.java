@@ -8,9 +8,9 @@ import JFLAPnew.formaldef.gui.definitioncreator.interaction.inputpanel.SymbolInp
 import JFLAPnew.formaldef.gui.definitioncreator.interaction.toolbar.DefinitionCreationToolbar;
 
 public class UserInteractionPanel extends JPanel {
-	public UserInteractionPanel(MultiDefitionPanel panel){
+	public UserInteractionPanel(MultiDefitionPanel panel, boolean saveOnClose){
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		this.add(new DefinitionCreationToolbar(panel));
-		this.add(new SymbolInputPanel(panel));
+		this.add(new SymbolInputPanel(panel, saveOnClose));
 	}
 }

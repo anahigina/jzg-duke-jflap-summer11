@@ -46,6 +46,7 @@ import regular.RegularExpression;
 import JFLAPnew.JFLAPpreferences;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.MetaDefinition;
+import JFLAPnew.formaldef.gui.definitioncreator.CompleteDefinitionDialog;
 import JFLAPnew.formaldef.gui.definitioncreator.DefinitionCreationEnvironment;
 import JFLAPnew.formaldef.gui.definitioncreator.DefinitionCreationPanel;
 import JFLAPnew.formaldef.gui.definitioncreator.chooser.ModuleChooser;
@@ -76,12 +77,6 @@ public class EnvironmentFactory {
 	 */
 	public static Environment getEnvironment(Serializable object) {
         
-		if ((object instanceof FormalDefinition) && ((FormalDefinition) object).isComplete().isFalse()){
-			MetaDefinition.setDefintionFromMeta(((FormalDefinition) object), 
-					JFLAPpreferences.getDefaultDefintions());
-		}
-			
-		
 		/*
          * For loading regular pumping lemmas.
          */

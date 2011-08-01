@@ -1,4 +1,4 @@
-package JFLAPnew.formaldef.gui.definitionpanel;
+package JFLAPnew.formaldef.gui;
 
 import java.awt.Color;
 

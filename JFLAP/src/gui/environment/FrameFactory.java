@@ -20,6 +20,7 @@
 
 package gui.environment;
 
+import gui.action.NewAction;
 import gui.pumping.CFPumpingLemmaChooser;
 import gui.pumping.RegPumpingLemmaChooser;
 
@@ -29,6 +30,10 @@ import java.awt.Dimension;
 import pumping.ContextFreePumpingLemma;
 import pumping.RegularPumpingLemma;
 
+import JFLAPnew.JFLAPpreferences;
+import JFLAPnew.formaldef.FormalDefinition;
+import JFLAPnew.formaldef.MetaDefinition;
+import JFLAPnew.formaldef.gui.definitioncreator.CompleteDefinitionDialog;
 import automata.Automaton;
 
 /**
@@ -47,10 +52,35 @@ public class FrameFactory {
 	 *         if an error occurred
 	 */
 	public static EnvironmentFrame createFrame(Serializable object) {
+		
+		if ((object instanceof FormalDefinition) && ((FormalDefinition) object).isComplete().isFalse()){
+			MetaDefinition meta;
+			if (JFLAPpreferences.isUserDefinedAlphabet())
+				meta = new CompleteDefinitionDialog(
+						new MetaDefinition(
+								(FormalDefinition) ((FormalDefinition) object).clone())).getResultingDefinition();
+			else
+				meta = JFLAPpreferences.getDefaultDefintions();
+			
+			MetaDefinition.setDefintionFromMeta(((FormalDefinition) object), 
+					meta);
+			//prevents showing of frame if there was a premature close action,
+			//resulting in an incomplete alphabet
+			if (((FormalDefinition) object).isComplete().isFalse()){
+				NewAction.showNew();
+				return null;
+			}
+		}
+		
 		Environment environment = EnvironmentFactory.getEnvironment(object);
 		if (environment == null)
 			return null; // No environment could be found.
 		EnvironmentFrame frame = new EnvironmentFrame(environment);
+		
+		
+		
+		
+		
 		if (object instanceof Automaton) {
 			// //System.out.println("Setting Frame");
 			((Automaton) object).setEnvironmentFrame(frame);

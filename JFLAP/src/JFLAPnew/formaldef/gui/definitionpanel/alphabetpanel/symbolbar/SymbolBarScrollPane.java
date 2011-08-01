@@ -22,8 +22,8 @@ import javax.swing.border.EtchedBorder;
 
 import JFLAPnew.JFLAPpreferences;
 import JFLAPnew.formaldef.alphabets.IAlphabet;
+import JFLAPnew.formaldef.gui.GUIConstants;
 import JFLAPnew.formaldef.gui.IUpdate;
-import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.AlphabetPane;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.menu.SymbolMenu;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.scroller.ThinScrollBar;
@@ -43,7 +43,6 @@ public class SymbolBarScrollPane extends JScrollPane  implements IUpdate{
 		this.setHorizontalScrollBar(new ThinScrollBar(ScrollBar.HORIZONTAL, SB_HEIGHT));
 //		this.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_ALWAYS);
 		this.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
-		this.update();
 		
 	}
 

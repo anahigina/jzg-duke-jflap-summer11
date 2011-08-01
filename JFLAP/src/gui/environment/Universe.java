@@ -92,8 +92,7 @@ public class Universe {
 		} catch (NullPointerException e) {
 			// The environment doesn't have a file.
 		}
-		environmentToFrame.remove(frame.getEnvironment());
-
+		if (frame != null) environmentToFrame.remove(frame.getEnvironment());
 		// If there are no other frames open, prompt for newness.
 		if (numberOfFrames() == 0)
 			gui.action.NewAction.showNew();

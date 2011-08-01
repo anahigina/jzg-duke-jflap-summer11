@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 import JFLAPnew.formaldef.alphabets.IAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.TapeAlphabet;
-import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
+import JFLAPnew.formaldef.gui.GUIConstants;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.AlphabetPane;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.symbolbar.SymbolBar;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.symbolbar.SymbolBarScrollPane;

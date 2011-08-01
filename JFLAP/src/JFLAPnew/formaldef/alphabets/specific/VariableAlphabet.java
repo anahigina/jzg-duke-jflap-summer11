@@ -3,11 +3,10 @@ package JFLAPnew.formaldef.alphabets.specific;
 import gui.errors.BooleanWrapper;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.Alphabet;
-import JFLAPnew.formaldef.alphabets.Alphabets;
 import JFLAPnew.formaldef.alphabets.ISpecialSymbol;
 import JFLAPnew.formaldef.grouping.GroupingPair;
 import JFLAPnew.formaldef.grouping.IGrouping;
-import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
+import JFLAPnew.formaldef.gui.GUIConstants;
 import JFLAPnew.formaldef.symbols.Symbol;
 import JFLAPnew.formaldef.symbols.SymbolHelper;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;
@@ -72,9 +71,7 @@ public class VariableAlphabet extends GrammarAlphabet<Variable> implements IGrou
 	}
 
 	public Variable getStartVariable() {
-		if (Alphabets.getSpecialSymbols(this).isEmpty())
-			return null;
-		return Alphabets.getSpecialSymbols(this).get(0);
+		return Alphabet.getFirstSpecialSymbol(this);
 	}
 	
 
@@ -115,7 +112,7 @@ public class VariableAlphabet extends GrammarAlphabet<Variable> implements IGrou
 
 
 	public BooleanWrapper setStartVariable(Variable variable) {
-		return Alphabets.setSpecialSymbol(this, variable);
+		return Alphabet.setSpecialSymbol(this, variable);
 	}
 
 

@@ -1,5 +1,8 @@
 package JFLAPnew.formaldef.gui.definitionpanel;
 
+import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.AlphabetPane;
+import JFLAPnew.formaldef.gui.selection.ISelectable;
+
 
 public interface ISelector {
 

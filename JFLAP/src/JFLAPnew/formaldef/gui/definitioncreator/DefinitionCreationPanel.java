@@ -13,26 +13,23 @@ import javax.swing.JPanel;
 
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.MetaDefinition;
-import JFLAPnew.formaldef.gui.UpDownSelectingAdapter;
 import JFLAPnew.formaldef.gui.definitioncreator.chooser.ModuleChooser;
 import JFLAPnew.formaldef.gui.definitioncreator.interaction.UserInteractionPanel;
 import JFLAPnew.formaldef.gui.definitioncreator.interaction.inputpanel.SymbolInputPanel;
 import JFLAPnew.formaldef.gui.definitioncreator.interaction.toolbar.DefinitionCreationToolbar;
 import JFLAPnew.formaldef.gui.definitionpanel.DefinitionPanel;
+import JFLAPnew.formaldef.gui.selection.UpDownSelectingAdapter;
 
 public class DefinitionCreationPanel extends JPanel{
 
 	private MultiDefitionPanel myMultiDefPanel;
 
-	public DefinitionCreationPanel(MetaDefinition def) {
-		myMultiDefPanel = new MultiDefitionPanel(def);
+	public DefinitionCreationPanel(MetaDefinition def, boolean saveOnClose) {
+		myMultiDefPanel = new MultiDefitionPanel(def, saveOnClose);
 		this.setLayout(new BorderLayout());
 		this.add(myMultiDefPanel, BorderLayout.CENTER);
-		this.add(new UserInteractionPanel(myMultiDefPanel), BorderLayout.SOUTH);
+		this.add(new UserInteractionPanel(myMultiDefPanel, saveOnClose), BorderLayout.SOUTH);
 		myMultiDefPanel.addKeyListener(new UpDownSelectingAdapter(myMultiDefPanel, true));
-	}
-
-	public void initializeDefintions(MetaDefinition def) {
 	}
 
 	public MultiDefitionPanel getMetaDefinitionPanel() {
@@ -40,7 +37,7 @@ public class DefinitionCreationPanel extends JPanel{
 	}
 
 	public static DefinitionCreationPanel createWithChooser(MetaDefinition def){
-		return new DefinitionCreationPanel(new ModuleChooser(300,300, def).getResultingDefinition());
+		return new DefinitionCreationPanel(new ModuleChooser(300,300, def).getResultingDefinition(), true);
 	}
 
 }

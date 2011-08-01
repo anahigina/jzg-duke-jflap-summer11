@@ -68,10 +68,8 @@ public class MetaDefinition extends HashSet<FormalDefinition> implements Seriali
 			if (n == 1) return;
 			DefinitionCreationPanel.createWithChooser(meta);
 		}
-		
 		old.eraseAlphabets();
 		old.addAll(replacement);
-		
 	}
 
 	public FormalDefinition getDefinitionByClass(

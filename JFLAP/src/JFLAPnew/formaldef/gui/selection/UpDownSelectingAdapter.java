@@ -1,4 +1,4 @@
-package JFLAPnew.formaldef.gui;
+package JFLAPnew.formaldef.gui.selection;
 
 import java.awt.Component;
 import java.awt.event.KeyAdapter;
@@ -31,7 +31,6 @@ public class UpDownSelectingAdapter extends KeyAdapter {
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println("HI");
 		if(e.getKeyCode() == KeyEvent.VK_UP){
 			mySelector.selectPrevious();
 		}

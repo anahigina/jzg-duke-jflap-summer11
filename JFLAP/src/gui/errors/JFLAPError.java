@@ -99,7 +99,7 @@ public enum JFLAPError {
 				message, 
 				title, 
 				JOptionPane.ERROR_MESSAGE);
-		Thread.currentThread().interrupt();
+//		Thread.currentThread().interrupt();
 	}
 	public static void show(BooleanWrapper ew) {
 		JFLAPError.show(ew.getMessage(), "Error");		

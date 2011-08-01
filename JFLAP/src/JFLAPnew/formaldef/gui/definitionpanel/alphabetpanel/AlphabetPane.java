@@ -30,10 +30,8 @@ import javax.swing.border.EtchedBorder;
 import JFLAPnew.JFLAPpreferences;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.IAlphabet;
-import JFLAPnew.formaldef.gui.ISelectable;
-import JFLAPnew.formaldef.gui.ISelector;
+import JFLAPnew.formaldef.gui.GUIConstants;
 import JFLAPnew.formaldef.gui.IUpdate;
-import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
 import JFLAPnew.formaldef.gui.definitionpanel.MouseClickAdapter;
 import JFLAPnew.formaldef.gui.definitionpanel.actions.AddSymbolAction;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.menu.IMenu;
@@ -41,6 +39,8 @@ import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.menu.SymbolMenu;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.scroller.ThinScrollBar;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.symbolbar.SymbolBar;
 import JFLAPnew.formaldef.gui.definitionpanel.alphabetpanel.symbolbar.SymbolBarScrollPane;
+import JFLAPnew.formaldef.gui.selection.ISelectable;
+import JFLAPnew.formaldef.gui.selection.ISelector;
 import JFLAPnew.formaldef.symbols.Symbol;
 
 public class AlphabetPane extends JToolBar implements ISelectable, IMenu, IUpdate{
@@ -148,43 +148,14 @@ public class AlphabetPane extends JToolBar implements ISelectable, IMenu, IUpdat
 				myViewport.getMaximumSize().height));
 	}
 
-	public void setSizes(Dimension d) {
-		
-//		this.setMinimumSize(d);
-//		this.setMaximumSize(d);
-	}
-
 	@Override
 	public void setUpMenu() {
 		myMenu = new SymbolMenu(new AddSymbolAction(this.getSymbolBar()));
 	}
 
-//	
-//	@Override
-//	public void setSize(Dimension d){
-//		super.setSize(trimDimension(d));
-//	}
-//	
-//	
-//	@Override
-//	public void setPreferredSize(Dimension d){
-//		super.setPreferredSize(trimDimension(d));
-//	}
-//	
-//	public Dimension trimDimension(Dimension d){
-//		int height = d.height;
-//		int width = d.width;
-//		
-//		if (width < this.getMinimumSize().width)
-//			width = this.getMinimumSize().width;
-//		else if(width > this.getMaximumSize().width)
-//			width = this.getMaximumSize().width;
-//	
-//		if (height < this.getMinimumSize().height)
-//			height = this.getMinimumSize().height;
-//		else if(height > this.getMaximumSize().height)
-//			height = this.getMaximumSize().height;
-//		
-//		return new Dimension(height, width);
-//	}
+	@Override
+	public boolean isSelectable() {
+		return ((ISelectable) this.getParent()).isSelectable();
+	}
+
 }

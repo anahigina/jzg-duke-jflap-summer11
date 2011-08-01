@@ -3,9 +3,8 @@ package JFLAPnew.formaldef.alphabets.specific;
 import gui.errors.BooleanWrapper;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.alphabets.Alphabet;
-import JFLAPnew.formaldef.alphabets.Alphabets;
 import JFLAPnew.formaldef.alphabets.ISpecialSymbol;
-import JFLAPnew.formaldef.gui.definitionpanel.GUIConstants;
+import JFLAPnew.formaldef.gui.GUIConstants;
 import JFLAPnew.formaldef.symbols.terminal.Terminal;
 
 public class StackAlphabet extends Alphabet<Terminal> implements ISpecialSymbol<Terminal>{
@@ -31,11 +30,11 @@ public class StackAlphabet extends Alphabet<Terminal> implements ISpecialSymbol<
 	}
 
 	public Terminal getBottomOfStackSymbol() {
-		return Alphabets.getSpecialSymbols(this).get(0);
+		return Alphabet.getFirstSpecialSymbol(this);
 	}
 	
 	public BooleanWrapper setBottomOfStackSymbol(Terminal t) {
-		return Alphabets.setSpecialSymbol(this, t);
+		return Alphabet.setSpecialSymbol(this, t);
 	}
 
 

@@ -11,11 +11,11 @@ public class SymbolInputPanel extends JPanel {
 
 	private SymbolInputter myInputter;
 
-	public SymbolInputPanel(MultiDefitionPanel multiDefPanel){
+	public SymbolInputPanel(MultiDefitionPanel multiDefPanel, boolean saveOnClose){
 		this.setLayout(new FlowLayout(FlowLayout.CENTER));
 		this.add(myInputter = new SymbolInputter(multiDefPanel, 30));
 		this.add(new AddSymbolBox(myInputter));
-		this.add(new CompleteButton(multiDefPanel));
+		this.add(new CompleteButton(multiDefPanel, saveOnClose));
 	}
 	
 }
