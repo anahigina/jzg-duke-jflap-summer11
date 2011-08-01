@@ -251,7 +251,7 @@ public class NewAction extends RestrictedAction {
 			button = new JButton("Grammar");
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					createWindow(new grammar.cfg.ContextFreeGrammar());
+					createWindow(new UnboundGrammar());
 				}
 			});
 			getContentPane().add(button);

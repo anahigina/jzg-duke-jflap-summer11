@@ -21,6 +21,9 @@
 package gui;
 
 import javax.swing.table.AbstractTableModel;
+
+import JFLAPnew.formaldef.symbols.SymbolString;
+
 import java.util.*;
 
 /**
@@ -185,5 +188,5 @@ public abstract class GrowableTableModel extends AbstractTableModel implements
 	protected int columns;
 
 	/** Each row is stored as an array of objects in this list. */
-	protected List data = new ArrayList();
+	protected List<Object[]> data = new ArrayList<Object[]>();
 }

@@ -53,6 +53,7 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	 * variable.
 	 */
 	public Grammar() {
+		 myProductions = new ArrayList<Production>();
 	}
 	
 
@@ -147,6 +148,7 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 			return isValid;
 		
 		myProductions.add(production);
+		Collections.sort(myProductions);
 		return isValid;
 
 	}
@@ -157,7 +159,6 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	 * @return
 	 */
 	public boolean containsProduction(Production production) {
-		
 		return myProductions.contains(production);
 	}
 
@@ -336,13 +337,35 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 			RHSes.add(p.getRHS());
 		return RHSes;
 	}
+	
+	  /**
+     * Iterates through all productions searching for one with an LHS
+     * corresponding to the input argument
+     * @param lhs - the desired LHS <CODE>SymbolString</CODE>
+     * @return the first production with this <CODE>SymbolString</CODE> as an LHS
+     *                 <CODE>null</CODE> if no exists
+     */
+	public Production getProductionWithLHS(SymbolString lhs) {
+		for (Production p: myProductions)
+			if (p.getLHS().equals(lhs))
+				return p;
+		return null;
+	}
 
-    
+	
+	public Production removeProductionAtIndex(int i) {
+		return myProductions.remove(i);
+	}
+	
+	
+	
 //	private EnvironmentFrame myEnvFrame = null;
 	private String fileName ="";
 
 	/** Set of Production rules. */
-	protected Set<Production> myProductions = new TreeSet<Production>();
+	protected List<Production> myProductions;
+
+	
 
 	
 

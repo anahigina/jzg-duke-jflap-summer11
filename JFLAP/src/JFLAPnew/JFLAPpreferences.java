@@ -21,7 +21,7 @@ import JFLAPnew.formaldef.test.Toggler;
 
 public class JFLAPpreferences {
 
-	public static boolean amUserDefined = true;
+	public static boolean amUserDefined = false;
 	
 	
 	public static void setUserDefinedAlphabet(boolean b){

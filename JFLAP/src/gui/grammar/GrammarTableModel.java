@@ -25,9 +25,11 @@ import grammar.Production;
 import gui.GrowableTableModel;
 import java.util.ArrayList;
 import javax.swing.Icon;
+import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import JFLAPnew.formaldef.symbols.SymbolHelper;
 import JFLAPnew.formaldef.symbols.SymbolString;
 
 /**
@@ -62,9 +64,7 @@ public class GrammarTableModel extends GrowableTableModel {
 	public GrammarTableModel(Grammar grammar) {
 		super(3);
 		myGrammar = grammar;
-		Production[] ps = grammar.getProductions();
-		for (int i = 0; i < ps.length; i++)
-			addProduction(ps[i]);
+		updateProductions();
 		setUpTableListener();
 	}
 
@@ -79,13 +79,103 @@ public class GrammarTableModel extends GrowableTableModel {
 			
 			@Override
 			public void tableChanged(TableModelEvent e) {
-				switch(e.getType()){
-					case TableModelEvent.INSERT: System.out.println("Insert"); break;
-					case TableModelEvent.DELETE: System.out.println("Delete"); break;
-					case TableModelEvent.UPDATE: System.out.println("Update"); break;
+				
+				if (e.getType() == TableModelEvent.UPDATE){
+					int row = e.getFirstRow(),
+							col = e.getColumn();
+					GrammarTableModel table = (GrammarTableModel)e.getSource();
+					String updated = table.getValueAt(row, col).toString();
+					SymbolString ss = SymbolString.createFromString(updated, myGrammar);
+					if (ss.toString().length() != updated.length())
+						JOptionPane.showMessageDialog(null, 
+											"This input has a bad character at index " + ss.toString().length(), 
+											"Warning!", 
+											JOptionPane.WARNING_MESSAGE);
 				}
+				
+				
+//				if (e.getType() == TableModelEvent.UPDATE){
+//					Production[] productions = myGrammar.getProductions();
+//					int row = e.getFirstRow(),
+//							col = e.getColumn();
+//					GrammarTableModel table = (GrammarTableModel)e.getSource();
+//					String updated = table.getValueAt(row, col).toString();
+//					System.out.println("Updated: " + updated);
+//					if(updated.length() == 0 && 
+//							((col == 0 && table.isRHSempty(row)) || 
+//							(col == 2 && table.isLHSempty(row)))){
+//						table.removeProduction(row);
+//					}
+//					else {
+//						if (row >= productions.length)
+//							System.out.println(myGrammar.addProduction(table.getProduction(row)).isTrue());
+//						else if (col == 0)
+//							productions[row].setLHS(SymbolString.createFromString(updated, myGrammar));
+//						else if (col == 2)
+//							productions[row].setRHS(SymbolString.createFromString(updated, myGrammar));
+//					}
+//					table.updateProductions();
+//				}
 			}
 		});
+	}
+
+	/**
+	 * Updates all productions in the table model to mirror those in the grammar
+	 */
+	protected void updateProductions() {
+		this.clearTable();
+		for (Production p: myGrammar.getProductions()){
+			System.out.println(p);
+			addProduction(p);
+		}
+	}
+
+	private void clearTable() {
+		for (int row = 0; row < this.getRowCount(); row++)
+			this.deleteRow(row);
+	}
+
+	/**
+	 * Removes the production at this row index in the the table from the Grammar
+	 * and then removes the row from the table.
+	 * @param row
+	 */
+	protected void removeProduction(int row) {
+		if (myGrammar.getProductions().length == 0) return;
+		myGrammar.removeProductionAtIndex(row);
+		this.deleteRow(row);
+	}
+
+	/**
+	 * Checks to see if the a given production stored in this table
+	 * is empty. 
+	 * @param row = the row index
+	 * @return true if empty, false otherwise
+	 */
+	protected boolean isEmptyProduction(int row) {
+		
+		return isLHSempty(row) && isRHSempty(row);
+	}
+
+	/**
+	 * Checks to see if the RHS of a given production stored in this table
+	 * is empty. Basically, if the cell at (row, 2) is empty.
+	 * @param row = the row index
+	 * @return true if empty, false otherwise
+	 */
+	public boolean isRHSempty(int row) {
+		return ((String)this.getValueAt(row, 2)).length() == 0;
+	}
+
+	/**
+	 * Checks to see if the LHS of a given production stored in this table
+	 * is empty. Basically, if the cell at (row, 0) is empty.
+	 * @param row = the row index
+	 * @return true if empty, false otherwise
+	 */
+	public boolean isLHSempty(int row) {
+		return ((String)this.getValueAt(row, 0)).length() == 0;
 	}
 
 	/**
@@ -139,11 +229,9 @@ public class GrammarTableModel extends GrowableTableModel {
 	 *         there is not properly a production
 	 */
 	public Production getProduction(int row) {
-		String lhs = (String) getValueAt(row, 0);
-		if (lhs.equals(""))
-			return null;
-		return new Production(SymbolString.createFromString(lhs, myGrammar),
-								SymbolString.createFromString((String) getValueAt(row, 2), myGrammar));
+		
+		return new Production(SymbolString.createFromString(getValueAt(row, 0).toString(), myGrammar),
+								SymbolString.createFromString(getValueAt(row, 2).toString(), myGrammar));
 	}
 
 	/**

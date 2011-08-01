@@ -116,7 +116,6 @@ public class SymbolBar extends JPanel implements IUpdate, Scrollable{
 			SymbolBox sb = new SymbolBox(s);
 			sb.setPreferredSize(new Dimension(sb.getPreferredSize().width, AlphabetPane.HEIGHT));
 			this.add(sb);
-			System.out.println("Updated " + s);
 			width += sb.getPreferredSize().width;
 		}
 		this.setPreferredSize(new Dimension(width, AlphabetPane.HEIGHT));

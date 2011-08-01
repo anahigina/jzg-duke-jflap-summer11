@@ -53,7 +53,7 @@ public class SymbolString extends LinkedList<Symbol> implements Comparable<Symbo
 			temp += in.charAt(i);
 			for (IAlphabet alph: def){
 				if (alph.containsSymbolWithString(temp)){
-					symbols.add(alph.createDesiredSymbol(temp));
+					symbols.add(alph.getSymbol(temp));
 					temp = "";
 					break;
 				}

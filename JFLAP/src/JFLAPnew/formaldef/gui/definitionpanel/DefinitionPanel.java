@@ -48,7 +48,7 @@ import JFLAPnew.formaldef.gui.selection.UpDownSelectingAdapter;
 public class DefinitionPanel extends JPanel implements IUpdate, ISelector, ISelectable{
 
 	public static final Border THICK_BORDER = BorderFactory.createLineBorder(Color.BLACK, 4);
-	========public static final Border THIN_BORDER = BorderFactory.createLineBorder(Color.BLACK, 1);
+	public static final Border THIN_BORDER = BorderFactory.createLineBorder(Color.BLACK, 1);
 	private FormalDefinition myDef;
 	private LinkedList<AlphabetPane> myPanes;
 	private Container myParent;
