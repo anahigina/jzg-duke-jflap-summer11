@@ -208,8 +208,8 @@ public class Production implements Serializable, Cloneable, Comparable<Productio
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(getLHS());
-		// buffer.append("->");
-		buffer.append('\u2192');
+		 buffer.append("->");
+//		buffer.append('\u2192');
 		buffer.append(getRHS().size() == 0 ? Universe.curProfile.getEmptyString() : getRHS());
 		// buffer.append('\n');
 		return buffer.toString();

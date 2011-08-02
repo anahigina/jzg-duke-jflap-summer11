@@ -8,6 +8,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -76,7 +77,18 @@ public abstract class Alphabet<T extends Symbol> extends Observable implements I
 	@Override
 	public List<T> sortedList() {
 		List<T> list = new ArrayList<T>(mySymbols);
-		Collections.sort(list);
+		Collections.sort(list, new Comparator<T>() {
+			@Override
+			public int compare(T o1, T o2) {
+				if (o1.isSpecial() && !o2.isSpecial()){
+					return -1;
+				}
+				if (!o1.isSpecial() && o2.isSpecial()){
+					return 1;
+				}
+				return o1.compareTo(o2);
+			}
+		});
 		return list;
 	}
 

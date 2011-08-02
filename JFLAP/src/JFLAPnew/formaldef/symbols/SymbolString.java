@@ -147,4 +147,5 @@ public class SymbolString extends LinkedList<Symbol> implements Comparable<Symbo
 			concat.concat(ss);
 		return concat;
 	}
+
 }

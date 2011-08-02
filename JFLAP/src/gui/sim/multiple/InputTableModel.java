@@ -82,8 +82,9 @@ public class InputTableModel extends GrowableTableModel {
 	/**
 	 * Initializes the contents of a new array to be all blank strings.
 	 */
-	protected Object[] initializeRow(int row) {
-		Object[] nr = super.initializeRow(row);
+	@Override
+	protected Object[] createEmptyRow() {
+		Object[] nr = super.createEmptyRow();
 		Arrays.fill(nr, "");
 		return nr;
 	}

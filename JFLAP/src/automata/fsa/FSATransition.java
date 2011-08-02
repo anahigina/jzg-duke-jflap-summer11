@@ -21,6 +21,7 @@
 package automata.fsa;
 
 import gui.environment.Universe;
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.Transition;
 import automata.State;
 
@@ -42,14 +43,14 @@ public class FSATransition extends Transition {
 	 *            the state this transition comes from
 	 * @param to
 	 *            the state this transition goes to
-	 * @param label
+	 * @param myLabel2
 	 *            the label for this transition, roughly intended to be that
 	 *            string that the current string in the machine should satisfy
 	 *            before moving on to the next state
 	 */
-	public FSATransition(State from, State to, String label) {
+	public FSATransition(State from, State to, SymbolString myLabel2) {
 		super(from, to);
-		setLabel(label);
+		setLabel(myLabel2);
 	}
 
 	/**
@@ -68,21 +69,21 @@ public class FSATransition extends Transition {
 	/**
 	 * Returns the label for this transition.
 	 */
-	public String getLabel() {
+	public SymbolString getLabel() {
 		return myLabel;
 	}
 
 	/**
 	 * Sets the label for this transition.
 	 * 
-	 * @param label
+	 * @param myLabel2
 	 *            the new label for this transition
 	 * @throws IllegalArgumentException
 	 *             if the label contains any "bad" characters, i.e., not
 	 *             alphanumeric
 	 */
-	protected void setLabel(String label) {
-		myLabel = label;
+	protected void setLabel(SymbolString myLabel2) {
+		myLabel = myLabel2;
 	}
 
 	/**
@@ -91,10 +92,10 @@ public class FSATransition extends Transition {
 	 * @return the description, in this case, simply the label
 	 */
 	public String getDescription() {
-		String desc = getLabel();
-		if (desc.length() == 0)
+		SymbolString desc = getLabel();
+		if (desc.size() == 0)
 			return Universe.curProfile.getEmptyString(); // I am a badass.
-		return getLabel();
+		return desc.toString();
 	}
 
 	/**
@@ -139,5 +140,5 @@ public class FSATransition extends Transition {
 	 * The label for this transition, which is intended to be used as the
 	 * precondition that a string must satisfy before the machine continues.
 	 */
-	protected String myLabel = "";
+	protected SymbolString myLabel = new SymbolString();
 }

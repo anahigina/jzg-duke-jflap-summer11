@@ -67,9 +67,9 @@ public abstract class Automaton extends FormalDefinition implements Serializable
 	 * has no states and no transitions.
 	 */
 	public Automaton() {
-		states = new HashSet();
-		transitions = new HashSet();
-		finalStates = new HashSet();
+		states = new HashSet<State>();
+		transitions = new HashSet<Transition>();
+		finalStates = new HashSet<State>();
 		initialState = null;
 	}
 

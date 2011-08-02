@@ -30,8 +30,10 @@ import java.util.*;
  * new character on a transition label to the alphabet.
  * 
  * @author Ryan Cavalcante
+ * 
+ * @deprecated - this class is no longer needed
  */
-
+@Deprecated
 public class FSAAlphabetRetriever extends AlphabetRetriever {
 	/**
 	 * Creates an instance of <CODE>FSAAlphabetRetriever</CODE>.

@@ -142,14 +142,7 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	 *             if the production is unsuitable somehow
 	 */
 	public BooleanWrapper addProduction(Production production) {
-        	
-		BooleanWrapper isValid = checkProduction(production);
-		if (isValid.isFalse())
-			return isValid;
-		
-		myProductions.add(production);
-		Collections.sort(myProductions);
-		return isValid;
+		return this.addProduction(myProductions.size(), production);
 
 	}
 
@@ -358,12 +351,29 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	}
 	
 	
+	public BooleanWrapper addProduction(int index, Production prod) {
+		BooleanWrapper isValid = checkProduction(prod);
+		if (isValid.isFalse())
+			return isValid;
+		
+		myProductions.add(index, prod);
+		Collections.sort(myProductions);
+		return isValid;
+	}
+	
+	
+
+	public void clearProductions() {
+		myProductions.clear();
+	}
 	
 //	private EnvironmentFrame myEnvFrame = null;
 	private String fileName ="";
 
 	/** Set of Production rules. */
 	protected List<Production> myProductions;
+
+
 
 	
 

@@ -116,7 +116,7 @@ public class GrammarTable extends HighlightTable {
 	 *             if the grammar class passed in could not be instantiated with
 	 *             an empty constructor, or is not even a subclass of <CODE>Grammar</CODE>.
 	 */
-	//TODO: check this out - everything is going to be added dynamically and tehn updated, so 
+	//TODO: check this out - everything is going to be added dynamically and then updated, so 
 	//this method will no longer be needed. Make sure it is all ok.
 	public Grammar getGrammar() {
 //		Grammar grammar = null;

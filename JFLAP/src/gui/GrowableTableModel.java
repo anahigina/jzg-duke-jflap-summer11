@@ -44,10 +44,22 @@ public abstract class GrowableTableModel extends AbstractTableModel implements
 	 *            the number of columns for this model
 	 */
 	public GrowableTableModel(int columns) {
-		this.columns = columns;
-		clear();       
+		this(columns, new ArrayList<Object[]>());
 	}
 
+	/**
+	 * This instantiates a <CODE>GrowableTableModel</CODE> with an initial set of data from
+	 * another table or source.
+	 * 
+	 * @param columns
+	 *            the number of columns for this model
+	 */
+	public GrowableTableModel(int columns, List<Object[]> newData) {
+		this.columns = columns;
+		data = newData;
+		getData().add(createEmptyRow());
+	}
+	
 	/**
 	 * The copy constructor for this table model. This will do a shallow copy of
 	 * all elements in the data.
@@ -64,8 +76,8 @@ public abstract class GrowableTableModel extends AbstractTableModel implements
 	 * having one row. The number of columns remains unchanged.
 	 */
 	public void clear() {
-		data.clear();
-		data.add(initializeRow(0));
+		getData().clear();
+		getData().add(createEmptyRow());
 		fireTableDataChanged();
 	}
 
@@ -78,20 +90,20 @@ public abstract class GrowableTableModel extends AbstractTableModel implements
 	 */
 	public void copy(GrowableTableModel model) {
 		columns = model.getColumnCount();
-		data.clear();
-		Iterator it = model.data.iterator();
+		getData().clear();
+		Iterator it = model.getData().iterator();
 		while (it.hasNext()) {
 			Object[] oldRow = (Object[]) it.next();
 			Object[] row = new Object[columns];
 			for (int i = 0; i < oldRow.length; i++)
 				row[i] = oldRow[i];
-			data.add(row);
+			getData().add(row);
 		}
 		fireTableDataChanged();
 	}
 
 	/**
-	 * Initializes a new row. This should not modify any data or any state
+	 * Initializes a new, empty row. This should not modify any data or any state
 	 * whatsoever, but should simply return an initialized row.
 	 * 
 	 * @param row
@@ -101,7 +113,7 @@ public abstract class GrowableTableModel extends AbstractTableModel implements
 	 *         <CODE>Object</CODE> array of size equal to the number of
 	 *         columns with contents set to <CODE>null</CODE>
 	 */
-	protected Object[] initializeRow(int row) {
+	protected Object[] createEmptyRow() {
 		Object[] newRow = new Object[getColumnCount()];
 		Arrays.fill(newRow, null);
 		return newRow;
@@ -122,7 +134,7 @@ public abstract class GrowableTableModel extends AbstractTableModel implements
 	 * @return the number of rows currently in this table
 	 */
 	public final int getRowCount() {
-		return data.size();
+		return getData().size();
 	}
 
 	/**
@@ -133,9 +145,9 @@ public abstract class GrowableTableModel extends AbstractTableModel implements
 	 * @return if the row was able to be deleted
 	 */
 	public boolean deleteRow(int row) {
-		if (row < 0 || row > data.size() - 2)
+		if (row < 0 || row > getData().size() - 2)
 			return false;
-		data.remove(row);
+		getData().remove(row);
 		fireTableRowsDeleted(row, row);
 		return true;
 	}
@@ -143,7 +155,7 @@ public abstract class GrowableTableModel extends AbstractTableModel implements
 	/**
 	 * Inserts data at a particular row.
 	 * 
-	 * @param newData
+	 * @param newdata
 	 *            the array of new data for a row
 	 * @param row
 	 *            the row index to insert the new data at
@@ -152,9 +164,9 @@ public abstract class GrowableTableModel extends AbstractTableModel implements
 	 */
 	public void insertRow(Object[] newData, int row) {
 		if (newData.length != columns)
-			throw new IllegalArgumentException("Data length is "
+			throw new IllegalArgumentException("data length is "
 					+ newData.length + ", should be " + columns + ".");
-		data.add(row, newData);
+		getData().add(row, newData);
 		fireTableRowsInserted(row, row);
 	}
 
@@ -168,25 +180,56 @@ public abstract class GrowableTableModel extends AbstractTableModel implements
 	 * @return the object at that location
 	 */
 	public Object getValueAt(int row, int column) {
-		return ((Object[]) data.get(row))[column];
+		return getData().get(row)[column];
 	}
 
-	public void setValueAt(Object newData, int row, int column) {
-		((Object[])data.get(row))[column] = newData;
+	public void setValueAt(Object newdata, int row, int column) {
+		getData().set(row, completeRow(newdata, row, column));
 		if (row + 1 == getRowCount()) {
-			data.add(initializeRow(row + 1));
+			getData().add(createEmptyRow());
 			fireTableRowsInserted(row + 1, row + 1);
 		}
         if (row  >= getRowCount()) {
-            data.add(initializeRow(row));
+            getData().add(createEmptyRow());
             fireTableRowsInserted(row, row);
         }
 		fireTableCellUpdated(row, column);
+		if (this.checkEmpty(row)){
+			this.deleteRow(row);
+			fireTableRowsDeleted(row, row);
+		}
 	}
 
+	private Object[] completeRow(Object newdata, int row, int column) {
+		Object[] current = this.createEmptyRow();
+		for (int c = 0; c < this.getColumnCount(); c++)
+			current[c] = this.getValueAt(row, c);
+		current[column] = newdata;
+		return current;
+	}
+
+	/**
+	 * Checks to see if the given row is empty such that 
+	 * empty rows will automatically be purged. Returns false every time
+	 * by default. Override to add activity.
+	 * @param row
+	 * @return
+	 */
+	public boolean checkEmpty(int row) {
+		return false;
+	}
+
+
+	public List<Object[]> getData(){
+		return data;
+	}
+	
 	/** This holds the number of columns. */
 	protected int columns;
-
-	/** Each row is stored as an array of objects in this list. */
-	protected List<Object[]> data = new ArrayList<Object[]>();
+	
+	/** The generic data structure used for tables. 
+	 * Can be replaced by overriding the getData Method */
+	protected List<Object[]> data;
+	
 }
+

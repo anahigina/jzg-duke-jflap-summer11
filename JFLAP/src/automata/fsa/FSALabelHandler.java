@@ -20,6 +20,7 @@
 
 package automata.fsa;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.Automaton;
 import automata.State;
 import automata.Transition;
@@ -51,11 +52,8 @@ public class FSALabelHandler {
 	 *         characters, instead of single character labels.
 	 */
 	public static boolean hasMultipleCharacterLabels(Automaton automaton) {
-		Transition[] transitions = automaton.getTransitions();
-		for (int k = 0; k < transitions.length; k++) {
-			FSATransition transition = (FSATransition) transitions[k];
-			String label = transition.getLabel();
-			if (label.length() > 1)
+		for (Transition t: automaton.getTransitions()) {
+			if (((FSATransition)t).getLabel().size() > 1)
 				return true;
 		}
 		return false;
@@ -94,8 +92,8 @@ public class FSALabelHandler {
 		State from = transition.getFromState(), f = from, to = transition
 				.getToState();
 		automaton.removeTransition(trans);
-		String label = trans.getLabel();
-		int length = label.length();
+		SymbolString label = trans.getLabel();
+		int length = label.size();
 		for (int i = 0; i < length; i++) {
 			State going = i == length - 1 ? to : automaton
 					.createState(new java.awt.Point((f.getPoint().x
@@ -104,24 +102,23 @@ public class FSALabelHandler {
 							.getPoint().y
 							* (i + 1))
 							/ length));
-			Transition newTrans = new FSATransition(from, going, label
-					.substring(i, i + 1));
+			Transition newTrans = new FSATransition(from, going, label.subList(i, i+1));
 			automaton.addTransition(newTrans);
 			from = going;
 		}
 	}
 	
-	public static void splitLabel(Transition transition, Automaton automaton){
-		FSATransition trans = (FSATransition) transition;
-		State from = transition.getFromState(), f = from, to = transition
-		.getToState();
-		automaton.removeTransition(trans);
-		String label = trans.getLabel();
-		for(int i=label.charAt(label.indexOf("[")+1); i<=label.charAt(label.indexOf("[")+3); i++){
-			Transition newTrans = new FSATransition(from, to, Character.toString((char)i));
-			automaton.addTransition(newTrans);
-		}
-	}
+//	public static void splitLabel(Transition transition, Automaton automaton){
+//		FSATransition trans = (FSATransition) transition;
+//		State from = transition.getFromState(), f = from, to = transition
+//		.getToState();
+//		automaton.removeTransition(trans);
+//		SymbolString label = trans.getLabel();
+//		for(int i=label.charAt(label.indexOf("[")+1); i<=label.charAt(label.indexOf("[")+3); i++){
+//			Transition newTrans = new FSATransition(from, to, Character.toString((char)i));
+//			automaton.addTransition(newTrans);
+//		}
+//	}
 		
 
 	/**

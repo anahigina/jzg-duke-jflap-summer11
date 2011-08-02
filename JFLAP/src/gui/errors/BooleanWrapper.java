@@ -55,7 +55,8 @@ public class BooleanWrapper {
 	public static String createErrorLog(BooleanWrapper ... errors) {
 		StringBuilder sb = new StringBuilder();
 		for (BooleanWrapper error: errors){
-			sb.append(error.getMessage() + "\n");
+			if (error.isFalse())
+				sb.append(error.getMessage() + "\n");
 		}
 		return sb.toString();
 		
