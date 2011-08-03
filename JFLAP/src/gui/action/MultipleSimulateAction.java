@@ -463,9 +463,9 @@ public class MultipleSimulateAction extends NoInteractionSimulateAction {
          * Jinghui Lim
          */
         String empty = "Lambda";
-        if(Universe.curProfile.getEmptyString().equals(Profile.LAMBDA))
+        if(Universe.curProfile.getEmptyStringSymbol().equals(Profile.LAMBDA))
             empty = "Lambda";
-        else if(Universe.curProfile.getEmptyString().equals(Profile.EPSILON))
+        else if(Universe.curProfile.getEmptyStringSymbol().equals(Profile.EPSILON))
             empty = "Epsilon";
 		bar.add(new AbstractAction("Enter " + empty/*"Enter Lambda"*/) {
 			public void actionPerformed(ActionEvent e) {

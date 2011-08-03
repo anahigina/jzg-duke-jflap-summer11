@@ -164,7 +164,7 @@ class LLParseController {
 						derivationString });
 				// What? About? Lambda?
 				if (ENTRY.length() == 0)
-					ENTRY = Universe.curProfile.getEmptyString();
+					ENTRY = Universe.curProfile.getEmptyStringSymbol();
 				ENTRYP = ENTRY.length() - 1;
 				pane.statusDisplay.setText("Replacing " + top + " with "
 						+ ENTRY + ".");
@@ -182,7 +182,7 @@ class LLParseController {
 			TreeNode node = NODES[NODECOUNT++];
 			pane.treeDrawer.show(node);
 			pane.treePanel.repaint();
-			if (!node.toString().equals(Universe.curProfile.getEmptyString()))
+			if (!node.toString().equals(Universe.curProfile.getEmptyStringSymbol()))
 				STACK.push(node);
 			ENTRYP--;
 			updateStatus();
@@ -317,7 +317,7 @@ class LLParseController {
 							.pop();
 					if (entry.length() == 0) {
 						MutableTreeNode child = new DefaultMutableTreeNode(
-								Universe.curProfile.getEmptyString());
+								Universe.curProfile.getEmptyStringSymbol());
 						node.insert(child, 0);
 						nodes.add(child);
 					} else {

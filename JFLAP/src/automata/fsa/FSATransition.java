@@ -21,7 +21,9 @@
 package automata.fsa;
 
 import gui.environment.Universe;
+import JFLAPnew.formaldef.symbols.Symbol;
 import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
 import automata.Transition;
 import automata.State;
 
@@ -35,7 +37,7 @@ import automata.State;
  * @author Thomas Finley
  */
 
-public class FSATransition extends Transition {
+public class FSATransition extends Transition<FSATransitionLabel> {
 	/**
 	 * Instantiates a new <CODE>FSATransition</CODE> object.
 	 * 
@@ -48,28 +50,23 @@ public class FSATransition extends Transition {
 	 *            string that the current string in the machine should satisfy
 	 *            before moving on to the next state
 	 */
-	public FSATransition(State from, State to, SymbolString myLabel2) {
-		super(from, to);
-		setLabel(myLabel2);
+	public FSATransition(State from, State to, FSATransitionLabel s) {
+		super(from, to, s);
 	}
-
-	/**
-	 * Produces a copy of this transition with new from and to states.
-	 * 
-	 * @param from
-	 *            the new from state
-	 * @param to
-	 *            the new to state
-	 * @return a copy of this transition with the new states
-	 */
-	public Transition copy(State from, State to) {
-		return new FSATransition(from, to, myLabel);
+	
+	public FSATransition(State from, State to) {
+		super(from, to, new FSATransitionLabel());
+	}
+	
+	public FSATransition(State from, State going, SymbolString subList) {
+		this(from, going, new FSATransitionLabel(subList));
 	}
 
 	/**
 	 * Returns the label for this transition.
 	 */
-	public SymbolString getLabel() {
+	@Override
+	public FSATransitionLabel getLabel() {
 		return myLabel;
 	}
 
@@ -82,32 +79,14 @@ public class FSATransition extends Transition {
 	 *             if the label contains any "bad" characters, i.e., not
 	 *             alphanumeric
 	 */
-	protected void setLabel(SymbolString myLabel2) {
-		myLabel = myLabel2;
+	@Override
+	public void setLabel(FSATransitionLabel label) {
+		myLabel = label;
 	}
 
-	/**
-	 * Returns the description for this transition.
-	 * 
-	 * @return the description, in this case, simply the label
-	 */
-	public String getDescription() {
-		SymbolString desc = getLabel();
-		if (desc.size() == 0)
-			return Universe.curProfile.getEmptyString(); // I am a badass.
-		return desc.toString();
-	}
 
-	/**
-	 * Returns a string representation of this object. This is the same as the
-	 * string representation for a regular transition object, with the label
-	 * tacked on.
-	 * 
-	 * @see automata.Transition#toString
-	 * @return a string representation of this object
-	 */
-	public String toString() {
-		return super.toString() + ": \"" + getLabel() + "\"";
+	public void setLabel(SymbolString string) {
+		this.setLabel(new FSATransitionLabel(string));
 	}
 
 	/**
@@ -140,5 +119,5 @@ public class FSATransition extends Transition {
 	 * The label for this transition, which is intended to be used as the
 	 * precondition that a string must satisfy before the machine continues.
 	 */
-	protected SymbolString myLabel = new SymbolString();
+	protected FSATransitionLabel myLabel;
 }

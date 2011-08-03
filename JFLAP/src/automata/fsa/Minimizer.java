@@ -27,6 +27,8 @@ import java.util.Iterator;
 
 import javax.swing.tree.DefaultTreeModel;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
 import automata.AlphabetRetriever;
 import automata.Automaton;
 import automata.AutomatonChecker;
@@ -115,13 +117,11 @@ public class Minimizer {
 	 *            the automaton
 	 * @return the terminal that <CODE>group</CODE> can be split on.
 	 */
-	public String getTerminalToSplit(State[] group, Automaton automaton,
+	public Terminal getTerminalToSplit(State[] group, Automaton automaton,
 			DefaultTreeModel tree) {
-		AlphabetRetriever far = new FSAAlphabetRetriever();
-		String[] alphabet = far.getAlphabet(automaton);
-		for (int k = 0; k < alphabet.length; k++) {
-			if (isSplittableOnTerminal(group, alphabet[k], automaton, tree)) {
-				return alphabet[k];
+		for (Terminal t: automaton.getInputAlphabet().getSymbols()) {
+			if (isSplittableOnTerminal(group, t, automaton, tree)) {
+				return t;
 			}
 		}
 		return null;
@@ -132,16 +132,16 @@ public class Minimizer {
 	 * 
 	 * @param group
 	 *            the group to split
-	 * @param terminal
+	 * @param t
 	 *            the terminal to split group on
 	 * @param automaton
 	 *            the automaton
 	 * @return true if <CODE>group</CODE> is splittable on <CODE>terminal</CODE>.
 	 */
-	public boolean isSplittableOnTerminal(State[] group, String terminal,
+	public boolean isSplittableOnTerminal(State[] group, Terminal t,
 			Automaton automaton, DefaultTreeModel tree) {
 		/** if group goes to more than one group on terminal. */
-		if (getGroupsFromGroupOnTerminal(group, terminal, automaton, tree)
+		if (getGroupsFromGroupOnTerminal(group, t, automaton, tree)
 				.size() > 1) {
 			return true;
 		}
@@ -163,10 +163,9 @@ public class Minimizer {
 		if (group.length <= 1)
 			return false;
 		AlphabetRetriever far = new FSAAlphabetRetriever();
-		String[] alphabet = far.getAlphabet(automaton);
-		for (int k = 0; k < alphabet.length; k++) {
+		for (Terminal t: automaton.getInputAlphabet().getSymbols()) {
 			/** if group splittable on a terminal in alphabet. */
-			if (isSplittableOnTerminal(group, alphabet[k], automaton, tree)) {
+			if (isSplittableOnTerminal(group, t, automaton, tree)) {
 				return true;
 			}
 		}
@@ -235,13 +234,13 @@ public class Minimizer {
 	 *         transition to one of the states in <CODE>group</CODE> on <CODE>terminal</CODE>.
 	 */
 	public boolean stateGoesToGroupOnTerminal(State state, State[] group,
-			String terminal, Automaton automaton) {
+			Terminal terminal, Automaton automaton) {
 		for (int k = 0; k < group.length; k++) {
 			Transition[] transitions = automaton
 					.getTransitionsFromStateToState(state, group[k]);
 			for (int j = 0; j < transitions.length; j++) {
 				FSATransition trans = (FSATransition) transitions[j];
-				String label = trans.getLabel();
+				SymbolString label = trans.getLabel();
 				if (label.equals(terminal)) {
 					return true;
 				}
@@ -256,7 +255,7 @@ public class Minimizer {
 	 * 
 	 * @param group
 	 *            the group
-	 * @param terminal
+	 * @param t
 	 *            the terminal
 	 * @param automaton
 	 *            the automaton
@@ -264,7 +263,7 @@ public class Minimizer {
 	 *         <CODE>terminal</CODE>.
 	 */
 	public ArrayList getGroupsFromGroupOnTerminal(State[] group,
-			String terminal, Automaton automaton, DefaultTreeModel tree) {
+			Terminal t, Automaton automaton, DefaultTreeModel tree) {
 		ArrayList list = new ArrayList();
 		for (int k = 0; k < group.length; k++) {
 			if (group[k].getAutomaton() != automaton)
@@ -273,7 +272,7 @@ public class Minimizer {
 					.getTransitionsFromState(group[k]);
 			for (int j = 0; j < transitions.length; j++) {
 				FSATransition trans = (FSATransition) transitions[j];
-				if (trans.getLabel().equals(terminal)) {
+				if (trans.getLabel().equals(t)) {
 					State[] node = getGroupForState(
 							transitions[j].getToState(), tree);
 					if (!list.contains(node)) {
@@ -332,7 +331,7 @@ public class Minimizer {
 	 * @return list of groups (as State[]) that represent distinguishable groups
 	 *         as subsets of <CODE>group</CODE>.
 	 */
-	public ArrayList splitOnTerminal(State[] group, String terminal,
+	public ArrayList splitOnTerminal(State[] group, Terminal terminal,
 			Automaton automaton, DefaultTreeModel tree) {
 		ArrayList newGroups = new ArrayList();
 		MinimizeTreeNode root = (MinimizeTreeNode) tree.getRoot();
@@ -382,7 +381,7 @@ public class Minimizer {
 	 */
 	public ArrayList split(State[] group, Automaton automaton,
 			DefaultTreeModel tree) {
-		String terminal = getTerminalToSplit(group, automaton, tree);
+		Terminal terminal = getTerminalToSplit(group, automaton, tree);
 		ArrayList list = new ArrayList();
 		list.addAll(splitOnTerminal(group, terminal, automaton, tree));
 		return list;
@@ -395,15 +394,15 @@ public class Minimizer {
 	 * 
 	 * @param transitions
 	 *            the set of transitions.
-	 * @param terminal
+	 * @param alphabet
 	 *            the terminal.
 	 * @return true if there is a transition on terminal.
 	 */
 	public boolean isTransitionOnTerminal(Transition[] transitions,
-			String terminal) {
+			Terminal alphabet) {
 		for (int k = 0; k < transitions.length; k++) {
 			FSATransition transition = (FSATransition) transitions[k];
-			if (transition.getLabel().equals(terminal)) {
+			if (transition.getLabel().equals(alphabet)) {
 				return true;
 			}
 		}
@@ -420,8 +419,7 @@ public class Minimizer {
 	 * @return true if automaton needs a trap state.
 	 */
 	public boolean needsTrapState(Automaton automaton) {
-		AlphabetRetriever far = new FSAAlphabetRetriever();
-		String[] alphabet = far.getAlphabet(automaton);
+		Terminal[] alphabet = automaton.getInputAlphabet().getSymbols().toArray(new Terminal[0]);
 		State[] states = automaton.getStates();
 		for (int k = 0; k < states.length; k++) {
 			Transition[] transitions = automaton
@@ -450,8 +448,7 @@ public class Minimizer {
 		Point point = sp.getPointForState(automaton);
 		State trapState = automaton.createState(point);
 		TRAP_STATE = trapState;
-		AlphabetRetriever far = new FSAAlphabetRetriever();
-		String[] alphabet = far.getAlphabet(automaton);
+		Terminal[] alphabet = automaton.getInputAlphabet().getSymbols().toArray(new Terminal[0]);
 		State[] states = automaton.getStates();
 		for (int k = 0; k < states.length; k++) {
 			Transition[] transitions = automaton
@@ -459,7 +456,7 @@ public class Minimizer {
 			for (int j = 0; j < alphabet.length; j++) {
 				if (!isTransitionOnTerminal(transitions, alphabet[j])) {
 					FSATransition trans = new FSATransition(states[k],
-							trapState, alphabet[j]);
+							trapState, new SymbolString(alphabet[j]));
 					automaton.addTransition(trans);
 				}
 			}
@@ -622,7 +619,7 @@ public class Minimizer {
 		while (!isMinimized(automaton, tree)) {
 			State[] group = getDistinguishableGroup(automaton, tree);
 			ArrayList children = new ArrayList();
-			String terminal = getTerminalToSplit(group, automaton, tree);
+			Terminal terminal = getTerminalToSplit(group, automaton, tree);
 			children.addAll(splitOnTerminal(group, terminal, automaton, tree));
 			// children.addAll(split(group, automaton));
 			MinimizeTreeNode parent = getTreeNodeForObject(tree, root, group);

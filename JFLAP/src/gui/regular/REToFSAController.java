@@ -419,7 +419,7 @@ public class REToFSAController {
 		}
 
 		convertPane.detailLabel.setText(transitionNeeded
-				+ " more "+Universe.curProfile.getEmptyString()+"-transitions needed.");
+				+ " more "+Universe.curProfile.getEmptyStringSymbol()+"-transitions needed.");
 		switch (action) {
 		case DEOR:
 			convertPane.mainLabel.setText("De-oring " + transition.getLabel());

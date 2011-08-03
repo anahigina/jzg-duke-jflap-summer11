@@ -23,6 +23,8 @@ package gui.grammar;
 import grammar.Grammar;
 import grammar.Production;
 import gui.GrowableTableModel;
+import gui.environment.Universe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,6 +134,9 @@ public class GrammarTableModel extends GrowableTableModel {
 		return column == 1 ? Icon.class : String.class;
 	}
 
+	
+	
+	
 	/**
 	 * Returns the object at a particular location in the model. This is
 	 * overridden to see that the arrow does not display itself in the last
@@ -145,9 +150,14 @@ public class GrammarTableModel extends GrowableTableModel {
 	 */
 	@Override
 	public Object getValueAt(int row, int column) {
-		if (column == 1 && row == getRowCount() - 1)
-			return null;
-		return super.getValueAt(row, column);
+		if (column == 1){
+			if (row == getRowCount() - 1)
+				return null;
+			return super.getValueAt(row, column);
+		}
+		String s = (String) super.getValueAt(row, column);
+		return s == Universe.curProfile.getEmptyStringSymbol() && 
+				(column == 0 || row == this.getRowCount()) ? "" : s ;
 	}
 	
 
@@ -155,8 +165,9 @@ public class GrammarTableModel extends GrowableTableModel {
 
 	@Override
 	public boolean checkEmpty(int row) {
-		return this.getValueAt(row, 0).toString().length() +
-				this.getValueAt(row, 2).toString().length() == 0;
+		return this.getValueAt(row, 0).toString().length() == 0 &&
+				(this.getValueAt(row, 2).toString().length() == 0 ||
+						this.getValueAt(row, 2).toString() == Universe.curProfile.getEmptyStringSymbol());
 	}
 
 

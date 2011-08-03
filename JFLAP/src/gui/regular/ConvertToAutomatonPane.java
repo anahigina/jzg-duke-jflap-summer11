@@ -82,7 +82,7 @@ public class ConvertToAutomatonPane extends JPanel {
 		automaton.addFinalState(finalState);
 		FSATransition initialTransition = new FSATransition(initialState,
 				finalState, Discretizer.delambda(environment.getExpression()
-						.asString().replace('!', Universe.curProfile.getEmptyString().charAt(0))));
+						.asString().replace('!', Universe.curProfile.getEmptyStringSymbol().charAt(0))));
 		automaton.addTransition(initialTransition);
 
 		controller = new REToFSAController(this, automaton);

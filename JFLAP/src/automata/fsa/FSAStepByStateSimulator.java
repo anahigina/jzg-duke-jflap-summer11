@@ -27,6 +27,7 @@ import java.util.Set;
 
 import debug.EDebug;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.Automaton;
 import automata.AutomatonSimulator;
 import automata.Configuration;
@@ -63,7 +64,7 @@ public class FSAStepByStateSimulator extends AutomatonSimulator {
 	 * @param input
 	 *            the input string.
 	 */
-	public Configuration[] getInitialConfigurations(String input) {
+	public Configuration[] getInitialConfigurations(SymbolString input) {
 		Configuration[] configs = new Configuration[1];
 		configs[0] = new FSAConfiguration(myAutomaton.getInitialState(), null,
 				input, input);
@@ -81,38 +82,38 @@ public class FSAStepByStateSimulator extends AutomatonSimulator {
 		ArrayList list = new ArrayList();
 		FSAConfiguration configuration = (FSAConfiguration) config;
 		/** get all information from configuration. */
-		String unprocessedInput = configuration.getUnprocessedInput();
-		String totalInput = configuration.getInput();
+		SymbolString unprocessedInput = configuration.getUnprocessedInput();
+		SymbolString totalInput = configuration.getInput();
 		State currentState = configuration.getCurrentState();
 		Transition[] transitions = myAutomaton
 				.getTransitionsFromState(currentState);
 		for (int k = 0; k < transitions.length; k++) {
 			FSATransition transition = (FSATransition) transitions[k];
 			/** get all information from transition. */
-			String transLabel = transition.getLabel();
-			HashSet<String> trange = new HashSet<String>();
-			if (transLabel.contains("[")){
-				for(int i=transLabel.charAt(transLabel.indexOf("[")+1); i<=transLabel.charAt(transLabel.indexOf("[")+3); i++){
-					trange.add(Character.toString((char)i));
-					EDebug.print(Character.toString((char)i));
-				}
-				for(String element : trange){
-					if (unprocessedInput.startsWith(element)) {
-						String input = "";
-						if (element.length() < unprocessedInput.length()) {
-							input = unprocessedInput.substring(element.length());
-						}
-						State toState = transition.getToState();
-						FSAConfiguration configurationToAdd = new FSAConfiguration(
-								toState, configuration, totalInput, input);
-						list.add(configurationToAdd);
-					}
-				}
-			}
-			else if (unprocessedInput.startsWith(transLabel)) {
-				String input = "";
-				if (transLabel.length() < unprocessedInput.length()) {
-					input = unprocessedInput.substring(transLabel.length());
+			SymbolString transLabel = transition.getLabel();
+//			HashSet<String> trange = new HashSet<String>();
+//			if (transLabel.contains("[")){
+//				for(int i=transLabel.charAt(transLabel.indexOf("[")+1); i<=transLabel.charAt(transLabel.indexOf("[")+3); i++){
+//					trange.add(Character.toString((char)i));
+//					EDebug.print(Character.toString((char)i));
+//				}
+//				for(String element : trange){
+//					if (unprocessedInput.startsWith(element)) {
+//						String input = "";
+//						if (element.length() < unprocessedInput.length()) {
+//							input = unprocessedInput.substring(element.length());
+//						}
+//						State toState = transition.getToState();
+//						FSAConfiguration configurationToAdd = new FSAConfiguration(
+//								toState, configuration, totalInput, input);
+//						list.add(configurationToAdd);
+//					}
+//				}
+//			}
+			 if (unprocessedInput.startsWith(transLabel)) {
+				SymbolString input = new SymbolString();
+				if (transLabel.size() < unprocessedInput.size()) {
+					input = unprocessedInput.subList(transLabel.size());
 				}
 				State toState = transition.getToState();
 				FSAConfiguration configurationToAdd = new FSAConfiguration(
@@ -151,9 +152,11 @@ public class FSAStepByStateSimulator extends AutomatonSimulator {
 	 *            the input string to be run on the automaton
 	 * @return true if the automaton accepts the input
 	 */
-	public boolean simulateInput(String input) {
+	public boolean simulateInput(String in) {
 		/** clear the configurations to begin new simulation. */
 		myConfigurations.clear();
+		if (!SymbolString.canBeParsed(in, myAutomaton)) return false;
+		SymbolString input = SymbolString.createFromString(in, myAutomaton);
 		Configuration[] initialConfigs = getInitialConfigurations(input);
 		for (int k = 0; k < initialConfigs.length; k++) {
 			FSAConfiguration initialConfiguration = (FSAConfiguration) initialConfigs[k];

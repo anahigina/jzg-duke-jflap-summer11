@@ -21,6 +21,7 @@
 package gui.editor;
 
 import gui.LambdaCellRenderer;
+import gui.SelectingEditor;
 import gui.viewer.AutomatonPane;
 
 import java.awt.Color;
@@ -41,6 +42,7 @@ import javax.swing.table.TableModel;
 
 import automata.State;
 import automata.Transition;
+import automata.fsa.FSATransition;
 import automata.turing.TMTransition;
 import automata.turing.Tape;
 import debug.EDebug;
@@ -51,7 +53,7 @@ import debug.EDebug;
  * @author Thomas Finley
  */
 
-public abstract class TableTransitionCreator extends TransitionCreator {
+public abstract class TableTransitionCreator<T extends Transition> extends TransitionCreator<T> {
 	/**
 	 * Instantiates a transition creator.
 	 * 
@@ -63,15 +65,6 @@ public abstract class TableTransitionCreator extends TransitionCreator {
 		parent.addMouseListener(viewListener);
 	}
 
-	/**
-	 * Creates a fresh new transition between two states.
-	 * 
-	 * @param from
-	 *            the from state for the new transition
-	 * @param to
-	 *            the to state for the new transition
-	 */
-	protected abstract Transition initTransition(State from, State to);
 
 	/**
 	 * Instantiates a new table model based on the given transition.
@@ -79,7 +72,7 @@ public abstract class TableTransitionCreator extends TransitionCreator {
 	 * @param transition
 	 *            the transition to create a table model for
 	 */
-	protected abstract TableModel createModel(Transition transition);
+	protected abstract TableModel createModel();
 
 	/**
 	 * Instantiates a new table view based on the given transition. This method
@@ -89,15 +82,16 @@ public abstract class TableTransitionCreator extends TransitionCreator {
 	 * @param transition
 	 *            the transition to create a table for
 	 */
-	protected JTable createTable(final Transition transition) {
-		TableModel model = createModel(transition);
+	protected JTable createTable() {
+		TableModel model = createModel();
 		final TipLambdaCellRenderer[] renders = new TipLambdaCellRenderer[model
 				.getColumnCount()];
-		for (int i = 0; i < model.getColumnCount(); i++)
+		for (int i = 0; i < model.getColumnCount(); i++){
 			renders[i] = transition instanceof TMTransition ? new TipLambdaCellRenderer(
-					"" + Tape.BLANK, model.getColumnName(i))
+					Character.toString(Tape.BLANK), model.getColumnName(i))
 					: new TipLambdaCellRenderer(model.getColumnName(i));
-		JTable table = new JTable(createModel(transition)) {
+		}
+		JTable table = new JTable(model) {
 			public TableCellRenderer getCellRenderer(int r, int c) {
 				return renders[c];
 			}
@@ -122,6 +116,7 @@ public abstract class TableTransitionCreator extends TransitionCreator {
 
 		table.setGridColor(Color.gray);
 		table.setBorder(new javax.swing.border.EtchedBorder());
+		table.setFocusable(true);
 		return table;
 	}
 
@@ -135,8 +130,8 @@ public abstract class TableTransitionCreator extends TransitionCreator {
 	 *            the table model
 	 * @return the new transition, or <code>null</code> if changing failed
 	 */
-	protected abstract Transition modifyTransition(Transition transition,
-			TableModel model);
+//	protected abstract Transition modifyTransition(Transition transition,
+//			TableModel model);
 
 	/**
 	 * Stops the editing.
@@ -156,14 +151,14 @@ public abstract class TableTransitionCreator extends TransitionCreator {
 					+ "from the depths of Java again.");
 		}
 		if (!cancel) {
-			TableModel oldModel = createModel(transition);
-			Transition t = modifyTransition(transition, editingTable.getModel());
-			if (t != null) {
+			TableModel oldModel = createModel();
+			T t = modifyTransition(transition, editingTable.getModel());
+			if (transition != null) {
 				if (isNew) {
-					getParent().getDrawer().getAutomaton().addTransition(t);
-				} else{
-					getParent().getDrawer().getAutomaton().replaceTransition(
-							transition, t);
+					getParent().getDrawer().getAutomaton().addTransition(transition);
+//				} else{
+//					getParent().getDrawer().getAutomaton().replaceTransition(
+//							transition, t);
 				}
 			}
 		}
@@ -190,9 +185,8 @@ public abstract class TableTransitionCreator extends TransitionCreator {
 	 * @param to
 	 *            the to state
 	 */
-	public Transition createTransition(State from, State to) {
-		Transition t = initTransition(from, to);
-		editTransition(t, null);
+	public  T createTransition(State from, State to) {
+		editTransition(new FSATransition(from, to), null);
 		
 		//can you say "ugly hack?"
 //		editTransition(t, new Point((from.getPoint().x+to.getPoint().x)/2, (from.getPoint().y+to.getPoint().y)/2));
@@ -210,9 +204,9 @@ public abstract class TableTransitionCreator extends TransitionCreator {
 	 *            the point to edit the transition at; should be null if this is
 	 *            a new transition yet to be added
 	 */
-	public void editTransition(Transition transition, Point point) {
+	public void editTransition(Transition trans, Point point) {
 		stopEditing(false); // Make sure...
-		this.transition = transition;
+		this.transition = trans;
 		isNew = point == null;
 		if (isNew) {
 			State from = transition.getFromState(), to = transition
@@ -222,7 +216,8 @@ public abstract class TableTransitionCreator extends TransitionCreator {
 		}
 
 		getParent().setTablePoint(tablePoint);
-		editingTable = createTable(transition);
+		editingTable = createTable();
+		SelectingEditor.setUpSelectingEditor(editingTable);
 		getParent().add(editingTable);
 		getParent().validate();
 		tableDimensions = editingTable.getSize();
@@ -234,6 +229,8 @@ public abstract class TableTransitionCreator extends TransitionCreator {
 
 		editingTable.addComponentListener(new ComponentListener() {
 			public void componentHidden(ComponentEvent e) {
+				System.out.println("Repaint");
+				TableTransitionCreator.this.getParent().repaint();
 			}
 
 			public void componentMoved(ComponentEvent e) {
@@ -256,13 +253,12 @@ public abstract class TableTransitionCreator extends TransitionCreator {
 		
 		editingTable.setCellSelectionEnabled(true);
 		editingTable.changeSelection(0, 0, false, false);
-		editingTable.requestFocus();
-		
+		editingTable.requestFocusInWindow();
 //		EDebug.print("Focus has been requested");
 //	    EDebug.print("hasFocus? "+editingTable.hasFocus());	
 //	    EDebug.print(getParent().getClass().getName());
+		System.out.println("Moved on");
 		
-		getParent().repaint();
 	}
 
 	protected void editTransition(Transition transition, Point point,
@@ -293,7 +289,7 @@ public abstract class TableTransitionCreator extends TransitionCreator {
 	private boolean isNew;
 
 	/** The transition being edited. */
-	private Transition transition;
+	protected Transition transition;
 
 	/** The cell renderer. */
 	private static class TipLambdaCellRenderer extends LambdaCellRenderer {

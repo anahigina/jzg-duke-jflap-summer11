@@ -22,6 +22,8 @@ package automata;
 
 import java.util.*;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
+
 /**
  * The automaton simulator object simulates the behavior of an automaton. It
  * takes an automaton object and an input string and runs the machine on the
@@ -48,7 +50,7 @@ public abstract class AutomatonSimulator {
 	 * @param input
 	 *            the input string.
 	 */
-	public abstract Configuration[] getInitialConfigurations(String input);
+	public abstract Configuration[] getInitialConfigurations(SymbolString input);
 
 	/**
 	 * Simulates one step for a particular configuration, adding all possible

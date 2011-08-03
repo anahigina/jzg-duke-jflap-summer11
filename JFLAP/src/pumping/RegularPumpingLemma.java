@@ -88,7 +88,7 @@ public abstract class RegularPumpingLemma extends PumpingLemma implements Serial
 		
 		for (int i=0; i<s.length; i++)
 			if (s[i].length() == 0)
-				s[i] = "" + Universe.curProfile.getEmptyString();;
+				s[i] = "" + Universe.curProfile.getEmptyStringSymbol();;
 		
 		return "X = " + s[0] + ";   Y = " + s[1] + ";   Z = " + s[2];
     }

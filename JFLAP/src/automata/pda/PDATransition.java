@@ -171,13 +171,13 @@ public class PDATransition extends Transition {
 	public String getDescription() {
 		String input = getInputToRead();
 		if (input.length() == 0)
-			input = Universe.curProfile.getEmptyString();
+			input = Universe.curProfile.getEmptyStringSymbol();
 		String toPop = getStringToPop();
 		if (toPop.length() == 0)
-			toPop = Universe.curProfile.getEmptyString();
+			toPop = Universe.curProfile.getEmptyStringSymbol();
 		String toPush = getStringToPush();
 		if (toPush.length() == 0)
-			toPush = Universe.curProfile.getEmptyString();
+			toPush = Universe.curProfile.getEmptyStringSymbol();
 		return input + " , " + toPop + " ; " + toPush;
 	}
 

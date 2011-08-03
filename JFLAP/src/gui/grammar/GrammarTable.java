@@ -23,6 +23,7 @@ package gui.grammar;
 import grammar.Grammar;
 import grammar.Production;
 import gui.HighlightTable;
+import gui.SelectingEditor;
 import gui.TableTextSizeSlider;
 import gui.environment.Universe;
 
@@ -33,6 +34,7 @@ import java.awt.Font;
 
 import javax.swing.*;
 import javax.swing.table.*;
+
 import debug.EDebug;
 
 /**
@@ -73,6 +75,8 @@ public class GrammarTable extends HighlightTable {
 		setTableHeader(new JTableHeader(getColumnModel()));
 		getTableHeader().setReorderingAllowed(false);
 		getTableHeader().setResizingAllowed(true);
+		for(int i=0; i<super.getColumnCount(); i++)
+			super.getColumnModel().getColumn(i).setCellEditor(new SelectingEditor());
 		TableColumn lhs = getColumnModel().getColumn(0);
 		TableColumn arrows = getColumnModel().getColumn(1);
 		TableColumn rhs = getColumnModel().getColumn(2);
@@ -90,7 +94,7 @@ public class GrammarTable extends HighlightTable {
 		setGridColor(Color.lightGray);
 		this.rowHeight = 30;
 		this.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-
+		
 		getColumnModel().getColumn(2).setCellRenderer(RENDERER);
 		add(new TableTextSizeSlider(this), BorderLayout.NORTH);
 	}
@@ -158,33 +162,12 @@ public class GrammarTable extends HighlightTable {
 		highlight(row, column, THRG);
 	}
 
-	/**
-	 * The modified table cell renderer.
-	 */
-	private static class LambdaCellRenderer extends DefaultTableCellRenderer {
-		public Component getTableCellRendererComponent(JTable table,
-				Object value, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-			JLabel l = (JLabel) super.getTableCellRendererComponent(table,
-					value, isSelected, hasFocus, row, column);
-			if (hasFocus && table.isCellEditable(row, column))
-				return l;
-			if (column != 2)
-				return l;
-			if (!value.equals(""))
-				return l;
-			if (table.getModel().getValueAt(row, 0).equals(""))
-				return l;
-			l.setText(Universe.curProfile.getEmptyString());
-			return l;
-		}
-	}
 
 	/** The built in highlight renderer generator, modified. */
 	private static final gui.HighlightTable.TableHighlighterRendererGenerator THRG = new TableHighlighterRendererGenerator() {
 		public TableCellRenderer getRenderer(int row, int column) {
 			if (renderer == null) {
-				renderer = new LambdaCellRenderer();
+				renderer = new DefaultTableCellRenderer();
 				renderer.setBackground(new Color(255, 150, 150));
 			}
 			return renderer;
@@ -194,5 +177,5 @@ public class GrammarTable extends HighlightTable {
 	};
 
 	/** The lambda cell renderer. */
-	private static final TableCellRenderer RENDERER = new LambdaCellRenderer();
+	private static final TableCellRenderer RENDERER = new DefaultTableCellRenderer();
 }

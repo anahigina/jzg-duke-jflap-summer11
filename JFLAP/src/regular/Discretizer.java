@@ -24,6 +24,8 @@ import gui.environment.Universe;
 
 import java.util.*;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
+
 /**
  * The discretizer contains method to split a regular expression string into
  * parts. For example, if "a+be+(c+d)" is passed in to the method {@link #or},
@@ -44,28 +46,28 @@ public class Discretizer {
 	 * Given a regular expression, this will return the subexpressions that,
 	 * when or-ed together, result in the expression.
 	 * 
-	 * @param expression
+	 * @param pk
 	 *            the regular expression
 	 * @return an array of the subexpressions
 	 */
-	public static String[] or(String expression) {
+	public static String[] or(SymbolString pk) {
 		ArrayList se = new ArrayList(); // Subexpressions.
 		int start = 0;
 		int level = 0;
-		for (int i = 0; i < expression.length(); i++) {
-			if (expression.charAt(i) == '(')
+		for (int i = 0; i < pk.length(); i++) {
+			if (pk.charAt(i) == '(')
 				level++;
-			if (expression.charAt(i) == ')')
+			if (pk.charAt(i) == ')')
 				level--;
-			if (expression.charAt(i) != '+')
+			if (pk.charAt(i) != '+')
 				continue;
 			if (level != 0)
 				continue;
 			// First level or!
-			se.add(delambda(expression.substring(start, i)));
+			se.add(delambda(pk.substring(start, i)));
 			start = i + 1;
 		}
-		se.add(delambda(expression.substring(start)));
+		se.add(delambda(pk.substring(start)));
 		return (String[]) se.toArray(new String[0]);
 	}
 
@@ -73,16 +75,16 @@ public class Discretizer {
 	 * Given a regular expression, this will return the subexpressions that,
 	 * when concatenated together, will result in the expression.
 	 * 
-	 * @param expression
+	 * @param kk
 	 *            the regular expression
 	 * @return an array of the subexpressions
 	 */
-	public static String[] cat(String expression) {
+	public static String[] cat(SymbolString kk) {
 		ArrayList se = new ArrayList(); // Subexpressions.
 		int start = 0;
 		int level = 0;
-		for (int i = 0; i < expression.length(); i++) {
-			char c = expression.charAt(i);
+		for (int i = 0; i < kk.length(); i++) {
+			char c = kk.charAt(i);
 			if (c == ')') {
 				level--;
 				continue;
@@ -101,10 +103,10 @@ public class Discretizer {
 			// Not an operator, and on the first level!
 			if (i == 0)
 				continue;
-			se.add(delambda(expression.substring(start, i)));
+			se.add(delambda(kk.substring(start, i)));
 			start = i;
 		}
-		se.add(delambda(expression.substring(start)));
+		se.add(delambda(kk.substring(start)));
 		return (String[]) se.toArray(new String[0]);
 	}
 
@@ -125,6 +127,6 @@ public class Discretizer {
 	 *         string
 	 */
 	public static String delambda(String string) {
-		return string.equals(Universe.curProfile.getEmptyString()) ? "" : string;
+		return string.equals(Universe.curProfile.getEmptyStringSymbol()) ? "" : string;
 	}
 }

@@ -25,6 +25,7 @@ import java.util.HashSet;
 
 import debug.EDebug;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.Automaton;
 import automata.ClosureTaker;
 import automata.Configuration;
@@ -58,7 +59,8 @@ public class FSAStepWithClosureSimulator extends FSAStepByStateSimulator {
 	 * @param input
 	 *            the input string.
 	 */
-	public Configuration[] getInitialConfigurations(String input) {
+	@Override
+	public Configuration[] getInitialConfigurations(SymbolString input) {
 		State init = myAutomaton.getInitialState();
 		State[] closure = ClosureTaker.getClosure(init, myAutomaton);
 		Configuration[] configs = new Configuration[closure.length];
@@ -75,45 +77,46 @@ public class FSAStepWithClosureSimulator extends FSAStepByStateSimulator {
 	 * @param config
 	 *            the configuration to simulate the one step on.
 	 */
+	@Override
 	public ArrayList stepConfiguration(Configuration config) {
 		ArrayList list = new ArrayList();
 		FSAConfiguration configuration = (FSAConfiguration) config;
 		/** get all information from configuration. */
-		String unprocessedInput = configuration.getUnprocessedInput();
-		String totalInput = configuration.getInput();
+		SymbolString unprocessedInput = configuration.getUnprocessedInput();
+		SymbolString totalInput = configuration.getInput();
 		State currentState = configuration.getCurrentState();
 		Transition[] transitions = myAutomaton
 				.getTransitionsFromState(currentState);
 		for (int k = 0; k < transitions.length; k++) {
 			FSATransition transition = (FSATransition) transitions[k];
 			/** get all information from transition. */
-			String transLabel = transition.getLabel();
+			SymbolString transLabel = transition.getLabel();
 			HashSet<String> trange = new HashSet<String>();
-			if (transLabel.contains("[")){
-				for(int i=transLabel.charAt(transLabel.indexOf("[")+1); i<=transLabel.charAt(transLabel.indexOf("[")+3); i++){
-					trange.add(Character.toString((char)i));
-					EDebug.print(Character.toString((char)i));
-				}
-				if (transLabel.length() > 0) {
-					for(String element : trange){
-						if (unprocessedInput.startsWith(element)) {
-							String input = "";
-							if (element.length() < unprocessedInput.length()) {
-								input = unprocessedInput.substring(element.length());
-							}
-							State toState = transition.getToState();
-							FSAConfiguration configurationToAdd = new FSAConfiguration(
-								toState, configuration, totalInput, input);
-							list.add(configurationToAdd);
-						}
-					}
-				}
-			}
-			else if (transLabel.length() > 0) {
+//			if (transLabel.contains("[")){
+//				for(int i=transLabel.charAt(transLabel.indexOf("[")+1); i<=transLabel.charAt(transLabel.indexOf("[")+3); i++){
+//					trange.add(Character.toString((char)i));
+//					EDebug.print(Character.toString((char)i));
+//				}
+//				if (transLabel.length() > 0) {
+//					for(String element : trange){
+//						if (unprocessedInput.startsWith(element)) {
+//							String input = "";
+//							if (element.length() < unprocessedInput.length()) {
+//								input = unprocessedInput.substring(element.length());
+//							}
+//							State toState = transition.getToState();
+//							FSAConfiguration configurationToAdd = new FSAConfiguration(
+//								toState, configuration, totalInput, input);
+//							list.add(configurationToAdd);
+//						}
+//					}
+//				}
+//			}
+			if (transLabel.size() > 0) {
 				if (unprocessedInput.startsWith(transLabel)) {
-					String input = "";
-					if (transLabel.length() < unprocessedInput.length()) {
-						input = unprocessedInput.substring(transLabel.length());
+					SymbolString input = new SymbolString();
+					if (transLabel.size() < unprocessedInput.size()) {
+						input = unprocessedInput.subList(transLabel.size());
 					}
 					State toState = transition.getToState();
 					State[] closure = ClosureTaker.getClosure(toState,

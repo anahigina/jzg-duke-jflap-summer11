@@ -32,6 +32,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.variable.Variable;
 import automata.Automaton;
 import automata.State;
 import automata.Transition;
@@ -112,8 +114,8 @@ public class FSAToRegularGrammarConverter {
 
 		State toState = trans.getToState();
 		State fromState = trans.getFromState();
-		String label = trans.getLabel();
-		String lhs = (String) MAP.get(fromState);
+		SymbolString label = trans.getLabel();
+		String lhs =  MAP.get(fromState);
 		String rhs = label.concat((String) MAP.get(toState));
 		Production production = new Production(lhs, rhs);
 
@@ -194,12 +196,12 @@ public class FSAToRegularGrammarConverter {
 	 * @return the variable in the grammar corresponding to the state, or <CODE>null</CODE>
 	 *         if there is no variable corresponding to this state
 	 */
-	public String variableForState(State state) {
-		return (String) MAP.get(state);
+	public Variable variableForState(State state) {
+		return MAP.get(state);
 	}
 
 	/** The map of states in the fsa to variables in the grammar. */
-	protected HashMap MAP;
+	protected HashMap<State, Variable> MAP;
 
 	/** The start variable. */
 	protected static final String START_VARIABLE = "S";

@@ -138,9 +138,9 @@ public class MealyTransition extends Transition
         String label = getLabel();
         String output = getOutput();
         if(label == null || label.length() == 0)
-            label = Universe.curProfile.getEmptyString();
+            label = Universe.curProfile.getEmptyStringSymbol();
         if(output == null || output.length() == 0)
-            output = Universe.curProfile.getEmptyString();;
+            output = Universe.curProfile.getEmptyStringSymbol();;
         return label + " ; " + output;
     }
     

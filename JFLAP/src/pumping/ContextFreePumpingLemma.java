@@ -117,7 +117,7 @@ public abstract class ContextFreePumpingLemma extends PumpingLemma implements Se
 		
 		for (int i=0; i<s.length; i++)
 			if (s[i].length() == 0)
-				s[i] = Universe.curProfile.getEmptyString();    //lower case lambda
+				s[i] = Universe.curProfile.getEmptyStringSymbol();    //lower case lambda
 		
 		return "U = " + s[0] + ";   V = " + s[1] + ";   X = " + s[2] + 
 		       ";   Y = " + s[3] + ";   Z = " + s[4];

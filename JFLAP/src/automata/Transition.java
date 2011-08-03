@@ -20,8 +20,11 @@
 
 package automata;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.State;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 import java.awt.Point;
 
 /**
@@ -36,7 +39,7 @@ import java.awt.Point;
  * @author Thomas Finley, Henry Qin
  */
 
-public abstract class Transition implements Serializable, Cloneable {
+public abstract class Transition<T extends ITransitionLabel> implements Serializable, Cloneable {
 	/**
 	 * Instantiates a new <CODE>Transition</CODE>.
 	 * 
@@ -45,9 +48,10 @@ public abstract class Transition implements Serializable, Cloneable {
 	 * @param to
 	 *            the state this transition moves to
 	 */
-	public Transition(State from, State to) {
+	public Transition(State from, State to, T label) {
 		this.from = from;
 		this.to = to;
+		this.setLabel(label);
 	}
 
 	/**
@@ -60,7 +64,16 @@ public abstract class Transition implements Serializable, Cloneable {
 	 *            the state this transition comes from
 	 * @return a copy of this transition as described
 	 */
-	public abstract Transition copy(State from, State to);
+	public Transition<T> copy(State from, State to){
+		try {
+			return this.getClass().getConstructor(State.class, 
+					State.class, 
+					(Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]).newInstance(from, to, this.getLabel());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error copying Transition");
+		}
+	}
 
 	/**
 	 * Returns a copy of this transition with the same <CODE>from</CODE> and
@@ -119,14 +132,29 @@ public abstract class Transition implements Serializable, Cloneable {
 	}
 
 	/**
-	 * Gets the description for a Transition. This defaults to nothing.
-	 * Subclasses should override.
+	 * Gets the String description for a Transition Label. 
 	 * 
-	 * @return an empty string
+	 * @return the string equivalent of the label
 	 */
-	public String getDescription() {
-		return "";
+	public String getDescription(){
+		return this.getLabel().toString();
 	}
+	
+	/**
+	 * Gets the Label for a Transition. Returns a "Label" of any type
+	 * which has been assigned to this kind of transition
+	 * 
+	 * @return the label of the transition
+	 */
+	public abstract T getLabel();
+	
+	/**
+	 * Gets the Label for a Transition. Returns a "Label" of any type
+	 * which has been assigned to this kind of transition
+	 * 
+	 * @return the label of the transition
+	 */
+	public abstract void setLabel(T label);
 
 	/**
 	 * Returns a string representation of this object. The string returned is
@@ -138,7 +166,7 @@ public abstract class Transition implements Serializable, Cloneable {
 	@Override
 	public String toString() {
 		return "[" + getFromState().toString() + "] -> ["
-				+ getToState().toString() + "]";
+				+ getToState().toString() + "]" + ": \"" + getLabel() + "\"";
 	}
 
 	/**

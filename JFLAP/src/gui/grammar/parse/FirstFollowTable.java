@@ -75,7 +75,7 @@ public class FirstFollowTable extends LeftTable {
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
 			if (c == '!')
-				c = Universe.curProfile.getEmptyString().charAt(0);
+				c = Universe.curProfile.getEmptyStringSymbol().charAt(0);
 			sb.append(c);
 			if (i != s.length() - 1)
 				sb.append(',');

@@ -20,6 +20,7 @@
 
 package automata.fsa;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.*;
 import java.util.*;
 
@@ -55,7 +56,7 @@ public class FSAAlphabetRetriever extends AlphabetRetriever {
 		Transition[] transitions = automaton.getTransitions();
 		for (int k = 0; k < transitions.length; k++) {
 			FSATransition transition = (FSATransition) transitions[k];
-			String label = transition.getLabel();
+			SymbolString label = transition.getLabel();
 			if (!label.equals("") && !list.contains(label)) {
 				list.add(label);
 			}

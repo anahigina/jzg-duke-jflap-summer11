@@ -52,14 +52,11 @@ public class FSANondeterminismDetector extends NondeterminismDetector {
 	public boolean areNondeterministic(Transition t1, Transition t2) {
 		FSATransition transition1 = (FSATransition) t1;
 		FSATransition transition2 = (FSATransition) t2;
-		if (transition1.getLabel().equals(transition2.getLabel()))
-			return true;
-		else if (transition1.getLabel().startsWith(transition2.getLabel()))
+		if (transition1.getLabel().startsWith(transition2.getLabel()))
 			return true;
 		else if (transition2.getLabel().startsWith(transition1.getLabel()))
 			return true;
-		else
-			return false;
+		return false;
 	}
 
 }

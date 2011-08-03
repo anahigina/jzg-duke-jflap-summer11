@@ -17,6 +17,9 @@ import JFLAPnew.formaldef.symbols.SymbolString;
 
 public class GrammarDataHelper extends ArrayList<Object[]> {
 
+	private static final Object[] EMPTY = new Object[]{"",
+												GrammarTableModel.ARROW,
+												""};
 	private Grammar myGrammar;
 	private LinkedList<BooleanWrapper> myWrappers;
 	
@@ -42,7 +45,9 @@ public class GrammarDataHelper extends ArrayList<Object[]> {
 	
 	@Override
 	public boolean add(Object[] input) {
-		return !checkAndAddError(myGrammar.addProduction(this.objectToProduction(input)));
+		Production p = this.objectToProduction(input);
+		if (p.isEmpty()) return false;
+		return !checkAndAddError(myGrammar.addProduction(p));
 	}
 
 	@Override
@@ -53,17 +58,19 @@ public class GrammarDataHelper extends ArrayList<Object[]> {
 
 	@Override
 	public Object[] get(int index) {
+		if (index == myGrammar.getNumProductions()) return EMPTY;
 		return this.ProductionToObject(myGrammar.getProductions()[index]);
 	}
 
 	@Override
 	public Object[] remove(int index) {
+		if (index == myGrammar.getNumProductions()) return EMPTY;
 		return this.ProductionToObject(myGrammar.removeProductionAtIndex(index));
 	}
 
 	@Override
 	public int size() {
-		return myGrammar.getProductions().length;
+		return myGrammar.getProductions().length + 1;
 	}
 
 	@Override
@@ -78,10 +85,11 @@ public class GrammarDataHelper extends ArrayList<Object[]> {
 	private Production objectToProduction(Object[] input){
 		SymbolString LHS = SymbolString.createFromString((String) input[0], myGrammar),
 				     RHS = SymbolString.createFromString((String) input[2], myGrammar);
-		if(LHS.toString().length() != ((String) input[0]).length())
+		System.out.println("Input: " + input[2] + "|");
+		if(!SymbolString.canBeParsed((String) input[0], myGrammar))
 			checkAndAddError(new BooleanWrapper(false, 
 					"The LHS of this production has a bad character at index " + LHS.toString().length() + "."));
-		if(RHS.toString().length() != ((String) input[2]).length())
+		if(!SymbolString.canBeParsed((String) input[2], myGrammar))
 			checkAndAddError(new BooleanWrapper(false, 
 					"The RHS of this production has a bad character at index " + RHS.toString().length() + "."));
 		return new Production(LHS, RHS);

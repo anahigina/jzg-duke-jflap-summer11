@@ -20,6 +20,7 @@
 
 package automata.fsa;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.*;
 
 /**
@@ -45,8 +46,8 @@ public class FSAConfiguration extends Configuration {
 	 * @param unprocessed
 	 *            the unprocessed input
 	 */
-	public FSAConfiguration(State state, FSAConfiguration parent, String input,
-			String unprocessed) {
+	public FSAConfiguration(State state, FSAConfiguration parent, SymbolString input,
+			SymbolString unprocessed) {
 		super(state, parent);
 		myInput = input;
 		myUnprocessedInput = unprocessed;
@@ -55,7 +56,7 @@ public class FSAConfiguration extends Configuration {
 	/**
 	 * Returns the total input.
 	 */
-	public String getInput() {
+	public SymbolString getInput() {
 		return myInput;
 	}
 
@@ -64,7 +65,7 @@ public class FSAConfiguration extends Configuration {
 	 * 
 	 * @return the unprocessed input.
 	 */
-	public String getUnprocessedInput() {
+	public SymbolString getUnprocessedInput() {
 		return myUnprocessedInput;
 	}
 
@@ -75,7 +76,7 @@ public class FSAConfiguration extends Configuration {
 	 *            the string that will represent the unprocessed input of the
 	 *            FSA.
 	 */
-	public void setUnprocessedInput(String input) {
+	public void setUnprocessedInput(SymbolString input) {
 		myUnprocessedInput = input;
 	}
 
@@ -97,7 +98,7 @@ public class FSAConfiguration extends Configuration {
 	 *         otherwise
 	 */
 	public boolean isAccept() {
-		if (getUnprocessedInput().length() != 0)
+		if (getUnprocessedInput().size() != 0)
 			return false;
 		State s = getCurrentState();
 		Automaton a = s.getAutomaton();
@@ -137,8 +138,8 @@ public class FSAConfiguration extends Configuration {
 	}
 
 	/** The total input. */
-	private String myInput;
+	private SymbolString myInput;
 
 	/** The unprocessed input. */
-	private String myUnprocessedInput;
+	private SymbolString myUnprocessedInput;
 }

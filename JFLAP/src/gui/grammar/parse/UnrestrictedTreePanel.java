@@ -562,7 +562,7 @@ public class UnrestrictedTreePanel extends TreePanel {
 		} while (!begins(level, group));
 		String lhs = p.getRHS();
 		if (lhs.length() == 0)
-			lhs = Universe.curProfile.getEmptyString();
+			lhs = Universe.curProfile.getEmptyStringSymbol();
 		String text = "Derived " + lhs + " from " + p.getLHS() + ".";
 		if (level == top.length - 1
 				&& production == solutionParseNodes[level].getProductions().length - 1) {

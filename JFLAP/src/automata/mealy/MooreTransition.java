@@ -112,7 +112,7 @@ public class MooreTransition extends MealyTransition
     public String getDescription()
     {
         if(getLabel() == null || getLabel().length() == 0)
-            return Universe.curProfile.getEmptyString();
+            return Universe.curProfile.getEmptyStringSymbol();
         else
             return getLabel();
     }

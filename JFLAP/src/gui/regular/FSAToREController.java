@@ -98,7 +98,7 @@ public class FSAToREController {
 			currentStep = TRANSITIONS_TO_SINGLE_FINAL;
 		case TRANSITIONS_TO_SINGLE_FINAL:
 			detailStep
-					.setText("Put "+Universe.curProfile.getEmptyString()+"-transitions from old final states to new.");
+					.setText("Put "+Universe.curProfile.getEmptyStringSymbol()+"-transitions from old final states to new.");
 			// We know we're done when...
 			if (drawer.numberSelected() != 0)
 				return;

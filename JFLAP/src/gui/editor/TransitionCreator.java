@@ -36,7 +36,7 @@ import javax.swing.JOptionPane;
  * @author Thomas Finley
  */
 
-public abstract class TransitionCreator {
+public abstract class TransitionCreator<T extends Transition> {
 	public TransitionCreator() {
 
 	}
@@ -62,7 +62,7 @@ public abstract class TransitionCreator {
 	 * @param to
 	 *            the state the transition will go to
 	 */
-	public abstract Transition createTransition(State from, State to);
+	public abstract T createTransition(State from, State to);
 
 	/**
 	 * Edits a given transition. Ideally this should use the same interface as
@@ -72,7 +72,7 @@ public abstract class TransitionCreator {
 	 *            the transition to edit
 	 * @return <CODE>false</CODE> if the user decided to edit a transition
 	 */
-	public abstract boolean editTransition(Transition transition);
+	public abstract boolean editTransition(T transition);
 
 	/**
 	 * This is a static method used to return a transition creator for the sort
@@ -114,7 +114,7 @@ public abstract class TransitionCreator {
 	 * @param point
 	 *            the point to edit the transition at
 	 */
-	public void editTransition(Transition transition, Point point) {
+	public void editTransition(T transition, Point point) {
 		editTransition(transition);
 	}
 

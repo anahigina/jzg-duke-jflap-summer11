@@ -82,8 +82,8 @@ public class EmptyStringCharacterAction extends  RestrictedAction{
         epsilon.setMnemonic(KeyEvent.VK_C);
         epsilon.setActionCommand("Epsilon");
         
-        if(current.getEmptyString().equals(current.lambda))	lambda.setSelected(true);
-        else if(current.getEmptyString().equals(current.epsilon)) epsilon.setSelected(true);
+        if(current.getEmptyStringSymbol().equals(current.lambda))	lambda.setSelected(true);
+        else if(current.getEmptyStringSymbol().equals(current.epsilon)) epsilon.setSelected(true);
         
         ButtonGroup group = new ButtonGroup();
         group.add(lambda);

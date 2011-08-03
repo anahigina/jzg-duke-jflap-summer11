@@ -167,7 +167,7 @@ class LRParseController {
 					popped = STACK.pop() + popped; // Pops the symbol.
 				}
 				if (popped.length() == 0)
-					popped = Universe.curProfile.getEmptyString();
+					popped = Universe.curProfile.getEmptyStringSymbol();
 				displayString += popped + " popped off stack";
 				reduceStep = 1;
 				reduceState = state; // Save that state.
@@ -295,7 +295,7 @@ class LRParseController {
 				if (red.getRHS().length() == 0) {
 					// Lambda.
 					MutableTreeNode lambda = new DefaultMutableTreeNode(
-							Universe.curProfile.getEmptyString());
+							Universe.curProfile.getEmptyStringSymbol());
 					node.insert(lambda, 0);
 				}
 				state = stack.peekInt();

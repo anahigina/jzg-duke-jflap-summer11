@@ -22,6 +22,7 @@ package automata.fsa;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
 import automata.State;
 
 /**
@@ -44,8 +45,7 @@ public class MinimizeTreeNode extends DefaultMutableTreeNode {
 	 *            the node's user object
 	 */
 	public MinimizeTreeNode(Object userObject) {
-		super(userObject);
-		myTerminal = "";
+		this(userObject, new Terminal(""));
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class MinimizeTreeNode extends DefaultMutableTreeNode {
 	 * @param terminal
 	 *            the node's terminal
 	 */
-	public MinimizeTreeNode(Object userObject, String terminal) {
+	public MinimizeTreeNode(Object userObject, Terminal terminal) {
 		super(userObject);
 		myTerminal = terminal;
 	}
@@ -68,7 +68,7 @@ public class MinimizeTreeNode extends DefaultMutableTreeNode {
 	 * @param terminal
 	 *            the node's terminal
 	 */
-	public void setTerminal(String terminal) {
+	public void setTerminal(Terminal terminal) {
 		myTerminal = terminal;
 	}
 
@@ -77,7 +77,7 @@ public class MinimizeTreeNode extends DefaultMutableTreeNode {
 	 * 
 	 * @return the node's terminal field
 	 */
-	public String getTerminal() {
+	public Terminal getTerminal() {
 		return myTerminal;
 	}
 
@@ -91,6 +91,6 @@ public class MinimizeTreeNode extends DefaultMutableTreeNode {
 	}
 
 	/** The node's terminal field. */
-	protected String myTerminal = "";
+	protected Terminal myTerminal;
 
 }

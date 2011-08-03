@@ -30,10 +30,12 @@ import gui.environment.Environment;
 import gui.environment.Universe;
 import gui.environment.tag.CriticalTag;
 import gui.minimize.MinimizePane;
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.Automaton;
 import automata.AutomatonChecker;
 import automata.State;
 import automata.Transition;
+import automata.fsa.FSATransition;
 import automata.fsa.FiniteStateAutomaton;
 import automata.fsa.Minimizer;
 
@@ -110,10 +112,10 @@ public class AddTrapStateToDFAAction extends FSAAction{
 	{
 		Transition[] t=automaton.getTransitions();
 		State[] s=automaton.getStates();
-		TreeSet <String> reads=new TreeSet<String>();
+		TreeSet <SymbolString> reads=new TreeSet<SymbolString>();
 		for (int i=0; i<t.length; i++)
 		{
-			reads.add(t[i].getDescription());
+			reads.add(((FSATransition) t[i]).getLabel());
 		}
 		int count=0;
 		for (int i=0; i<s.length; i++)

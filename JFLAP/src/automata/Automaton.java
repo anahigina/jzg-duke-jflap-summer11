@@ -38,6 +38,7 @@ import java.util.Set;
 
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.FormallyDefinedObject;
+import JFLAPnew.formaldef.alphabets.specific.InputAlphabet;
 import automata.event.AutomataStateEvent;
 import automata.event.AutomataStateListener;
 import automata.event.AutomataTransitionEvent;
@@ -1042,6 +1043,10 @@ public abstract class Automaton extends FormalDefinition implements Serializable
         }
         
     }
+
+	public InputAlphabet getInputAlphabet() {
+		return this.getAlphabetByClass(InputAlphabet.class);
+	}
 
 
 }

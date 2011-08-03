@@ -361,17 +361,21 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 		return isValid;
 	}
 	
-	
+	public int getNumProductions() {
+		return myProductions.size();
+	}
 
 	public void clearProductions() {
 		myProductions.clear();
 	}
+	
 	
 //	private EnvironmentFrame myEnvFrame = null;
 	private String fileName ="";
 
 	/** Set of Production rules. */
 	protected List<Production> myProductions;
+
 
 
 

@@ -41,7 +41,7 @@ import javax.swing.JPanel;
 
 public class LambdaHighlightAction extends AutomatonAction {
 	public LambdaHighlightAction(Automaton automaton, Environment environment) {
-		super("Highlight "+Universe.curProfile.getEmptyString()+"-Transitions", null);
+		super("Highlight "+Universe.curProfile.getEmptyStringSymbol()+"-Transitions", null);
 		this.automaton = automaton;
 		this.environment = environment;
 	}
@@ -68,7 +68,7 @@ public class LambdaHighlightAction extends AutomatonAction {
 
 		// Put that in the environment.
 		LambdaPane pane = new LambdaPane(new AutomatonPane(as));
-		environment.add(pane, Universe.curProfile.getEmptyString()+"-Transitions", new CriticalTag() {
+		environment.add(pane, Universe.curProfile.getEmptyStringSymbol()+"-Transitions", new CriticalTag() {
 		});
 		environment.setActive(pane);
 	}
@@ -80,7 +80,7 @@ public class LambdaHighlightAction extends AutomatonAction {
 		public LambdaPane(AutomatonPane ap) {
 			super(new BorderLayout());
 			add(ap, BorderLayout.CENTER);
-			add(new JLabel(Universe.curProfile.getEmptyString()+"-transitions are highlighted."),
+			add(new JLabel(Universe.curProfile.getEmptyStringSymbol()+"-transitions are highlighted."),
 					BorderLayout.NORTH);
 			ArrowDisplayOnlyTool tool = new ArrowDisplayOnlyTool(ap, ap
 					.getDrawer());

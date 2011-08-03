@@ -20,6 +20,7 @@
 
 package gui.editor;
 
+import gui.errors.JFLAPError;
 import gui.viewer.AutomatonPane;
 
 import javax.swing.table.AbstractTableModel;
@@ -27,9 +28,11 @@ import javax.swing.table.TableModel;
 
 import debug.EDebug;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.State;
 import automata.Transition;
 import automata.fsa.FSATransition;
+import automata.fsa.FSATransitionLabel;
 
 /**
  * This is a transition creator for finite state automata.
@@ -58,7 +61,7 @@ public class FSATransitionCreator extends TableTransitionCreator {
 	 *            to too state
 	 */
 	protected Transition initTransition(State from, State to) {
-		return new FSATransition(from, to, "");
+		return new FSATransition(from, to);
 	}
 
 	/**
@@ -67,15 +70,22 @@ public class FSATransitionCreator extends TableTransitionCreator {
 	 * @param transition
 	 *            the transition to create the model for
 	 */
-	protected TableModel createModel(Transition transition) {
-		final FSATransition t = (FSATransition) transition;
+	protected TableModel createModel() {
 		return new AbstractTableModel() {
 			public Object getValueAt(int row, int column) {
-				return s;
+				EDebug.print(this);
+				System.out.println(transition.getLabel().toString());
+				return transition.getLabel().toString();
 			}
 
 			public void setValueAt(Object o, int r, int c) {
-				s = (String) o;
+				if (SymbolString.canBeParsed((String) o, FSATransitionCreator.this.getAutomaton())){
+					((FSATransition)transition).setLabel(SymbolString.createFromString((String) o, FSATransitionCreator.this.getAutomaton()));
+					fireTableCellUpdated(r, c);
+				}
+				else
+					JFLAPError.show("Invalid Transition String, one or more " +
+							"symbols are not part of the input Alphabet", "Error");
 			}
 
 			public boolean isCellEditable(int r, int c) {
@@ -94,21 +104,20 @@ public class FSATransitionCreator extends TableTransitionCreator {
 				return "Label";
 			}
 
-			String s = t.getLabel();
 		};
 	}
 
-	/**
-	 * Modifies a transition according to what's in the table.
-	 */
-	public Transition modifyTransition(Transition t, TableModel model) {
-		//EDebug.print("ModifyTransitionCalled");
-		String s = (String) model.getValueAt(0, 0);
-		try {
-			return new FSATransition(t.getFromState(), t.getToState(), s);
-		} catch (IllegalArgumentException e) {
-			reportException(e);
-			return null;
-		}
-	}
+//	/**
+//	 * Modifies a transition according to what's in the table.
+//	 */
+//	public Transition modifyTransition(Transition t, TableModel model) {
+//		//EDebug.print("ModifyTransitionCalled");
+//		String s = (String) model.getValueAt(0, 0);
+//		try {
+//			return new FSATransition(t.getFromState(), t.getToState(), s);
+//		} catch (IllegalArgumentException e) {
+//			reportException(e);
+//			return null;
+//		}
+//	}
 }

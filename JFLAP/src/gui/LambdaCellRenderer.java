@@ -53,7 +53,7 @@ public class LambdaCellRenderer extends DefaultTableCellRenderer {
 	 * string.
 	 */
 	public LambdaCellRenderer() {
-		this(Universe.curProfile.getEmptyString());
+		this(Universe.curProfile.getEmptyStringSymbol());
 	}
 
 	/**

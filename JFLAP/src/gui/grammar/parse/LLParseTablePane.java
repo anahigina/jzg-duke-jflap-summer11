@@ -74,7 +74,7 @@ public class LLParseTablePane extends LeftTable {
 					value, isSelected, hasFocus, row, column);
 			if (hasFocus && table.isCellEditable(row, column))
 				return l;
-			l.setText(((String) value).replace('!', Universe.curProfile.getEmptyString().charAt(0)));
+			l.setText(((String) value).replace('!', Universe.curProfile.getEmptyStringSymbol().charAt(0)));
 			return l;
 		}
 	}

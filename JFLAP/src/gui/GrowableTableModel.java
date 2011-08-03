@@ -179,25 +179,30 @@ public abstract class GrowableTableModel extends AbstractTableModel implements
 	 *            the column of the object to retrieve
 	 * @return the object at that location
 	 */
+	@Override
 	public Object getValueAt(int row, int column) {
 		return getData().get(row)[column];
 	}
 
 	public void setValueAt(Object newdata, int row, int column) {
 		getData().set(row, completeRow(newdata, row, column));
-		if (row + 1 == getRowCount()) {
-			getData().add(createEmptyRow());
-			fireTableRowsInserted(row + 1, row + 1);
-		}
-        if (row  >= getRowCount()) {
-            getData().add(createEmptyRow());
-            fireTableRowsInserted(row, row);
-        }
-		fireTableCellUpdated(row, column);
-		if (this.checkEmpty(row)){
+		if (this.checkEmpty(row) && this.getRowCount() > 1){
 			this.deleteRow(row);
 			fireTableRowsDeleted(row, row);
+			row--;
 		}
+		else 
+			fireTableCellUpdated(row, column);
+		if (row == getRowCount()) {
+			getData().add(createEmptyRow());
+			fireTableRowsInserted(row, row);
+		}
+//        if (row  >= getRowCount()) {
+//            getData().add(createEmptyRow());
+//            fireTableRowsInserted(row, row);
+//        }
+		
+		
 	}
 
 	private Object[] completeRow(Object newdata, int row, int column) {

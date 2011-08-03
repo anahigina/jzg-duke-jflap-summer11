@@ -25,6 +25,9 @@ import gui.environment.Universe;
 import java.util.ArrayList;
 
 import regular.Discretizer;
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
 import automata.Automaton;
 import automata.State;
 import automata.StatePlacer;
@@ -146,7 +149,7 @@ public static boolean isRemovable(State state, Automaton automaton) {
 	 *         <CODE>expression</CODE> as the transition label.
 	 */
 public static Transition getTransitionForExpression(int p, int q,
-			String expression, Automaton automaton) {
+			SymbolString expression, Automaton automaton) {
 		State fromState = automaton.getStateWithID(p);
 		State toState = automaton.getStateWithID(q);
 		Transition transition = new FSATransition(fromState, toState,
@@ -167,7 +170,7 @@ public static Transition getTransitionForExpression(int p, int q,
 	 * @return the expression on the transition between <CODE>fromState</CODE>
 	 *         and <CODE>toState</CODE> in <CODE>automaton</CODE>.
 	 */
-public static String getExpressionBetweenStates(State fromState, State toState,
+public static SymbolString getExpressionBetweenStates(State fromState, State toState,
 			Automaton automaton) {
 		Transition[] transitions = automaton.getTransitionsFromStateToState(
 				fromState, toState);
@@ -192,22 +195,20 @@ public static String getExpressionBetweenStates(State fromState, State toState,
 	 *         r(pq) = r(pq) + r(pk)r(kk)*r(kq), where p, q, and k represent the
 	 *         IDs of states in <CODE>automaton</CODE>.
 	 */
-public static String getExpression(int p, int q, int k, Automaton automaton) {
+public static SymbolString getExpression(int p, int q, int k, Automaton automaton) {
 		State fromState = automaton.getStateWithID(p);
 		State toState = automaton.getStateWithID(q);
 		State removeState = automaton.getStateWithID(k);
 
-		String pq = getExpressionBetweenStates(fromState, toState, automaton);
-		String pk = getExpressionBetweenStates(fromState, removeState,
-				automaton);
-		String kk = getExpressionBetweenStates(removeState, removeState,
-				automaton);
-		String kq = getExpressionBetweenStates(removeState, toState, automaton);
+		SymbolString pq = getExpressionBetweenStates(fromState, toState, automaton),
+				pk = getExpressionBetweenStates(fromState, removeState,automaton),
+				kk = getExpressionBetweenStates(removeState, removeState,automaton),
+				kq = getExpressionBetweenStates(removeState, toState, automaton);
 
-		String temp1 = star(kk);
-		String temp2 = concatenate(pk, temp1);
-		String temp3 = concatenate(temp2, kq);
-		String label = or(pq, temp3);
+		SymbolString temp1 = star(kk),
+			 temp2 = concatenate(pk, temp1),
+			 temp3 = concatenate(temp2, kq),
+			 label = or(pq, temp3);
 		return label;
 	}
 
@@ -215,70 +216,67 @@ public static String getExpression(int p, int q, int k, Automaton automaton) {
 	 * Returns the expression that represents <CODE>r1</CODE> concatenated
 	 * with <CODE>r2</CODE>. (essentialy just the two strings concatenated).
 	 * 
-	 * @param r1
+	 * @param pk
 	 *            the first part of the expression.
-	 * @param r2
+	 * @param temp1
 	 *            the second part of the expression.
 	 * @return the expression that represents <CODE>r1</CODE> concatenated
 	 *         with <CODE>r2</CODE>. (essentialy just the two strings
 	 *         concatenated).
 	 */
-public static String concatenate(String r1, String r2) {
-		if (r1.equals(EMPTY) || r2.equals(EMPTY))
-			return EMPTY;
-		else if (r1.equals(LAMBDA))
-			return r2;
-		else if (r2.equals(LAMBDA))
-			return r1;
-		if (Discretizer.or(r1).length > 1)
-			r1 = addParen(r1);
-		if (Discretizer.or(r2).length > 1)
-			r2 = addParen(r2);
-		return r1 + r2;
+public static SymbolString concatenate(SymbolString pk, SymbolString temp1) {
+		if (pk.equals(EMPTY) || temp1.equals(EMPTY))
+			return new SymbolString(EMPTY);
+		else if (pk.equals(LAMBDA))
+			return temp1;
+		else if (temp1.equals(LAMBDA))
+			return pk;
+		if (Discretizer.or(pk).length > 1)
+			pk = addParen(pk);
+		if (Discretizer.or(temp1).length > 1)
+			temp1 = addParen(temp1);
+		return SymbolString.concat(pk, temp1);
 	}
 
 	/**
 	 * Returns the expression that represents <CODE>r1</CODE> kleene-starred.
 	 * 
-	 * @param r1
+	 * @param kk
 	 *            the expression being kleene-starred.
 	 * @return the expression that represents <CODE>r1</CODE> kleene-starred.
 	 */
-public static String star(String r1) {
-		if (r1.equals(EMPTY) || r1.equals(LAMBDA))
+public static SymbolString star(SymbolString kk) {
+		if (kk.equals(EMPTY) || kk.equals(LAMBDA))
 			return LAMBDA;
-		if (Discretizer.or(r1).length > 1 || Discretizer.cat(r1).length > 1) {
-			r1 = addParen(r1);
+		if (Discretizer.or(kk).length > 1 || Discretizer.cat(kk).length > 1) {
+			kk = addParen(kk);
 		} else {
-			if (r1.endsWith(KLEENE_STAR))
-				return r1;
+			if (kk.endsWith(KLEENE_STAR))
+				return kk;
 		}
-		return r1 + KLEENE_STAR;
+		kk.addLast(KLEENE_STAR);
+		return kk;
 	}
 
 	/**
 	 * Returns the string that represents <CODE>r1</CODE> or'ed with <CODE>r2</CODE>.
 	 * 
-	 * @param r1
+	 * @param pq
 	 *            the first expression
-	 * @param r2
+	 * @param temp3
 	 *            the second expression
 	 * @return the string that represents <CODE>r1</CODE> or'ed with <CODE>r2</CODE>.
 	 */
-public static String or(String r1, String r2) {
-		if (r1.equals(EMPTY))
-			return r2;
-		if (r2.equals(EMPTY))
-			return r1;
-		if (r1.equals(LAMBDA) && r2.equals(LAMBDA))
-			return LAMBDA;
-		if (r1.equals(LAMBDA))
-			r1 = LAMBDA_DISPLAY;
-		if (r2.equals(LAMBDA))
-			r2 = LAMBDA_DISPLAY;
+public static SymbolString or(SymbolString pq, SymbolString temp3) {
+		if (pq.equals(EMPTY))
+			return temp3;
+		if (temp3.equals(EMPTY))
+			return pq;
+		if (pq.isEmpty() && temp3.isEmpty())
+			return pq;
 		// if(needsParens(r1)) r1 = addParen(r1);
 		// if(needsParens(r2)) r2 = addParen(r2);
-		return r1 + OR + r2;
+		return SymbolString.concat(pq , new SymbolString(OR) , temp3);
 	}
 
 	/**
@@ -330,7 +328,7 @@ public static Transition[] getTransitionsForRemoveState(State state,
 				for (int j = 0; j < states.length; j++) {
 					int q = states[j].getID();
 					if (q != k) {
-						String exp = getExpression(p, q, k, automaton);
+						SymbolString exp = getExpression(p, q, k, automaton);
 						list.add(getTransitionForExpression(p, q, exp,
 								automaton));
 					}
@@ -354,7 +352,7 @@ public static Transition[] getTransitionsForRemoveState(State state,
 	 */
 public static FSATransition addTransitionOnEmptySet(State fromState,
 			State toState, Automaton automaton) {
-		FSATransition t = new FSATransition(fromState, toState, EMPTY);
+		FSATransition t = new FSATransition(fromState, toState, new SymbolString(EMPTY));
 		automaton.addTransition(t);
 		return t;
 	}
@@ -381,10 +379,10 @@ public static FSATransition addTransitionOnEmptySet(State fromState,
 	 */
 public static FSATransition combineToSingleTransition(State fromState,
 			State toState, Transition[] transitions, Automaton automaton) {
-		String label = ((FSATransition) transitions[0]).getDescription();
+		SymbolString label = ((FSATransition) transitions[0]).getLabel();
 		automaton.removeTransition(transitions[0]);
 		for (int i = 1; i < transitions.length; i++) {
-			label = or(label, ((FSATransition) transitions[i]).getDescription());
+			label = or(label, ((FSATransition) transitions[i]).getLabel());
 			automaton.removeTransition(transitions[i]);
 		}
 		FSATransition t = new FSATransition(fromState, toState, label);
@@ -504,12 +502,14 @@ public static boolean needsParens(String word) {
 	 * Returns a string of <CODE>word</CODE> surrounded by parentheses. i.e. (<word>),
 	 * unless it is unnecessary.
 	 * 
-	 * @param word
+	 * @param pk
 	 *            the word.
 	 * @return a string of <CODE>word</CODE> surrounded by parentheses.
 	 */
-public static String addParen(String word) {
-		return LEFT_PAREN + word + RIGHT_PAREN;
+public static SymbolString addParen(SymbolString pk) {
+		pk.addFirst(LEFT_PAREN);
+		pk.addLast(RIGHT_PAREN);
+		return pk;
 	}
 
 	/**
@@ -544,14 +544,15 @@ public static String getExp(String word) {
 	 * @return the expression for the values of ii, ij, jj, and ji determined
 	 *         from the GTG with a unique initial and final state.
 	 */
-public static String getFinalExpression(String ii, String ij, String jj, String ji) {
-		String temp = concatenate(star(ii), concatenate(ij, concatenate(
+public static SymbolString getFinalExpression(SymbolString ii, SymbolString ij, 
+		SymbolString jj, SymbolString ji) {
+		SymbolString temp = concatenate(star(ii), concatenate(ij, concatenate(
 				star(jj), ji)));
-		String temp2 = concatenate(star(ii), concatenate(ij, star(jj)));
+		SymbolString temp2 = concatenate(star(ii), concatenate(ij, star(jj)));
 		// String expression =
 		// concatenate(star(concatenate(LEFT_PAREN,concatenate(temp,RIGHT_PAREN))),
 		// temp2);
-		String expression = concatenate(star(temp), temp2);
+		SymbolString expression = concatenate(star(temp), temp2);
 		return expression;
 	}
 
@@ -563,7 +564,7 @@ public static String getFinalExpression(String ii, String ij, String jj, String 
 	 *            initial and final state.
 	 * @return the expression on the loop off the initial state of <CODE>automaton</CODE>.
 	 */
-public static String getII(Automaton automaton) {
+public static SymbolString getII(Automaton automaton) {
 		State initialState = automaton.getInitialState();
 		return getExpressionBetweenStates(initialState, initialState, automaton);
 	}
@@ -578,7 +579,7 @@ public static String getII(Automaton automaton) {
 	 * @return the expression on the arc from the initial state to the final
 	 *         state of <CODE>automaton</CODE>.
 	 */
-public static String getIJ(Automaton automaton) {
+public static SymbolString getIJ(Automaton automaton) {
 		State initialState = automaton.getInitialState();
 		State[] finalStates = automaton.getFinalStates();
 		State finalState = finalStates[0];
@@ -593,7 +594,7 @@ public static String getIJ(Automaton automaton) {
 	 *            initial and final state.
 	 * @return the expression on the loop off the final state of <CODE>automaton</CODE>
 	 */
-public static String getJJ(Automaton automaton) {
+public static SymbolString getJJ(Automaton automaton) {
 		State[] finalStates = automaton.getFinalStates();
 		State finalState = finalStates[0];
 		return getExpressionBetweenStates(finalState, finalState, automaton);
@@ -609,7 +610,7 @@ public static String getJJ(Automaton automaton) {
 	 * @return the expression on the arc from the final state to the initial
 	 *         state of <CODE>automaton</CODE>
 	 */
-public static String getJI(Automaton automaton) {
+public static SymbolString getJI(Automaton automaton) {
 		State initialState = automaton.getInitialState();
 		State[] finalStates = automaton.getFinalStates();
 		State finalState = finalStates[0];
@@ -629,11 +630,11 @@ public static String getJI(Automaton automaton) {
 	 * @return the expression for the generalized transition graph <CODE>automaton</CODE>
 	 *         with two states, a unique initial and unique final state
 	 */
-public static String getExpressionFromGTG(Automaton automaton) {
-		String ii = getII(automaton);
-		String ij = getIJ(automaton);
-		String jj = getJJ(automaton);
-		String ji = getJI(automaton);
+public static SymbolString getExpressionFromGTG(Automaton automaton) {
+		SymbolString ii = getII(automaton),
+				ij = getIJ(automaton),
+				jj = getJJ(automaton), 
+				ji = getJI(automaton);
 
 		return getFinalExpression(ii, ij, jj, ji);
 	}
@@ -645,7 +646,7 @@ public static String getExpressionFromGTG(Automaton automaton) {
 	 *            the automaton
 	 * @return the regular expression that represents <CODE>automaton</CODE>.
 	 */
-public static String convertToRegularExpression(Automaton automaton) {
+public static SymbolString convertToRegularExpression(Automaton automaton) {
 		if (!isConvertable(automaton))
 			return null;
 		convertToGTG(automaton);
@@ -653,22 +654,24 @@ public static String convertToRegularExpression(Automaton automaton) {
 	}
 
 	/* the string for the empty set. */
-	public static final String EMPTY = "\u00F8";
+	public static final Symbol EMPTY = new Terminal("\u00F8");
+	
 
 	/* the string for lambda. */
-	public static final String LAMBDA_DISPLAY = Universe.curProfile.getEmptyString();
+	public static final String LAMBDA_DISPLAY = Universe.curProfile.getEmptyStringSymbol();
 
-	public static final String LAMBDA = "";
+//	public static final String LAMBDA = "";
+	public static final SymbolString LAMBDA = new SymbolString();
 
 	/* the string for the kleene star. */
-	public static final String KLEENE_STAR = "*";
+	public static final Terminal KLEENE_STAR = new Terminal("*");
 
 	/* the string for the or symbol. */
-	public static final String OR = "+";
+	public static final Terminal OR = new Terminal("+");
 
 	/** right paren. */
-	public static final String RIGHT_PAREN = ")";
+	public static final Terminal RIGHT_PAREN = new Terminal(")");
 
 	/** left paren. */
-	public static final String LEFT_PAREN = "(";
+	public static final Terminal LEFT_PAREN = new Terminal("(");
 }

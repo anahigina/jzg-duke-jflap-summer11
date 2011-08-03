@@ -120,7 +120,7 @@ public class MooreMachine extends MealyMachine
         if(myMap.get(state) == null)
             return "";
         else if(getOutput(state).length() == 0) // if output is empty string
-            return Universe.curProfile.getEmptyString();
+            return Universe.curProfile.getEmptyStringSymbol();
         else
             return getOutput(state);
     }

@@ -42,6 +42,10 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import JFLAPnew.formaldef.symbols.Symbol;
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
+
 import file.xml.DOMPrettier;
 import gui.editor.TMTransitionCreator;
 
@@ -52,7 +56,7 @@ public class Profile {
 	public String epsilon = "\u03B5";
 	public String lambdaText = "u03BB";
 	public String epsilonText = "u03B5";
-	private String emptyString = lambda;
+	private String emptyStringSymbol;
 	public int undo_num = 50;
 	
 	/** The tag bane for the empty string preference. */
@@ -111,7 +115,7 @@ public class Profile {
     }
 	
 	public Profile(){
-		emptyString = lambda;
+		emptyStringSymbol = lambda;
 		transTuringFinal = false;
 		transTuringFinalCheckBox = new JCheckBoxMenuItem("Enable Transitions From Turing Machine Final States");
         transTuringFinalCheckBox.setSelected(transTuringFinal);
@@ -165,7 +169,7 @@ public class Profile {
 	 * @param empty the empty string
 	 */
 	public void setEmptyString(String empty){
-		emptyString = empty;
+		emptyStringSymbol = empty;
 	}
 	
 	/**
@@ -173,9 +177,10 @@ public class Profile {
 	 * 
 	 * @return the empty string
 	 */
-	public String getEmptyString(){
-		return emptyString;
+	public String getEmptyStringSymbol(){
+		return emptyStringSymbol;
 	}
+	
 	
 	/**
 	 * Sets whether transitions leading from Turing machine final states are allowed.
@@ -257,8 +262,8 @@ public class Profile {
 	 */
 	public void savePreferences() {
 		String empty = "";
-		if(emptyString.equals(lambda)) empty = lambdaText;
-	    else if(emptyString.equals(epsilon)) empty = epsilonText;
+		if(emptyStringSymbol.equals(lambda)) empty = lambdaText;
+	    else if(emptyStringSymbol.equals(epsilon)) empty = epsilonText;
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory
 		.newInstance();

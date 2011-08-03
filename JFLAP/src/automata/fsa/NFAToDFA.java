@@ -26,6 +26,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
 import automata.AlphabetRetriever;
 import automata.Automaton;
 import automata.AutomatonChecker;
@@ -153,7 +155,7 @@ public class NFAToDFA {
 	 * Returns all states reachable on <CODE>terminal</CODE> from <CODE>states</CODE>,
 	 * including the closure of all reachable states.
 	 * 
-	 * @param terminal
+	 * @param alphabet
 	 *            the terminal (alphabet character)
 	 * @param states
 	 *            the set of states that we are checking to see if they have
@@ -163,7 +165,7 @@ public class NFAToDFA {
 	 * @return all states reachable on <CODE>terminal</CODE> from <CODE>states</CODE>,
 	 *         including the closure of all reachable states.
 	 */
-	public State[] getStatesOnTerminal(String terminal, State[] states,
+	public State[] getStatesOnTerminal(Terminal alphabet, State[] states,
 			Automaton automaton) {
 		ArrayList list = new ArrayList();
 		for (int k = 0; k < states.length; k++) {
@@ -171,7 +173,7 @@ public class NFAToDFA {
 			Transition[] transitions = automaton.getTransitionsFromState(state);
 			for (int i = 0; i < transitions.length; i++) {
 				FSATransition transition = (FSATransition) transitions[i];
-				if (transition.getLabel().equals(terminal)) {
+				if (transition.getLabel().equals(alphabet)) {
 					State toState = transition.getToState();
 					State[] closure = ClosureTaker.getClosure(toState,
 							automaton);
@@ -283,8 +285,7 @@ public class NFAToDFA {
 	 */
 	public ArrayList expandState(State state, Automaton nfa, Automaton dfa) {
 		ArrayList list = new ArrayList();
-		AlphabetRetriever far = new FSAAlphabetRetriever();
-		String[] alphabet = far.getAlphabet(nfa);
+		Terminal[] alphabet = nfa.getInputAlphabet().getSymbols().toArray(new Terminal[0]);
 		/** for each letter in the alphabet. */
 		for (int k = 0; k < alphabet.length; k++) {
 			/**
@@ -318,7 +319,7 @@ public class NFAToDFA {
 				 * reachables states on terminal from nfa.
 				 */
 				Transition transition = new FSATransition(state, toState,
-						alphabet[k]);
+						new SymbolString(alphabet[k]));
 				dfa.addTransition(transition);
 			}
 		}

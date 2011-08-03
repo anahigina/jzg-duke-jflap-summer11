@@ -21,6 +21,7 @@
 package automata.fsa;
 
 import JFLAPnew.formaldef.symbols.SymbolString;
+import JFLAPnew.formaldef.symbols.terminal.Terminal;
 import automata.Automaton;
 import automata.State;
 import automata.Transition;
@@ -121,27 +122,27 @@ public class FSALabelHandler {
 //	}
 		
 
-	/**
-	 * Changes all transitions in <CODE>automaton</CODE> into transitions with
-	 * at most one character per label. This could introduce more states into
-	 * <CODE>automaton</CODE>.
-	 * 
-	 * @param automaton
-	 *            the automaton.
-	 */
-	public static FiniteStateAutomaton removeMultipleCharacterLabels(
-			Automaton automaton) {
-		FiniteStateAutomaton fsa = (FiniteStateAutomaton) automaton.clone();
-		Transition[] transitions = fsa.getTransitions();
-		for (int k = 0; k < transitions.length; k++) {
-			FSATransition transition = (FSATransition) transitions[k];
-			String label = transition.getLabel();
-			if (label.length() > 1) {
-				handleLabel(transition, fsa);
-			}
-		}
-		return fsa;
-	}
+//	/**
+//	 * Changes all transitions in <CODE>automaton</CODE> into transitions with
+//	 * at most one character per label. This could introduce more states into
+//	 * <CODE>automaton</CODE>.
+//	 * 
+//	 * @param automaton
+//	 *            the automaton.
+//	 */
+//	public static FiniteStateAutomaton removeMultipleCharacterLabels(
+//			Automaton automaton) {
+//		FiniteStateAutomaton fsa = (FiniteStateAutomaton) automaton.clone();
+//		Transition[] transitions = fsa.getTransitions();
+//		for (int k = 0; k < transitions.length; k++) {
+//			FSATransition transition = (FSATransition) transitions[k];
+//			SymbolString label = transition.getLabel();
+//			if (label.size() > 1) {
+//				handleLabel(transition, fsa);
+//			}
+//		}
+//		return fsa;
+//	}
 
 	/**
 	 * Changes all transitions in <CODE>automaton</CODE> into transitions with
@@ -155,8 +156,8 @@ public class FSALabelHandler {
 		Transition[] transitions = automaton.getTransitions();
 		for (int k = 0; k < transitions.length; k++) {
 			FSATransition transition = (FSATransition) transitions[k];
-			String label = transition.getLabel();
-			if (label.length() > 1) {
+			SymbolString label = transition.getLabel();
+			if (label.size() > 1) {
 				handleLabel(transition, automaton);
 			}
 		}

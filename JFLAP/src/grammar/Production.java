@@ -210,7 +210,7 @@ public class Production implements Serializable, Cloneable, Comparable<Productio
 		buffer.append(getLHS());
 		 buffer.append("->");
 //		buffer.append('\u2192');
-		buffer.append(getRHS().size() == 0 ? Universe.curProfile.getEmptyString() : getRHS());
+		buffer.append(getRHS());
 		// buffer.append('\n');
 		return buffer.toString();
 	}
@@ -257,5 +257,9 @@ public class Production implements Serializable, Cloneable, Comparable<Productio
 			i = this.getRHS().compareTo(o.getRHS());
 		
 		return i;
+	}
+
+	public boolean isEmpty() {
+		return this.getLHS().isEmpty() && this.getRHS().isEmpty();
 	}
 }

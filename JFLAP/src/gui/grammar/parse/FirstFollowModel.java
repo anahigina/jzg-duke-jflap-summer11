@@ -263,7 +263,7 @@ public class FirstFollowModel extends AbstractTableModel {
 	private boolean[] canEditColumn = new boolean[] { false, false, false };
 
 	/** The lambda string. */
-	public static String LAMBDA = Universe.curProfile.getEmptyString();
+	public static String LAMBDA = Universe.curProfile.getEmptyStringSymbol();
 
 	/** The names of columns. */
 	public static String[] COLUMN_NAMES = { " ", "FIRST", "FOLLOW" };
