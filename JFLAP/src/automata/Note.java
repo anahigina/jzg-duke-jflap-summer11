@@ -19,9 +19,9 @@
 
 package automata;
 
-import gui.editor.DeleteTool;
-import gui.editor.EditorPane;
-import gui.editor.Tool;
+import gui.automataeditor.DeleteTool;
+import gui.automataeditor.EditorPane;
+import gui.automataeditor.Tool;
 import gui.viewer.AutomatonPane;
 import gui.environment.AutomatonEnvironment;
 
