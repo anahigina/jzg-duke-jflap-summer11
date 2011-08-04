@@ -21,7 +21,7 @@
 package gui.action;
 
 import automata.*;
-import gui.editor.ArrowDisplayOnlyTool;
+import gui.automataeditor.ArrowDisplayOnlyTool;
 import gui.environment.Environment;
 import gui.environment.Universe;
 import gui.environment.tag.CriticalTag;
