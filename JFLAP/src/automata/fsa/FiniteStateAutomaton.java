@@ -29,7 +29,7 @@ import automata.Automaton;
  * @author Thomas Finley
  */
 
-public class FiniteStateAutomaton extends Automaton {
+public class FiniteStateAutomaton extends Automaton<FSATransition> {
 	/**
 	 * Creates a finite state automaton with no states and no transitions.
 	 */
