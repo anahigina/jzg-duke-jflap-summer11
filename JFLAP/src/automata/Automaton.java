@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -62,14 +63,14 @@ import gui.viewer.AutomatonPane;
  * @author Thomas Finley
  */
 
-public abstract class Automaton extends FormalDefinition implements Serializable, Cloneable {
+public abstract class Automaton<T extends Transition> extends FormalDefinition implements Serializable, Cloneable {
 	/**
 	 * Creates an instance of <CODE>Automaton</CODE>. The created instance
 	 * has no states and no transitions.
 	 */
 	public Automaton() {
 		states = new HashSet<State>();
-		transitions = new HashSet<Transition>();
+		transitions = new HashSet<T>();
 		finalStates = new HashSet<State>();
 		initialState = null;
 	}
@@ -423,6 +424,8 @@ public abstract class Automaton extends FormalDefinition implements Serializable
 		addState(state);
 		return state;
 	}
+	
+	
 
 	/**
 	 * Adds a new state to this automata. Clients should use the <CODE>createState</CODE>
@@ -1044,6 +1047,27 @@ public abstract class Automaton extends FormalDefinition implements Serializable
         
     }
 
+	/**
+	 * Begins the process of creating a transition and returns it. Also
+	 * adds that transition to the Automata.
+	 * 
+	 * @param from
+	 *            the state the transition will go from
+	 * @param to
+	 *            the state the transition will go to
+	 */
+	public T createTransition(State from, State to){
+		try {
+			Class<T> transClass = ((Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+			T t = transClass.getConstructor(State.class, State.class).newInstance(from, to);
+			this.addTransition(t);
+			return t;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error creating Transition");
+		}
+	}
+    
 	public InputAlphabet getInputAlphabet() {
 		return this.getAlphabetByClass(InputAlphabet.class);
 	}
