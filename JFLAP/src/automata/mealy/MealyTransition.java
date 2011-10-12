@@ -21,6 +21,7 @@
 package automata.mealy;
 
 import gui.environment.Universe;
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.State;
 import automata.Transition;
 
@@ -35,16 +36,15 @@ import automata.Transition;
  * @author Jinghui Lim
  *
  */
-public class MealyTransition extends Transition 
+public class MealyTransition extends Transition<MealyTransitionLabel>
 {
     /**
      * Transition label
      */
-    protected String myLabel;
-    /**
-     * Transition output
-     */
-    protected String myOutput;
+    protected MealyTransitionLabel myLabel;
+    
+    public static final int INPUT = 0,
+    		                OUTPUT = 1;
     
     /**
      * Instantiates a new <code>MealyTransition</code> object.
@@ -55,14 +55,16 @@ public class MealyTransition extends Transition
      * in the machine should match before moving through this transition
      * @param output the output this transition produces
      */
-    public MealyTransition(State from, State to, String label, String output) 
+    public MealyTransition(State from, State to, SymbolString read, SymbolString output) 
     {
-        super(from, to);
-        setLabel(label);
-        setOutput(output);
+        this(from, to, new MealyTransitionLabel(read, output));
     }
     
-    /**
+    public MealyTransition(State from, State to, MealyTransitionLabel label) {
+		super(from, to, label);
+	}
+
+	/**
      * Produces a copy of this transition with new from and to states.
      * 
      * @param from the new from state
@@ -71,78 +73,22 @@ public class MealyTransition extends Transition
      */
     public Transition copy(State from, State to) 
     {
-        return new MealyTransition(from, to, myLabel, myOutput);
+        return new MealyTransition(from, to, (MealyTransitionLabel) myLabel.clone());
     }
     
-    /**
-     * Sets the label for this transition.
-     * 
-     * @param label the new label for this transition
-     */
-    protected void setLabel(String label)
-    {
-        /*
-         * The null check should not be needed as label should not be null
-         * so this is being too careful.
-         */
-        if(label == null)
-            myLabel = "";
-        else
-            myLabel = label;
-    }
-    
-    /**
-     * Sets the output for this transition.
-     * 
-     * @param output the new output for this transition
-     */
-    protected void setOutput(String output)
-    {
-        /*
-         * Too careful again.
-         */
-        if(output == null)
-            myOutput = "";
-        else
-            myOutput = output;
-    }
     
     /**
      * Returns the label for this transition.
      * 
      * @return the label for this transition
      */
-    public String getLabel()
+    @Override
+    public MealyTransitionLabel getLabel()
     {
         return myLabel;
     }
     
-    /**
-     * Returns the output for this transition.
-     * 
-     * @return the output for this transition
-     */
-    public String getOutput()
-    {
-        return myOutput;
-    }
     
-    /**
-     * Returns a string description for this transition. This
-     * consists of the label and output of the transition.
-     * 
-     * @return the description for this transition
-     */
-    public String getDescription()
-    {
-        String label = getLabel();
-        String output = getOutput();
-        if(label == null || label.length() == 0)
-            label = Universe.curProfile.getEmptyStringSymbol();
-        if(output == null || output.length() == 0)
-            output = Universe.curProfile.getEmptyStringSymbol();;
-        return label + " ; " + output;
-    }
     
     /**
      * Returns a string representation of this object. This is the same
@@ -154,39 +100,20 @@ public class MealyTransition extends Transition
      */
     public String toString()
     {
-        return super.toString() + ": \"" + getLabel() + "/" + getOutput() + "\"";
+        return super.toString() + ": \"" + getInput() + "/" + getOutput() + "\"";
     }
     
-    /**
-     * Returns if this transition is equal to another object. They are equal
-     * if they satisfy automata.Transition.equals(Object) and have the same
-     * label and output.
-     * 
-     * @see automata.Transition#equals(Object)
-     * @param object the object to compare against
-     * @return <code>true</code> if the two are equal,
-     * <code>false</code> otherwise
-     */
-    public boolean equals(Object object)
-    {
-        try
-        {
-            MealyTransition t = (MealyTransition) object;
-            return super.equals(t) && getLabel().equals(t.getLabel()) && getOutput().equals(t.getOutput());
-        }
-        catch(ClassCastException e)
-        {
-            return false;
-        }
-    }
+    public SymbolString getOutput() {
+		return this.getLabel().getOutput();
+	}
+    
+    public SymbolString getInput() {
+		return this.getLabel().getInput();
+	}
 
-    /**
-     * Returns the hash code for this transition object.
-     * 
-     * @return the hash code for this transition
-     */
-    public int hashCode()
-    {
-        return super.hashCode() ^ getLabel().hashCode() ^ getOutput().hashCode();
-    }
+	
+	@Override
+	public void setLabel(MealyTransitionLabel label) {
+		myLabel = label;
+	}
 }

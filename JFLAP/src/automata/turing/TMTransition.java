@@ -32,7 +32,7 @@ import java.util.*;
  * @author Thomas Finley
  */
 
-public class TMTransition extends Transition {
+public class TMTransition extends Transition<TMTransitionLabel> {
 
 	//added for turing to grammar conversion
 	private int tapes;

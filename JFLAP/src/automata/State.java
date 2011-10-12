@@ -94,6 +94,22 @@ public class State implements Serializable {
 	}
 	
 
+	/**
+	 * What is the angle on state1 of the point closest to state2?
+	 * 
+	 * @param state1
+	 *            the first state
+	 * @param state2
+	 *            the second state
+	 * @return the angle on state1 of the point closest to state2
+	 */
+	public double angle(State state2) {
+		Point p1 = this.getPoint();
+		Point p2 = state2.getPoint();
+		double x = (double) (p2.x - p1.x);
+		double y = (double) (p2.y - p1.y);
+		return Math.atan2(y, x);
+	}
 
 	/**
 	 * Returns the state ID for this state.

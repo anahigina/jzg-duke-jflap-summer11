@@ -24,6 +24,7 @@ import gui.environment.Universe;
 
 import java.util.*;
 
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.State;
 
 /**
@@ -44,7 +45,7 @@ public class MooreMachine extends MealyMachine
     /**
      * Map of states (keys) to output (values).
      */
-    private Map myMap;
+    private Map<State, SymbolString> myMap;
     
     /**
      * Creates a Moore machine with no states or transitions.
@@ -75,16 +76,9 @@ public class MooreMachine extends MealyMachine
      * @param state state to set the output for
      * @param output value to set the state output to
      */
-    public void setOutput(State state, String output)
+    public void setOutput(State state, SymbolString output)
     {
-        /*
-         * The null check occurs here but the input string can also
-         * be checked before.
-         */
-        if(output == null)
-            myMap.put(state, "");
-        else
-            myMap.put(state, output);
+        myMap.put(state, output);
     }
     
     /**
@@ -93,12 +87,9 @@ public class MooreMachine extends MealyMachine
      * @param state the state whose output value we want
      * @return the output of the state
      */
-    public String getOutput(State state)
+    public SymbolString getOutput(State state)
     {
-        if(myMap.get(state) == null)
-            return "";
-        else
-            return (String) myMap.get(state);
+        return myMap.get(state);
     }
     
     /**
@@ -112,16 +103,6 @@ public class MooreMachine extends MealyMachine
      */
     public String getStateDescription(State state)
     {
-        /*
-         * If the output has not been set i.e. this is a brand new state
-         * before the user has entered a state output, then an
-         * empty string shows up instead of lamba. It is purely cosmetic.
-         */
-        if(myMap.get(state) == null)
-            return "";
-        else if(getOutput(state).length() == 0) // if output is empty string
-            return Universe.curProfile.getEmptyStringSymbol();
-        else
-            return getOutput(state);
+            return myMap.get(state) == null ?  "" : getOutput(state).toString();
     }
 }

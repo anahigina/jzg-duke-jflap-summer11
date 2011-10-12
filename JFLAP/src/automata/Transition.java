@@ -181,7 +181,7 @@ public abstract class Transition<T extends ITransitionLabel> implements Serializ
 	public boolean equals(Object object) {
 		try {
 			Transition t = (Transition) object;
-			return from == t.from && to == t.to;
+			return from == t.from && to == t.to && this.getLabel().equals(t.getLabel());
 		} catch (ClassCastException e) {
 			return false;
 		}
@@ -194,7 +194,7 @@ public abstract class Transition<T extends ITransitionLabel> implements Serializ
 	 */
 	@Override
 	public int hashCode() {
-		return from.hashCode() ^ to.hashCode();
+		return from.hashCode() ^ to.hashCode() ^ this.getLabel().hashCode();
 	}
 	
     /**

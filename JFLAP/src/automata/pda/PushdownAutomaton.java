@@ -31,10 +31,11 @@ import automata.Automaton;
  * @author Ryan Cavalcante
  */
 
-public class PushdownAutomaton extends Automaton {
+public class PushdownAutomaton extends Automaton<PDATransition> {
 	public boolean singleInputPDA = false;
 	
 	/**
+	 * 
 	 * Creates a pushdown automaton with no states and no transitions.
 	 */
 	public PushdownAutomaton(boolean singleinput) {
@@ -60,7 +61,7 @@ public class PushdownAutomaton extends Automaton {
 		return this.getStackAlphabet().getBottomOfStackSymbol();
 	}
 
-	private StackAlphabet getStackAlphabet() {
+	public StackAlphabet getStackAlphabet() {
 		return this.getAlphabetByClass(StackAlphabet.class);
 	}
 

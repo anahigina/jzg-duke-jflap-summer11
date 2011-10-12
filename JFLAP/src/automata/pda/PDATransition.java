@@ -22,6 +22,7 @@ package automata.pda;
 
 import gui.environment.Universe;
 import JFLAPnew.formaldef.symbols.SymbolString;
+import automata.ITransitionLabel;
 import automata.Transition;
 import automata.State;
 
@@ -35,7 +36,13 @@ import automata.State;
  * @author Ryan Cavalcante
  */
 
-public class PDATransition extends Transition {
+public class PDATransition extends Transition<PDATransitionLabel> {
+	
+	public static final int INPUT = 0,
+							POP = 1,
+							PUSH = 2;
+	private PDATransitionLabel myLabel;
+
 	/**
 	 * Instantiates a new <CODE>PDATransition</CODE> object.
 	 * 
@@ -51,16 +58,17 @@ public class PDATransition extends Transition {
 	 * @param push
 	 *            the string that the machine should push on to the stack.
 	 */
-	public PDATransition(State from, State to, SymbolString symbolString,
+	public PDATransition(State from, State to, SymbolString in,
 			SymbolString pop, SymbolString push) {
-		super(from, to);
-		setInputToRead(symbolString);
-		setStringToPop(pop);
-		setStringToPush(push);
+		this(from, to, new PDATransitionLabel(in,pop,push));
 	}
 	
+	public PDATransition(State from, State to, PDATransitionLabel label) {
+		super(from, to, label);
+	}
+
 	/**
-	 * Constructs a PDA transition with empty symbolstring/pop/push
+	 * Constructs a PDA transition with empty input/pop/push
 	 * @param from
 	 * @param to
 	 */
@@ -71,75 +79,49 @@ public class PDATransition extends Transition {
 	}
 
 	/**
-	 * Returns a copy of this transition with new from and to states.
-	 * 
-	 * @param from
-	 *            the new from state for the returned transition
-	 * @param to
-	 *            the new to state for the returned transition
-	 * @return a copy of this trnasition with the new from and to states
-	 */
-	public Transition copy(State from, State to) {
-		return new PDATransition(from, to, getInputToRead(), getStringToPop(),
-				getStringToPush());
-	}
-
-	/**
 	 * Returns the input to read portion of the transition label for this
 	 * transition.
 	 */
-	public String getInputToRead() {
-		return myInputToRead;
+	public SymbolString getInputToRead() {
+		return myLabel.getInputToRead();
 	}
 
 	/**
 	 * Sets the input to read portion of the transition label for this
 	 * transition.
 	 * 
-	 * @param inputToRead
+	 * @param symbolString
 	 *            the input to read portion of the transition label.
 	 */
-	protected void setInputToRead(String inputToRead) {
-		/*
-		 * if (!automata.StringChecker.isAlphanumeric(inputToRead)) throw new
-		 * IllegalArgumentException("Label must be alphanumeric!");
-		 */
-		myInputToRead = inputToRead;
+	protected void setInputToRead(SymbolString symbolString) {
+		myLabel.setInput(symbolString);
 	}
 
 	/**
 	 * Returns the string to pop from stack portion of the transition label for
 	 * this transition.
 	 */
-	public String getStringToPop() {
-		return myStringToPop;
+	public SymbolString getStringToPop() {
+		return myLabel.getPop();
 	}
 
 	/**
 	 * Sets the string to pop from stack portion of the transition label for
 	 * this transition.
 	 * 
-	 * @param stringToPop
+	 * @param pop
 	 *            the string to pop from the stack.
 	 */
-	protected void setStringToPop(String stringToPop) {
-		/*
-		 * if (!automata.StringChecker.isAlphanumeric(stringToPop)) throw new
-		 * IllegalArgumentException("Pop string must "+ "be alphanumeric!");
-		 */
-		PushdownAutomaton myPDA = (PushdownAutomaton) this.getAutomaton();
-		if (myPDA.singleInputPDA && stringToPop.length() > 1){
-			throw new IllegalArgumentException("Pop string must have no more than one character!");
-		}
-		myStringToPop = stringToPop;
+	protected void setStringToPop(SymbolString pop) {
+		myLabel.setPop(pop);
 	}
 
 	/**
 	 * Returns the string to push on to the stack portion of the transition
 	 * label for this transition.
 	 */
-	public String getStringToPush() {
-		return myStringToPush;
+	public SymbolString getStringToPush() {
+		return myLabel.getPush();
 
 	}
 
@@ -147,68 +129,11 @@ public class PDATransition extends Transition {
 	 * Sets the string to push on to the stack portion of the transition label
 	 * for this transition.
 	 * 
-	 * @param stringToPush
+	 * @param push
 	 *            the string to push on to the stack.
 	 */
-	protected void setStringToPush(String stringToPush) {
-		/*
-		 * if (!automata.StringChecker.isAlphanumeric(stringToPush)) throw new
-		 * IllegalArgumentException("Push string must "+ "be alphanumeric!");
-		 */
-		PushdownAutomaton myPDA = (PushdownAutomaton) this.getAutomaton();
-		if (myPDA.singleInputPDA && stringToPush.length() > 1)
-			throw new IllegalArgumentException(
-					"Push string must have no more than one character!");
-		myStringToPush = stringToPush;
-	}
-
-	/**
-	 * Returns the description for this transition.
-	 * 
-	 * @return the description, in this case, the input to read, the string to
-	 *         pop off the stack, and the string to push on the stack.
-	 */
-	public String getDescription() {
-		String input = getInputToRead();
-		if (input.length() == 0)
-			input = Universe.curProfile.getEmptyStringSymbol();
-		String toPop = getStringToPop();
-		if (toPop.length() == 0)
-			toPop = Universe.curProfile.getEmptyStringSymbol();
-		String toPush = getStringToPush();
-		if (toPush.length() == 0)
-			toPush = Universe.curProfile.getEmptyStringSymbol();
-		return input + " , " + toPop + " ; " + toPush;
-	}
-
-	/**
-	 * Returns the hashcode for this transition.
-	 * 
-	 * @return the hashcode for this transition
-	 */
-	public int hashCode() {
-		return super.hashCode() ^ myInputToRead.hashCode()
-				^ myStringToPop.hashCode() ^ myStringToPush.hashCode();
-	}
-
-	/**
-	 * Tests this transition against another object for equality.
-	 * 
-	 * @param object
-	 *            the object to test for equality
-	 * @return <CODE>true</CODE> if this transition equals the passed in
-	 *         object, <CODE>false</CODE> otherwise
-	 */
-	public boolean equals(Object object) {
-		try {
-			PDATransition t = (PDATransition) object;
-			return super.equals(object)
-					&& myInputToRead.equals(t.myInputToRead)
-					&& myStringToPop.equals(t.myStringToPop)
-					&& myStringToPush.equals(t.myStringToPush);
-		} catch (ClassCastException e) {
-			return false;
-		}
+	protected void setStringToPush(SymbolString push) {
+		myLabel.setPush(push);
 	}
 
 	/**
@@ -220,16 +145,35 @@ public class PDATransition extends Transition {
 	 * @return a string representation of this object
 	 */
 	public String toString() {
-		return super.toString() + ": \"" + getInputToRead() + "\"" + ": \""
-				+ getStringToPop() + "\"" + ": \"" + getStringToPush() + "\"";
+		return super.toString() + ": \"" + this.getLabel().toString();
 	}
 
-	/** The input to read portion of the transition label. */
-	protected String myInputToRead;
 
-	/** The string to pop off the stack. */
-	protected String myStringToPop;
+	@Override
+	public PDATransitionLabel getLabel() {
+		return myLabel;
+	}
 
-	/** The string to push on the stack. */
-	protected String myStringToPush;
+	@Override
+	public void setLabel(PDATransitionLabel label) {
+		myLabel = label;
+	}
+
+	public void setLabelComponent(int c, SymbolString string) {
+		switch (c){
+			case INPUT: this.setInputToRead(string); break;
+			case POP: this.setStringToPop(string); break;
+			case PUSH: this.setStringToPush(string); break;
+		}
+	}
+	
+	public SymbolString getByIndex(int i){
+		switch (i){
+			case INPUT: return this.getInputToRead();
+			case POP: return this.getStringToPop(); 
+			case PUSH: return this.getStringToPush(); 
+		}
+		return null;
+	}
+
 }

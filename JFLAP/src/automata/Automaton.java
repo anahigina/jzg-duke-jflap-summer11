@@ -20,6 +20,7 @@
 
 package automata;
 
+import grammar.Production;
 import gui.environment.EnvironmentFrame;
 
 import java.awt.Color;
@@ -40,6 +41,7 @@ import java.util.Set;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.FormallyDefinedObject;
 import JFLAPnew.formaldef.alphabets.specific.InputAlphabet;
+import JFLAPnew.formaldef.symbols.Symbol;
 import automata.event.AutomataStateEvent;
 import automata.event.AutomataStateListener;
 import automata.event.AutomataTransitionEvent;
@@ -317,6 +319,7 @@ public abstract class Automaton<T extends Transition> extends FormalDefinition i
 
 		distributeTransitionEvent(new AutomataTransitionEvent(this, trans,
 				true, false));
+		System.out.println(this);
 	}
 
 	/**
@@ -543,6 +546,15 @@ public abstract class Automaton<T extends Transition> extends FormalDefinition i
 		}
 	}
 	
+	
+	
+	@Override
+	public void purgeSymbol(Symbol s) {
+		for (Transition t: this.getTransitions()){
+			t.getLabel().removeSymbol(s);
+		}
+	}
+
 	public ArrayList getNotes() {
 		return myNotes;
 	}
@@ -861,14 +873,16 @@ public abstract class Automaton<T extends Transition> extends FormalDefinition i
         */
 	}
 
-//	/**
-//	 * Gets the map of blocks for this automaton.
-//	 *
-//	 * @return the map of blocks
-//	 */
-//	public Map getBlockMap() {
-//		return blockMap;
-//	}
+	@Override
+	public Set<Symbol> getSymbolsUsed() {
+		Set<Symbol> used = new HashSet<Symbol>();
+		
+		for (Transition t: getTransitions()){
+			used.addAll(t.getLabel().getUniqueSymbols());
+		}
+		
+		return used;
+	}
 
 	/**
 	 * Gets the Environment Frame the automaton is in.
@@ -1048,8 +1062,7 @@ public abstract class Automaton<T extends Transition> extends FormalDefinition i
     }
 
 	/**
-	 * Begins the process of creating a transition and returns it. Also
-	 * adds that transition to the Automata.
+	 * Begins the process of creating a transition and returns it.
 	 * 
 	 * @param from
 	 *            the state the transition will go from
@@ -1060,7 +1073,6 @@ public abstract class Automaton<T extends Transition> extends FormalDefinition i
 		try {
 			Class<T> transClass = ((Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
 			T t = transClass.getConstructor(State.class, State.class).newInstance(from, to);
-			this.addTransition(t);
 			return t;
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -20,6 +20,8 @@
 
 package automata.mealy;
 
+import JFLAPnew.formaldef.alphabets.specific.InputAlphabet;
+import JFLAPnew.formaldef.alphabets.specific.OutputAlphabet;
 import automata.Automaton;
 
 /**
@@ -52,6 +54,10 @@ public class MealyMachine extends Automaton
         return MealyTransition.class;
     }
 
+    public OutputAlphabet getOutputAlphabet() {
+		return this.getAlphabetByClass(OutputAlphabet.class);
+	}
+    
 	@Override
 	public String getName() {
 		return "Mealy Machine";

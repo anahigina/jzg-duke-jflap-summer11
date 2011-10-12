@@ -21,6 +21,7 @@
 package automata.mealy;
 
 import gui.environment.Universe;
+import JFLAPnew.formaldef.symbols.SymbolString;
 import automata.State;
 import automata.Transition;
 
@@ -33,7 +34,7 @@ import automata.Transition;
  * @author Jinghui Lim
  * 
  */
-public class MooreTransition extends MealyTransition 
+public class MooreTransition extends InputOutputTransition<MooreTransitionLabel>
 {
     /**
      * Instantiates a new <code>MooreTransition</code> object and changes 
@@ -46,13 +47,16 @@ public class MooreTransition extends MealyTransition
      * in the machine should match before moving through this transition
      * @param output the output this transition's to state produces
      */
-    public MooreTransition(State from, State to, String label, String output)
+    public MooreTransition(State from, State to, SymbolString input, SymbolString output)
     {
-        super(from, to, label, output);
-        setOutput(output);
+        this(from, to, new MooreTransitionLabel(input));
     }
     
-    /**
+    public MooreTransition(State from, State to, MooreTransitionLabel label) {
+		super(from, to, label);
+	}
+
+	/**
      * Instantiates a new <code>MooreTransition</code> object without changing
      * the output of the transition's to state.
      * 
@@ -62,9 +66,9 @@ public class MooreTransition extends MealyTransition
      * @param label the label for this transition that the input string
      * in the machine should match before moving through this transition
      */
-    public MooreTransition(State from, State to, String label) 
+    public MooreTransition(State from, State to, SymbolString input) 
     {
-        this(from, to, label, ((MooreMachine) (to.getAutomaton())).getOutput(to));
+        this(from, to, input, ((MooreMachine) (to.getAutomaton())).getOutput(to));
     }
     
     /**
@@ -76,7 +80,7 @@ public class MooreTransition extends MealyTransition
      */
     public Transition copy(State from, State to)
     {
-        return new MooreTransition(from, to, getLabel(), getOutput());
+        return new MooreTransition(from, to, getLabel());
     }
     
 
@@ -86,7 +90,7 @@ public class MooreTransition extends MealyTransition
      * 
      * @see MooreMachine#getOutput(State)
      */
-    public String getOutput()
+    public SymbolString getOutput()
     {
         return ((MooreMachine) (to.getAutomaton())).getOutput(to);
     }
@@ -98,22 +102,13 @@ public class MooreTransition extends MealyTransition
      * @see MooreMachine#setOutput(State, String)
      * @param output the new output for this transition
      */
-    protected void setOutput(String output)
+    protected void setOutput(SymbolString output)
     {
         ((MooreMachine) to.getAutomaton()).setOutput(to, output);
     }
     
-    /**
-     * Returns a string description of this transition. This consists of the
-     * label. The output of the transition is shown in the state.
-     * 
-     * @return the description of this transition
-     */
-    public String getDescription()
-    {
-        if(getLabel() == null || getLabel().length() == 0)
-            return Universe.curProfile.getEmptyStringSymbol();
-        else
-            return getLabel();
-    }
+	@Override
+	public SymbolString getInput() {
+		return myLabel;
+	}
 }
