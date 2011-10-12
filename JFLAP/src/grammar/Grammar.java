@@ -29,7 +29,7 @@ import java.util.*;
 import JFLAPnew.formaldef.FormalDefinition;
 import JFLAPnew.formaldef.FormallyDefinedObject;
 import JFLAPnew.formaldef.IFormallyDefined;
-import JFLAPnew.formaldef.alphabets.IAlphabet;
+import JFLAPnew.formaldef.alphabets.AbstractAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.TerminalAlphabet;
 import JFLAPnew.formaldef.alphabets.specific.VariableAlphabet;
 import JFLAPnew.formaldef.symbols.Symbol;
@@ -198,6 +198,15 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 		return this.getAlphabetByClass(TerminalAlphabet.class);
 	}
 
+	
+
+	@Override
+	public void purgeSymbol(Symbol s) {
+		for (Production p: myProductions){
+			p.removeSymbol(s);
+		}
+	}
+
 
 	/**
 	 * Returns all variables in the grammar.
@@ -346,6 +355,20 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	}
 
 	
+	
+	@Override
+	public Set<Symbol> getSymbolsUsed() {
+		Set<Symbol> used = new HashSet<Symbol>();
+		
+		for (Production p: myProductions){
+			used.addAll(p.getLHS());
+			used.addAll(p.getRHS());
+		}
+		
+		return used;
+	}
+
+
 	public Production removeProductionAtIndex(int i) {
 		return myProductions.remove(i);
 	}
@@ -357,7 +380,6 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 			return isValid;
 		
 		myProductions.add(index, prod);
-		Collections.sort(myProductions);
 		return isValid;
 	}
 	
@@ -369,6 +391,22 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 		myProductions.clear();
 	}
 	
+	public void sortProductions() {
+		Collections.sort(myProductions, new Comparator<Production>() {
+
+			@Override
+			public int compare(Production o1, Production o2) {
+				Variable start = Grammar.this.getStartVariable();
+				if (o1.isStartProduction(start) && !o2.isStartProduction(start))
+					return -1;
+				if (!o1.isStartProduction(start) && o2.isStartProduction(start))
+					return 1;
+				return o1.compareTo(o2);
+			}
+
+		
+		});
+	}
 	
 //	private EnvironmentFrame myEnvFrame = null;
 	private String fileName ="";
@@ -376,15 +414,5 @@ public abstract class Grammar extends FormalDefinition implements Serializable, 
 	/** Set of Production rules. */
 	protected List<Production> myProductions;
 
-
-
-
-	
-
-	
-
-	
-
-	
 
 }

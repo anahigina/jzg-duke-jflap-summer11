@@ -227,6 +227,12 @@ public class Production implements Serializable, Cloneable, Comparable<Productio
 		}
 	}
 
+	public boolean isStartProduction(Variable start) {
+		if (this.getLHS().isEmpty()) return false;
+		return this.getLHS().getFirst() == start;
+//				&& this.getLHS().size() == 1;
+	}
+	
 	/**
 	 * Deprecated - this now simply does the same thing as getRHS, returning
 	 * the symbol string corresponding to the Right hand Side of this production
@@ -261,5 +267,10 @@ public class Production implements Serializable, Cloneable, Comparable<Productio
 
 	public boolean isEmpty() {
 		return this.getLHS().isEmpty() && this.getRHS().isEmpty();
+	}
+
+	public void removeSymbol(Symbol s) {
+		this.getLHS().purgeOf(s);
+		this.getRHS().purgeOf(s);
 	}
 }
